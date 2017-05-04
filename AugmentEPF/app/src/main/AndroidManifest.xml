@@ -16,6 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".PathPlanningActivity" />
+        <activity android:name=".PathConsultationActivity" />
+        <activity android:name=".NavigationActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".AdminActivity"></activity>
     </application>
 
 </manifest>
