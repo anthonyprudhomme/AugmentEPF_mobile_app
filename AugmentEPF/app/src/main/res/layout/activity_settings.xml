@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.filiereticsa.arc.augmentepf.SettingsActivity">
+    tools:context="com.filiereticsa.arc.augmentepf.Activities.SettingsActivity">
 
 </android.support.constraint.ConstraintLayout>

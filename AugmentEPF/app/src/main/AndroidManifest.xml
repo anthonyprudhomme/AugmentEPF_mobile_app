@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.filiereticsa.arc.augmentepf">
 
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,19 +16,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".AugmentEPFApplication">
-        <activity android:name=".HomePageActivity">
+        android:name="com.filiereticsa.arc.augmentepf.Activities.AugmentEPFApplication">
+        <activity android:name="com.filiereticsa.arc.augmentepf.Activities.HomePageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PathPlanningActivity" />
-        <activity android:name=".PathConsultationActivity" />
-        <activity android:name=".NavigationActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".AdminActivity" />
+        <activity android:name="com.filiereticsa.arc.augmentepf.Activities.PathPlanningActivity" />
+        <activity android:name="com.filiereticsa.arc.augmentepf.Activities.PathConsultationActivity" />
+        <activity android:name="com.filiereticsa.arc.augmentepf.Activities.NavigationActivity" />
+        <activity android:name="com.filiereticsa.arc.augmentepf.Activities.SettingsActivity" />
+        <activity android:name="com.filiereticsa.arc.augmentepf.Activities.AdminActivity" />
     </application>
 
 </manifest>
