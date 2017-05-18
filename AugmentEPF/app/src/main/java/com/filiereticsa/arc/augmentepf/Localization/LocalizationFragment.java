@@ -131,7 +131,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             //BitmapManager bitmapManager = new BitmapManager();
             //final Bitmap mapBitmap = bitmapManager.loadBitmapFromFile("PATH_TO_MAP");
             final Bitmap mapBitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                    R.drawable.plan_etage1);
+                    R.drawable.map_floor2_beacons);
             if(mapBitmap!=null) {
                 int height = mapBitmap.getHeight();
                 int width = mapBitmap.getWidth();
@@ -284,8 +284,8 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             mapContainer.setY(0);
             int[] map = new int[2];
             mapContainer.getLocationInWindow(map);
-            Log.d(TAG,"position: " + mapContainer.getX() + " " + ((FrameLayout.LayoutParams) mapContainer.getLayoutParams()).leftMargin
-                    + " " + map[0] + " " + map[1]);
+            //Log.d(TAG,"position: " + mapContainer.getX() + " " + ((FrameLayout.LayoutParams) mapContainer.getLayoutParams()).leftMargin
+            //       + " " + map[0] + " " + map[1]);
             mapContainer.postInvalidate();
             return true;
         }

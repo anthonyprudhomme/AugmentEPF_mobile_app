@@ -280,7 +280,7 @@ public class GABeaconLocalizer {
                     GABeacon beacon = allBeacons.get(j);
                     beacon.setDistance(statuses.get(i).accuracy);
                     beacons.add(beacon);
-                    Log.d(TAG,"beacon " + (i + 1) + " " + beacon.getAccuracy() + " " + beacon.getMinor());
+                    //Log.d(TAG,"beacon " + (i + 1) + " " + beacon.getAccuracy() + " " + beacon.getMinor());
                 }
             }
         }

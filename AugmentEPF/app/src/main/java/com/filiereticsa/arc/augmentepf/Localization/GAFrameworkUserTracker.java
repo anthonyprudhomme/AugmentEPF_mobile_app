@@ -85,7 +85,6 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 
     public void setCurrentMapId(int newMapId) {
         if (currentMap == null || currentMap.getId() != newMapId) {
-            Log.d("Ici", "setting a new map");
             // TODO Uncomment this and put the real path to the map
 //            String mapPath = "PATH_TO_MAP";
 //            FileManager fileManager = new FileManager(null, mapPath);
@@ -361,7 +360,9 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 
     private void updateUserLocationWithMotion(double accelerationNorm) {
         if (accelerationNorm != -1) {
+
             if (accelerationNorm > stepsAccThreshold || accelerationNorm < -stepsAccThreshold) {
+                //Log.d(TAG, "updateUserLocationWithMotion");
                 steps += 1;
                 if (steps >= stepsPerMapItem) {
                     // Empty candidates
@@ -370,6 +371,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                     // Look for neighbours
                     if (getCurrentUserLocation() != null) {
                         ArrayList<Pair<Integer, Integer>> neighbours = this.mapHelper.neighboursIndexPaths(getCurrentUserLocation().indexPath);
+                        Log.d(TAG, "updateUserLocationWithMotion: "+getCurrentUserLocation().indexPath.first + " "+ getCurrentUserLocation().indexPath.second);
                         this.updateLocationCandidatesWithNeighbours(neighbours);
                         k = getSortedCandidatesKeys();
 //                        for (int i = 0; i < k.size(); i++) {
@@ -387,11 +389,14 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                     this.updateLocationCandidatesWithBeacons(this.closestBeacons);
                     // Final evaluation: return candidate with best score
                     k = getSortedCandidatesKeys();
+                    Log.d(TAG, "right before");
                     if (k != null) {
+                        Log.d(TAG, "right after"+k.size());
                         if (k.size() > 0) {
 //                            for (int i = 0; i < k.size(); i++) {
 //                                Log.e("sorted candidate " + (i + 1) + " after beacons : " + k.get(i).first + "," + k.get(i).second + " weight = " + userLocationCandidatesDict.get(k.get(i)).weight);
 //                            }
+                            Log.d(TAG, "updateUserLocationWithMotion");
                             setCurrentUserLocation(this.userLocationCandidatesDict.get(k.get(0)));
                             for (int i = 0; i < observers.size(); i++) {
                                 observers.get(i).userMovedToIndexPath(userLocationCandidatesDict.get(k.get(0)).indexPath, getSortedCandidatesKeys());
@@ -703,10 +708,8 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
         //Log.d(TAG, ""+closestBeacons.size());
         // If we don't have any map id, let's set it using the closest beacon
         if (closestBeacons != null && closestBeacons.size() != 0) {
-            Log.d(TAG, " no map id yet");
             GABeacon closestBeacon = this.closestBeacons.get(0);
             if (closestBeacon != null) {
-                Log.d(TAG, "rangedBeacons: setMapId");
                 setCurrentMapId(closestBeacon.getMapId());
             }
             // If we don't have any location, set it to the closest beacon
