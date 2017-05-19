@@ -1,13 +1,15 @@
-package com.filiereticsa.arc.augmentepf;
+package com.filiereticsa.arc.augmentepf.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class HomePageActivity extends AppCompatActivity {
+import com.filiereticsa.arc.augmentepf.R;
+
+public class AdminActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_page);
+        setContentView(R.layout.activity_admin);
     }
 }

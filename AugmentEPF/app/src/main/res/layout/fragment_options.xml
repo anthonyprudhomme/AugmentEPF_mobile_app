@@ -1,0 +1,87 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.filiereticsa.arc.augmentepf.fragments.OptionsFragment"
+    android:orientation="vertical"
+    android:background="@color/lightGrey">
+
+    <Button
+        android:id="@+id/connect_button"
+        android:onClick="onConnectClick"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/connect"
+        android:background="@color/red"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        android:layout_margin="20dp"/>
+
+    <Button
+        android:id="@+id/planned_trajectory_button"
+        android:onClick="onPlannedClick"
+        android:text="@string/planned_trajectory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginTop="75dp"/>
+
+    <Button
+        android:id="@+id/history_button"
+        android:onClick="onHistoryClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/trajectory_history"
+        android:background="@color/white"
+        android:layout_marginTop="20dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="20dp"
+        android:padding="10dp">
+        <ImageButton
+            android:id="@+id/calendar_button"
+            android:onClick="onCalendarClick"
+            android:src="@drawable/calendar_icon"
+            android:scaleType="fitXY"
+            android:padding="10dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@color/green"
+            android:layout_margin="10dp"/>
+
+        <ImageButton
+            android:id="@+id/settings_button"
+            android:onClick="onSettingsClick"
+            android:src="@drawable/settings_icon"
+            android:scaleType="fitXY"
+            android:padding="10dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@color/blue"
+            android:layout_margin="10dp"/>
+
+        <ImageButton
+            android:id="@+id/admin_button"
+            android:onClick="onAdminClick"
+            android:src="@drawable/admin_icon"
+            android:scaleType="fitXY"
+            android:padding="10dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@color/gold"
+            android:layout_margin="10dp"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/contact_button"
+        android:text="@string/contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:onClick="onContactClick"
+        android:padding="10dp"
+        android:layout_margin="20dp"/>
+</LinearLayout>
