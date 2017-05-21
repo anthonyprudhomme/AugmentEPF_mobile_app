@@ -63,7 +63,7 @@ public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatI
             // Draw the user position above the path
             drawUserPosition(canvas, radius);
             // Draw the debug text that shows info that helps debugging
-            drawDebugText(canvas);
+            //drawDebugText(canvas);
         }
     }
 

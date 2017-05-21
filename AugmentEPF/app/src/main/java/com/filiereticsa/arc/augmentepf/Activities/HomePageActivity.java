@@ -12,10 +12,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.SlidingDrawer;
 
 import com.filiereticsa.arc.augmentepf.Localization.BeaconDetector;
 import com.filiereticsa.arc.augmentepf.Localization.BeaconDetectorInterface;
@@ -25,7 +26,6 @@ import com.filiereticsa.arc.augmentepf.Localization.LocalizationFragment;
 import com.filiereticsa.arc.augmentepf.Managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.R;
 
-import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
 
 import java.io.IOException;
@@ -73,8 +73,40 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
         //GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(31, 4));
         new HttpAsyncTask().execute("http://192.168.206.106/AugmentEPF/php/getNextLesson.php");
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
+        final SlidingDrawer leftSlidingDrawer = (SlidingDrawer) findViewById(R.id.leftSlidingDrawer); // initiate the SlidingDrawer
+        final SlidingDrawer rightSlidingDrawer = (SlidingDrawer) findViewById(R.id.rightSlidingDrawer); // initiate the SlidingDrawer
+
+
+        leftSlidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener() {
+            @Override
+            public void onDrawerOpened() {
+                rightSlidingDrawer.close();
+                rightSlidingDrawer.setVisibility(View.GONE);
+            }
+        });
+        // implement setOnDrawerCloseListener event
+        leftSlidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener() {
+            @Override
+            public void onDrawerClosed() {
+                rightSlidingDrawer.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        rightSlidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener() {
+            @Override
+            public void onDrawerOpened() {
+                leftSlidingDrawer.close();
+                leftSlidingDrawer.setVisibility(View.GONE);
+            }
+        });
+        // implement setOnDrawerCloseListener event
+        rightSlidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener() {
+            @Override
+            public void onDrawerClosed() {
+                leftSlidingDrawer.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     /* Create a menu to go to settings activity */
@@ -84,32 +116,6 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
         getMenuInflater().inflate(R.menu.home, menu);
 
         return super.onCreateOptionsMenu(menu);
-    }
-
-    /* Item selected in the menu above */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Initialize the intention
-        Intent intent = new Intent();
-
-        // Which item is selected?
-        switch (item.getItemId()) {
-            // The user want to plan a path
-            case R.id.action_plan:
-                intent = new Intent(this, PathPlanningActivity.class);
-                break;
-            // The user want to see settings
-            case R.id.action_settings:
-                intent = new Intent(this, SettingsActivity.class);
-                break;
-            default:
-                break;
-        }
-
-        // Start the activity of the item selected
-        startActivity(intent);
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -123,10 +129,7 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
 
     @Override
     public void rangedBeacons(ArrayList<GABeacon> beacons) {
-        //Log.d(TAG,"Ranging beacons " + beacons.size());
-        for (int i = 0; i < beacons.size(); i++) {
-            //Log.d(TAG,""+beacons.get(i).getDistance());
-        }
+
     }
 
     @Override
@@ -210,6 +213,36 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
         @Override
         protected void onProgressUpdate(Void... values) {
         }
+    }
+
+    public void onGoClick(View view) {
+    }
+
+    public void onAdminClick(View view) {
+    }
+
+    public void onConnectClick(View view) {
+    }
+
+    public void onPlannedClick(View view) {
+        Intent intent = new Intent(this, PathPlanningActivity.class);
+        startActivity(intent);
+    }
+
+    public void onHistoryClick(View view) {
+        Intent intent = new Intent(this, PathConsultationActivity.class);
+        startActivity(intent);
+    }
+
+    public void onCalendarClick(View view) {
+    }
+
+    public void onSettingsClick(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    public void onContactClick(View view) {
     }
 
 }

@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name="com.filiereticsa.arc.augmentepf.Activities.AugmentEPFApplication">
-        <activity android:name="com.filiereticsa.arc.augmentepf.Activities.HomePageActivity">
+        <activity android:name="com.filiereticsa.arc.augmentepf.Activities.HomePageActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,10 +30,6 @@
         <activity android:name="com.filiereticsa.arc.augmentepf.Activities.NavigationActivity" />
         <activity android:name="com.filiereticsa.arc.augmentepf.Activities.SettingsActivity" />
         <activity android:name="com.filiereticsa.arc.augmentepf.Activities.AdminActivity" />
-        <activity
-            android:name=".Activities.MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
