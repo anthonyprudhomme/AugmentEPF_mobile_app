@@ -13,4 +13,11 @@
     <string name="trajectory_history">Historique des trajets</string>
     <string name="contact">Contactez-nous</string>
     <string name="go">Go !</string>
+    <string name="login">Login :</string>
+    <string name="password">Mot de passe :</string>
+    <string name="validate">Valider</string>
+    <string name="no_account">Pas de compte ?</string>
+    <string name="create">Créer</string>
+    <string name="confirm_password">Confirmer mot de passe :</string>
+    <string name="account_created">Compte créé</string>
 </resources>

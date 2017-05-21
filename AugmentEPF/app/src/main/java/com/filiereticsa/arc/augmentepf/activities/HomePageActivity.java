@@ -74,10 +74,6 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
     public void onSettingsClick(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.settings_fragment,new SettingsFragment());
-        transaction.commit();
     }
 
     @Override

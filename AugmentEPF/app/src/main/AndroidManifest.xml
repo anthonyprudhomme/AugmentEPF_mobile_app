@@ -19,6 +19,7 @@
         <activity android:name=".activities.HomePageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -26,14 +27,16 @@
         <activity android:name=".activities.PathConsultationActivity" />
         <activity
             android:name=".activities.NavigationActivity"
-            android:exported="true"/>
-        <activity
-            android:name=".activities.SettingsActivity"/>
+            android:exported="true" />
+        <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.AdminActivity" />
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.ConnectionActivity" />
+        <activity
+            android:name=".activities.CreateAccountActivity"/>
     </application>
 
 </manifest>
