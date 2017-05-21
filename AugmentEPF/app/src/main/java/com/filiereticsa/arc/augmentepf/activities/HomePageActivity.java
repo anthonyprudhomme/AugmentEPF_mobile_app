@@ -1,13 +1,11 @@
 package com.filiereticsa.arc.augmentepf.activities;
 
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
@@ -17,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.MotionEvent;
 
-import com.filiereticsa.arc.augmentepf.fragments.SettingsFragment;
 import com.filiereticsa.arc.augmentepf.localization.BeaconDetector;
 import com.filiereticsa.arc.augmentepf.localization.BeaconDetectorInterface;
 import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;

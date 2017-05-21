@@ -1,21 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AugmentEPF</string>
-    <string name="app_need_location">This app needs location access</string>
-    <string name="app_need_location_message">Please grant location access so this app can detect beacons in the background.</string>
+    <string name="app_need_location">L\'application a besoin d\'accéder à votre localisation</string>
+    <string name="app_need_location_message">Donnez accès à la localisation pour que l\'application puisse détecter les beacons en arrière plan</string>
     <string name="title_activity_main">MainActivity</string>
 
-    <string name="connect">Connect</string>
-    <string name="planned_trajectory">Planned itinerary</string>
-    <string name="trajectory_history">Itinerary history</string>
-    <string name="contact">Contact us</string>
-    <string name="go">Go!</string>
-    <string name="login">Login:</string>
-    <string name="password">Password:</string>
-    <string name="validate">Validate</string>
-    <string name="no_account">No account yet?</string>
-    <string name="create">Create</string>
-    <string name="confirm_password">Confirm password:</string>
-    <string name="account_created">Account created</string>
+    <string name="connect">Se connecter</string>
+    <string name="planned_trajectory">Trajets planifiés</string>
+    <string name="trajectory_history">Historique des trajets</string>
+    <string name="contact">Contactez-nous</string>
+    <string name="go">Go !</string>
+    <string name="login">Identifiant</string>
+    <string name="password">Mot de passe :</string>
+    <string name="validate">Valider</string>
+    <string name="no_account">Pas de compte ?</string>
+    <string name="create">Créer</string>
+    <string name="confirm_password">Confirmer mot de passe :</string>
+    <string name="account_created">Compte créé</string>
 
     <!--============================================================================================
                                            Settings menu
@@ -26,9 +27,9 @@
     <!-- User type -->
     <!-- Different specific attribute -->
     <string-array name="user_type_array">
-        <item>Visitor</item>
-        <item>Student</item>
-        <item>Professor</item>
+        <item>Visiteur</item>
+        <item>Etudiant</item>
+        <item>Professeur</item>
         <item>Administration</item>
     </string-array>
     <!-- The value of the choice above -->
@@ -42,10 +43,10 @@
     <!-- Specific attribute -->
     <!-- Different specific attribute -->
     <string-array name="specific_attribute_array">
-        <item>None</item>
-        <item>Voice guidance</item>
-        <item>Elevator</item>
-        <item>Both</item>
+        <item>Aucun</item>
+        <item>Guidage vocal</item>
+        <item>Ascenceur</item>
+        <item>Les deux</item>
     </string-array>
     <!-- The value of the choice above -->
     <string-array name="specific_attribute_values_array">
@@ -61,8 +62,8 @@
     <!-- Different mode of navigation -->
     <string-array name="navigation_array">
         <item>Plan</item>
-        <item>Compass</item>
-        <item>Trajectory</item>
+        <item>Compas</item>
+        <item>Trajectoire</item>
     </string-array>
     <!-- The value of the choice above -->
     <string-array name="navigation_values_array">
@@ -74,20 +75,20 @@
     <!--=========================================================================================-->
 
     <!--TODO put this at the right place-->
-    <string name="loc_user_summary">Enable/disable the localisation of the device</string>
+    <string name="loc_user_summary">Activer/Désactiver la localisation de l\'appareil</string>
     <string name="localisation">Localisation</string>
-    <string name="notif_user_summary">Enable/disable notifications</string>
+    <string name="notif_user_summary">Activer/Désactiver les notifications</string>
     <string name="notification">Notification</string>
-    <string name="general">General</string>
-    <string name="user_parameters">User parameters</string>
+    <string name="general">Général</string>
     <string name="type">Type</string>
-    <string name="select_user_type">Select user type</string>
-    <string name="specific_attribute">Specific Attribute</string>
-    <string name="select_specific_attribute">Select specific attribute</string>
-    <string name="ical_link">iCal link</string>
-    <string name="ical_summary">Permit to edit the link of the account</string>
-    <string name="format_ical">Must be like this: http://edt.epf.fr/pegasus/ical.php?v1=…</string>
-    <string name="nav_mode">Navigation mode</string>
-    <string name="select_nav_mode">Select the guidance mode</string>
-    <string name="nav_parameters">Navigation parameters</string>
+    <string name="select_user_type">Sélectionner le type d\'utilisateur</string>
+    <string name="specific_attribute">Attributs spécifiques</string>
+    <string name="select_specific_attribute">Sélectionner les attributs spécifiques</string>
+    <string name="ical_link">Lien iCal</string>
+    <string name="ical_summary">Permet l\'edition du lien du compte</string>
+    <string name="format_ical">Doit ressembler à : http://edt.epf.fr/pegasus/ical.php?v1=…</string>
+    <string name="nav_mode">Mode navigation</string>
+    <string name="select_nav_mode">Sélectionner le mode de navigation</string>
+    <string name="nav_parameters">Paramètres de navigation</string>
+    <string name="user_parameters">Paramètres utilisateur</string>
 </resources>
