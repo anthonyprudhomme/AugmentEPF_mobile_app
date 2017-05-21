@@ -5,12 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
-import android.widget.ImageView;
+
+import java.util.ArrayList;
 
 /**
  * Created by anthonyprudhomme on 21/10/16.
@@ -20,25 +22,30 @@ import android.widget.ImageView;
 public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatImageView {
 
     private static final String TAG = "Ici";
-    private Paint eraser;
-    private Bitmap overlay;
+    private Paint paint;
+    private Path path;
     private Pair<Integer, Integer> userPosition;
     private Pair<Integer, Integer> gridDimension;
+
     private int imageHeight;
     private int imageWidth;
+    private static final int STROKE_WIDTH = 10;
+
     private Pair<Integer, Integer> userCoordinates = null;
+    private Pair<Integer, Integer> pathCoordinates = null;
+    private double debugHeading = 0;
+
+    private ArrayList<Pair<Integer, Integer>> currentPath;
+    private double magneticHeading = 0;
+    private String direction;
+
+
     //private int radius = 30;
 
     public LayoutOverlayImageView(Context context, int height, int width) {
         super(context);
-        setBackgroundColor(Color.BLACK);
-        setAlpha(0.3f);
-        overlay = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        overlay.eraseColor(Color.TRANSPARENT);
-        eraser = new Paint();
-        eraser.setStyle(Paint.Style.FILL);
-        eraser.setColor(Color.TRANSPARENT);
-        eraser.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+        paint = new Paint();
+        path = new Path();
     }
 
     public LayoutOverlayImageView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -48,24 +55,68 @@ public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatI
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawColor(Color.TRANSPARENT);
+        //paint.setColor(Color.parseColor("#4286f4"));
+        //paint.setStyle(Paint.Style.FILL);
         if (userCoordinates == null && userPosition != null) {
             userCoordinates = getCoordinatesFromIndexPath(userPosition);
         }
         if (userCoordinates != null) {
-            int radius = Math.min(imageWidth/gridDimension.first,imageHeight/gridDimension.second);
-            Log.d(TAG, "onDraw: "+radius);
-            canvas.drawCircle(userCoordinates.second+radius/2, userCoordinates.first+radius/2, radius, eraser);
-            //canvas.drawCircle(userCoordinates.first+radius/2, userCoordinates.second+radius/2, radius, eraser);
-            canvas.drawBitmap(overlay, 0, 0, null);
+            // Draw the path first for the user position to be above the path
+            drawPath(canvas);
+            // Draw the user position above the path
+            drawUserPosition(canvas);
+            // Draw the debug text that shows info that helps debugging
+            drawDebugText(canvas);
         }
+    }
+
+    public void drawPath(Canvas canvas){
+        path.reset();
+        paint.setColor(Color.parseColor("#4286f4"));
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(STROKE_WIDTH);
+        if(currentPath.size()!=0) {
+            path.moveTo(userCoordinates.second,userCoordinates.first);
+        }
+        for (int i = 0; i < currentPath.size(); i++) {
+            pathCoordinates = getCoordinatesFromIndexPath(currentPath.get(i));
+            if(i!= currentPath.size()-2) {
+                path.lineTo(pathCoordinates.second, pathCoordinates.first);
+            }else{
+                path.lineTo(pathCoordinates.second, pathCoordinates.first);
+                path.addCircle(pathCoordinates.second,pathCoordinates.first,15, Path.Direction.CW);
+            }
+        }
+        canvas.drawPath(path,paint);
+    }
+
+    public void drawUserPosition(Canvas canvas){
+        paint.setColor(Color.parseColor("#fa232e"));
+        paint.setShadowLayer(20, 0, 0, Color.parseColor("#787878"));
+        paint.setStyle(Paint.Style.FILL);
+        setLayerType(LAYER_TYPE_SOFTWARE, paint);
+        int radius = Math.min(imageWidth / gridDimension.first, imageHeight / gridDimension.second) * 2;
+        canvas.drawCircle(userCoordinates.second , userCoordinates.first , radius, paint);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+        paint.setColor(Color.parseColor("#e0e0e0"));
+        canvas.drawCircle(userCoordinates.second , userCoordinates.first , radius, paint);
+    }
+
+    public void drawDebugText(Canvas canvas){
+        //debug
+        paint.setColor(Color.parseColor("#fa232e"));
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(50);
+        canvas.drawText(/*"x: " + userPosition.first + " y: " + userPosition.second + */
+        " ang: " + (int)debugHeading+ " mag: "+(int)magneticHeading+ " "+direction, 50, 50, paint);
     }
 
 
     public Pair<Integer, Integer> getCoordinatesFromIndexPath(Pair<Integer, Integer> position) {
         int nbRow = gridDimension.first;
         int nbCol = gridDimension.second;
-        return new Pair<>((position.second+1) * (imageHeight / nbRow), (position.first+1) * (imageWidth / nbCol));
+        return new Pair<>((position.second) * (imageHeight / nbRow), (position.first) * (imageWidth / nbCol));
     }
 
     public void dimensionChanged(Pair<Integer, Integer> gridDimension, int imageHeight, int imageWidth) {
@@ -88,5 +139,21 @@ public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatI
 
     public Pair<Integer, Integer> getUserCoordinates() {
         return userCoordinates;
+    }
+
+    public void setHeading(double heading) {
+        this.debugHeading = heading;
+    }
+
+    public void setCurrentPath(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path) {
+        currentPath = path.first;
+    }
+
+    public void setMagneticHeading(double magneticHeading) {
+        this.magneticHeading = magneticHeading;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 }

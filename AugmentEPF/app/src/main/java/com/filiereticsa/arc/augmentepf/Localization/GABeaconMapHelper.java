@@ -29,19 +29,6 @@ public class GABeaconMapHelper {
             this.distance = distance;
         }
 
-//        @Override
-//        public int compareTo(Edge edge) {
-//            if (edge != null
-//                    && this.vertex1.indexPath.first.equals(edge.vertex1.indexPath.first)
-//                    && this.vertex1.indexPath.second.equals(edge.vertex1.indexPath.second)
-//                    && this.vertex2.indexPath.first.equals(edge.vertex2.indexPath.first)
-//                    && this.vertex2.indexPath.second.equals(edge.vertex2.indexPath.second)) {
-//                return 0;
-//            } else {
-//                return -1;
-//            }
-//        }
-
         @Override
         public boolean equals(Object object) {
             boolean retVal = false;
@@ -61,21 +48,6 @@ public class GABeaconMapHelper {
             return retVal;
         }
     }
-
-    private Comparator<Edge> comparator = new Comparator<Edge>() {
-        @Override
-        public int compare(Edge edge1, Edge edge2) {
-            if (edge1 != null && edge2 != null
-                    && edge1.vertex1.indexPath.first.equals(edge2.vertex1.indexPath.first)
-                    && edge1.vertex1.indexPath.second.equals(edge2.vertex1.indexPath.second)
-                    && edge1.vertex2.indexPath.first.equals(edge2.vertex2.indexPath.first)
-                    && edge1.vertex2.indexPath.second.equals(edge2.vertex2.indexPath.second)) {
-                return 0;
-            } else {
-                return -1;
-            }
-        }
-    };
 
     private class Vertex {
         private Pair<Integer, Integer> indexPath;
@@ -98,10 +70,7 @@ public class GABeaconMapHelper {
 
     public void setBeaconMap(GABeaconMap newBeaconMap) {
         this.map = newBeaconMap;
-        Log.d(TAG,"Starting graph building");
         this.buildGraph();
-        Log.d(TAG,"Done with graph building");
-
     }
 
     // MARK: - Path finding functions
@@ -393,7 +362,6 @@ public class GABeaconMapHelper {
     private void buildGraph() { // O(11n^3 + 19n^2)
         ArrayList<Pair<Integer, Integer>> mapItemsIndexPathsToVisit = new ArrayList<>();
         ArrayList<MapItem> mapItems = this.map.getMapItems(); // O(n)
-        Log.d(TAG, "buildGraph: right after initialisation");
         for (int i = 0; i < mapItems.size(); i++) { // O(n^2)
             mapItemsIndexPathsToVisit.add(mapItems.get(i).coordinates);
         }
@@ -401,7 +369,6 @@ public class GABeaconMapHelper {
             graph = new ArrayList<>();
             vertices = new HashMap<>();
             while (mapItemsIndexPathsToVisit.size() > 0) { // O(n x (11n^2 + 18n))
-                Log.d(TAG, "buildGraph: in the loop");
                 this.buildGraphFromIndexPath(mapItemsIndexPathsToVisit.remove(0)); // O( 11n^2 + 18n)
             }
         } else {

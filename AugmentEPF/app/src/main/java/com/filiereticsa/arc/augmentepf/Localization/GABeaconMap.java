@@ -75,154 +75,34 @@ public class GABeaconMap {
         this.nbRow = 20;
         this.nbCol = 50;
         this.floor = 0;
-        this.heading = 188;
+        this.heading = 210;
         dimensions = new Pair<>(nbRow, nbCol);
-        //this.imagePath = "http://pre14.deviantart.net/f230/th/pre/i/2015/175/4/2/modern_tabletop_rpg_map__office_1_by_woekan-d8yjyyw.jpg";
         this.mapItems = new ArrayList<>();
-//        for (int i = 0; i < nbRow; i++) {
-//            for (int j = 0; j < nbCol; j++) {
-//                this.mapItems.add(new MapItem(i+(j*nbRow), MapItem.MapItemType.Free,new Pair<>(i,j)));
-//            }
-//        }
 
         // Couloir i5/6 jusqu'aux toilettes
         int j = 0;
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(5,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(5,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(6,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(6,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(7,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(7,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(8,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(8,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(9,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(9,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(10,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(10,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(11,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(11,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(12,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(12,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(13,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(13,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(14,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(14,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(15,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(15,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(16,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(16,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(17,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(17,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(18,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(18,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(19,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(19,11)));
+        for (int i = 5; i <=18 ; i++) {
+            this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(i,10)));
+        }
 
         //Montée du couloir avec escaliers sur la gauche
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(19,9)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(18,9)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(19,8)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(18,8)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(19,7)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(18,7)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(19,6)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(18,6)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(19,5)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(18,5)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(19,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(18,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(19,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(18,3)));
-
+        for (int i = 10; i >=3 ; i--) {
+            this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(19,i)));
+        }
 
         //Passage avec l'ascenseur
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(20,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(20,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(21,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(21,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(22,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(22,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(23,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(23,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(24,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(24,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(25,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(25,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(26,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(26,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(27,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(27,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(28,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(28,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(29,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(29,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(30,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(30,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(31,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(31,3)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(32,4)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(32,3)));
+        for (int i = 20; i <=31 ; i++) {
+            this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(i,3)));
+        }
 
         //Descente avec escaliers à droite
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(30,5)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(31,5)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(32,5)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(30,6)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(31,6)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(32,6)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(30,7)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(31,7)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(32,7)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(30,8)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(31,8)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(32,8)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(30,9)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(31,9)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(32,9)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(30,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(31,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(32,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(30,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(31,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(32,11)));
-
+        for (int i = 4; i <=10 ; i++) {
+            this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(31,i)));
+        }
         //Couloir vers les salles i1/i2
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(33,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(33,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(34,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(34,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(35,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(35,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(36,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(36,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(37,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(37,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(38,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(38,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(39,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(39,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(40,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(40,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(41,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(41,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(42,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(42,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(43,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(43,11)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(44,10)));
-        this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(44,11)));
-
-
-//        Beacons
-//        this.mapItems.add(new MapItem(0, MapItem.MapItemType.Beacon,new Pair<>(8,10)));
-//        this.mapItems.add(new MapItem(0, MapItem.MapItemType.Beacon,new Pair<>(12,11)));
-//        this.mapItems.add(new MapItem(0, MapItem.MapItemType.Beacon,new Pair<>(19,6)));
-//        this.mapItems.add(new MapItem(0, MapItem.MapItemType.Beacon,new Pair<>(25,4)));
-//        this.mapItems.add(new MapItem(0, MapItem.MapItemType.Beacon,new Pair<>(30,6)));
-//        this.mapItems.add(new MapItem(0, MapItem.MapItemType.Beacon,new Pair<>(30,11)));
-//        this.mapItems.add(new MapItem(0, MapItem.MapItemType.Beacon,new Pair<>(39,10)));
-
-
+        for (int i = 32; i <=44 ; i++) {
+            this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free,new Pair<>(i,10)));
+        }
     }
 
     // JSON from server

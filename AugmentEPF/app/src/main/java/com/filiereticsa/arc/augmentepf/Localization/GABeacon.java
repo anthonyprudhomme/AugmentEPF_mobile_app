@@ -41,15 +41,15 @@ public class GABeacon {
 
         //Anthony
         allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 42194, "BeaconName1", "White", 10, 8, 3));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43216, "BeaconName2", "White", 11, 12, 3));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43216, "BeaconName2", "White", 10, 12, 3));
         allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43364, "BeaconName3", "White", 6, 19, 3));
 
         //Hugo
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 40935, "BeaconName4", "White", 4,25, 3));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43348, "BeaconName5", "White", 6, 30, 3));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 40935, "BeaconName4", "White", 3,25, 3));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43348, "BeaconName5", "White", 6, 31, 3));
 
         //Cecile
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 44020, "BeaconName6", "White", 11, 30, 3));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 44020, "BeaconName6", "White", 10, 31, 3));
         allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 39757, "BeaconName7", "White", 10, 39, 3));
     }
 
