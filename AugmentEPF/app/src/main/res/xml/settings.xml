@@ -3,42 +3,42 @@
 
     <!-- General parameters -->
     <PreferenceCategory
-        android:title="General">
+        android:title="@string/general">
 
         <!-- Notification -->
         <CheckBoxPreference
             android:key="notification_user"
-            android:title="Notification"
-            android:summary="Enable/disable notifications"
+            android:title="@string/notification"
+            android:summary="@string/notif_user_summary"
             android:defaultValue="true">
         </CheckBoxPreference>
 
         <!-- Localisation -->
         <CheckBoxPreference
             android:key="localisation_user"
-            android:title="Localisation"
-            android:summary="Enable/disable the localisation of the device"
+            android:title="@string/localisation"
+            android:summary="@string/loc_user_summary"
             android:defaultValue="true">
         </CheckBoxPreference>
     </PreferenceCategory>
 
     <!-- User parameters -->
     <PreferenceCategory
-        android:title="User parameters">
+        android:title="@string/user_parameters">
 
         <!-- User type -->
         <ListPreference
             android:key="type_user"
-            android:title="Type"
-            android:summary="Select user type"
+            android:title="@string/type"
+            android:summary="@string/select_user_type"
             android:entryValues="@array/user_type_values_array">
         </ListPreference>
 
         <!-- Specific attribute -->
         <ListPreference
             android:key="specific_attribute_user"
-            android:title="Specific Attribut"
-            android:summary="Select specific attribut"
+            android:title="@string/specific_attribute"
+            android:summary="@string/select_specific_attribute"
             android:entries="@array/specific_attribute_array"
             android:entryValues="@array/specific_attribute_values_array">
         </ListPreference>
@@ -46,10 +46,10 @@
         <!-- Lien iCal -->
         <EditTextPreference
             android:key="edit"
-            android:title="iCal link"
-            android:summary="Permit to edit the link of the account"
-            android:dialogTitle="iCal link"
-            android:dialogMessage="Must be like this: http://edt.epf.fr/pegasus/ical.php?v1=..."
+            android:title="@string/ical_link"
+            android:summary="@string/ical_summary"
+            android:dialogTitle="@string/ical_link"
+            android:dialogMessage="@string/format_ical"
             android:inputType="text"
             android:singleLine="true">
         </EditTextPreference>
@@ -57,13 +57,13 @@
 
     <!-- Navigation parameters -->
     <PreferenceCategory
-        android:title="NAvigation parameters">
+        android:title="@string/nav_parameters">
 
         <!-- Navigation mode -->
         <ListPreference
             android:key="mode_navigation"
-            android:title="Navigation mode"
-            android:summary="Select the guidance mode"
+            android:title="@string/nav_mode"
+            android:summary="@string/select_nav_mode"
             android:entries="@array/navigation_array"
             android:entryValues="@array/navigation_values_array">
         </ListPreference>

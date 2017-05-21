@@ -54,9 +54,11 @@
         <item>E-mail</item>
     </string-array>
     <!--____________________________________________________________________________________________
-    |                                        Validate                                              |
+    |                                        Validate                                               |
     _____________________________________________________________________________________________-->
-    <string name="text_validate">Validate the path</string>
+
+    <string name="text_validate">Save the path</string>
+
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
@@ -117,4 +119,22 @@
     </string-array>
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
+
+    <!--TODO put this at the right place-->
+    <string name="loc_user_summary">Enable/disable the localisation of the device</string>
+    <string name="localisation">Localisation</string>
+    <string name="notif_user_summary">Enable/disable notifications</string>
+    <string name="notification">Notification</string>
+    <string name="general">General</string>
+    <string name="user_parameters">User parameters</string>
+    <string name="type">Type</string>
+    <string name="select_user_type">Select user type</string>
+    <string name="specific_attribute">Specific Attribute</string>
+    <string name="select_specific_attribute">Select specific attribute</string>
+    <string name="ical_link">iCal link</string>
+    <string name="ical_summary">Permit to edit the link of the account</string>
+    <string name="format_ical">Must be like this: http://edt.epf.fr/pegasus/ical.php?v1=…</string>
+    <string name="nav_mode">Navigation mode</string>
+    <string name="select_nav_mode">Select the guidance mode</string>
+    <string name="nav_parameters">Navigation parameters</string>
 </resources>
