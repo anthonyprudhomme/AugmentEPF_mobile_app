@@ -5,8 +5,7 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
 /**
- * Created by anthonyprudhomme on 24/10/16.
- * Copyright © 2016 Granite Apps. All rights reserved.
+ * Created by anthony on 20/05/2017.
  */
 
 public class PositionAnimation extends Animation {

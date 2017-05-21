@@ -1,12 +1,16 @@
 package com.filiereticsa.arc.augmentepf.Managers;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by anthony on 07/05/2017.
@@ -15,9 +19,9 @@ import java.net.URL;
 public class HTTPRequestManager {
 
     private int lastResponseCode;
-    private String url="";
-    private String path="";
-    private String query="";
+    private String url = "";
+    private String path = "";
+    private String query = "";
 
     /* the constructor requires the url of the website from where you want to do your requests
        it takes the path to the page you want
@@ -81,20 +85,47 @@ public class HTTPRequestManager {
     }
 
     // this method will do a POST request
-    public void doPostHTTPRequest() {
+    public String doPostHTTPRequest() {
+        String result = "";
         try {
-            URL url = new URL(this.url + this.path + this.query);
+
+            String urlParameters = this.query;
+            byte[] postData = new byte[0];
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+            } else {
+                postData = urlParameters.getBytes(Charset.forName("UTF-8"));
+            }
+            int postDataLength = postData.length;
+            String request = this.url+this.path;
+            URL url = new URL(request);
+            //URL url = new URL(this.url + this.path + this.query);
+
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", "");
+            connection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
-            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+            DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
 
-            writer.write(this.url + this.path + this.query);
+            InputStream inputStream = new BufferedInputStream(connection.getInputStream());
+
+            writer.write(postData);
             writer.flush();
             writer.close();
+
+            BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder sb = new StringBuilder("");
+            String line;
+            while ((line = rd.readLine()) != null) {
+                sb.append(line);
+            }
+            connection.disconnect();
+            result = sb.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+        return result;
     }
 }

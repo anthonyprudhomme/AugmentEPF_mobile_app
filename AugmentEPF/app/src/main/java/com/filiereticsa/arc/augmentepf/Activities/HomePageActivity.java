@@ -5,26 +5,33 @@ import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 
 import com.filiereticsa.arc.augmentepf.Localization.BeaconDetector;
 import com.filiereticsa.arc.augmentepf.Localization.BeaconDetectorInterface;
 import com.filiereticsa.arc.augmentepf.Localization.GAFrameworkUserTracker;
-import com.filiereticsa.arc.augmentepf.Localization.LocalizationFragment;
+import com.filiereticsa.arc.augmentepf.Managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.R;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class HomePageActivity extends AppCompatActivity implements BeaconDetectorInterface {
 
@@ -32,6 +39,7 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
     public static BeaconDetectorInterface beaconObserver;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+    private OkHttpClient client = new OkHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +67,8 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
             }
         }
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
+        GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(31, 4));
+        new HttpAsyncTask().execute("http://192.168.206.106/AugmentEPF/php/getNextLesson.php");
     }
 
     /* Create a menu to go to settings activity */
@@ -80,11 +90,11 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
         switch (item.getItemId()) {
             // The user want to plan a path
             case R.id.action_plan:
-                intent = new Intent(this,PathPlanningActivity.class);
+                intent = new Intent(this, PathPlanningActivity.class);
                 break;
             // The user want to see settings
             case R.id.action_settings:
-                intent = new Intent(this,SettingsActivity.class);
+                intent = new Intent(this, SettingsActivity.class);
                 break;
             default:
                 break;
@@ -138,11 +148,63 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
                     LocalizationFragment currentLocalizationFragment = (LocalizationFragment) currentFragment;
                     currentLocalizationFragment.getGestureDetector().onTouchEvent(event);
                     currentLocalizationFragment.setPointerCount(event.getPointerCount());
-                    return currentLocalizationFragment.getmScaleDetector().onTouchEvent(event);
+                    return currentLocalizationFragment.getScaleDetector().onTouchEvent(event);
                 }
             }
         }
         return false;
     }*/
+
+    public String doGetRequest(String url) throws IOException {
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .build();
+//
+//        Response response = client.newCall(request).execute();
+//        return response.body().string();
+        HTTPRequestManager httpRequestManager =
+                new HTTPRequestManager("http://192.168.206.106/AugmentEPF/php/", "getNextLesson.php", "Send=144");
+        return httpRequestManager.doPostHTTPRequest();
+    }
+
+    public static final MediaType JSON
+            = MediaType.parse("application/x-www-form-urlencoded");
+
+    public String doPostHttpRequest(String url, String query) throws IOException {
+        RequestBody body = RequestBody.create(JSON, query);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
+
+
+    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String url = params[0];
+            String valueReturned = "";
+            //Log.d(TAG, "doInBackground: before request");
+            try {
+                valueReturned = doPostHttpRequest(url, "Send=144");
+                Log.d(TAG, "doInBackground: " + valueReturned);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return valueReturned;
+        }
+
+        @Override
+        protected void onPostExecute(String returnedValue) {
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
 
 }

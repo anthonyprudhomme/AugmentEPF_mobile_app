@@ -9,11 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.util.Pair;
 
-import com.filiereticsa.arc.augmentepf.Managers.FileManager;
-
 import org.altbeacon.beacon.Beacon;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,11 +25,13 @@ import java.util.Map;
 public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEventListener {
 
     private static final String TAG = "Ici";
+    private String direction = "";
     private static GAFrameworkUserTracker sharedTracker = null;
     private final long PERIOD_BETWEEN_TWO_ACCELEROMETER_VALUE = 400;
     private final long PERIOD_BETWEEN_TWO_GYROSCOPE_VALUE = 300;
     private long alarmForAccelerometer = 0;
     private long alarmForGyroscope = 0;
+    private Pair<Integer, Integer> target;
 
     public GAFrameworkUserTracker(FragmentActivity activity) {
         if (sharedTracker == null) {
@@ -48,18 +46,17 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 
     // MARK: - Some settings (constant for now) for candidates update
     protected double stepsAccThreshold = 0.09 * 5;
-    private double stepsPerMapItem = 1.5;
-    private double beaconForceDistanceThreshold = 2.5;
+    private double stepsPerMapItem = 1;
+    private double beaconForceDistanceThreshold = 1.5;
     private int beaconForceDistanceMapItemMax = 2;  // In map items
     private double kGyroThreshold = 40;
     private long gyroAlarm = 0;
     private final long TIME_WHILE_GYRO_IS_ON = 3000;
     private int numberOfHeadingsAccumulated = 10;
     private double offsetAccepted = 0.1;
-    private int debugMapOffset = 0; // For Neuchâtel
-    //    private int debugMapOffset = 70; //For Lausanne
     private boolean gyroIsOn = false;
     private final int MINIMUM_PERIOD_BETWEEN_TWO_GYRO_VALUES = 20;
+    public static final double distanceThresholdBetweenUserAndClosestBeacon = 5;
 
     // Sensors
     private SensorManager sensorManager;
@@ -93,7 +90,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 //                try {
 //                    JSONObject jsonObject = new JSONObject(data);
 //                    //currentMap = new GABeaconMap(jsonObject);
-                    currentMap = new GABeaconMap();
+            currentMap = new GABeaconMap();
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
@@ -140,9 +137,10 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                 userLocationHistory.remove(0);
             }
             for (int i = 0; i < observers.size(); i++) {
-                observers.get(i).userMovedToIndexPath(newUserLocation.indexPath);
+                observers.get(i).userMovedToIndexPath(newUserLocation.indexPath, headingGyro, currentHeading,direction);
             }
             this.currentUserLocation = newUserLocation;
+            this.definePathTo(currentUserLocation.indexPath, target);
         }
     }
 
@@ -224,8 +222,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                 headings.remove(0);
                 if (!headingGyroCanStart) {
                     headingGyroCanStart = true;
-                    headingGyro = -currentHeading - debugMapOffset;
-//                    Log.e("calc: "+ "-"+ currentHeading+ " -"+ debugMapOffset+ " ="+ headingGyro);
+                    headingGyro = -currentHeading;
                 }
             }
             if (gyroIsOn) {
@@ -242,10 +239,9 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
         if (averageHeading < 0) {
             averageHeading += 360;
         }
-//        this.currentHeading = newHeading;
         this.currentHeading = averageHeading;
-
-        this.directionCandidates = this.directionsForHeading(this.currentHeading);
+        // TODO uncomment this
+        //this.directionCandidates = this.directionsForHeading(this.currentHeading-currentMap.heading);
     }
 
     private double currentYGyro = 0;
@@ -281,8 +277,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             cosHeadingSum = cosHeadingSum + (Math.cos(headings.get(i).first) * headings.get(i).second);
         }
         if (offset * 180 / Math.PI < offsetAccepted && offset != 0) {
-            this.headingGyro = -currentHeading - debugMapOffset;
-//            Log.e("calc: "+ "-"+ currentHeading+ " -"+ debugMapOffset+ " ="+ headingGyro);
+            this.headingGyro = -currentHeading;
         }
         if (cosHeadingSum == 0) {
             if (sinHeadingSum > 0) {
@@ -371,32 +366,19 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                     // Look for neighbours
                     if (getCurrentUserLocation() != null) {
                         ArrayList<Pair<Integer, Integer>> neighbours = this.mapHelper.neighboursIndexPaths(getCurrentUserLocation().indexPath);
-                        Log.d(TAG, "updateUserLocationWithMotion: "+getCurrentUserLocation().indexPath.first + " "+ getCurrentUserLocation().indexPath.second);
                         this.updateLocationCandidatesWithNeighbours(neighbours);
                         k = getSortedCandidatesKeys();
-//                        for (int i = 0; i < k.size(); i++) {
-//                            Log.e("sorted candidate " + (i + 1) + " after neighbours : " + k.get(i).first + "," + k.get(i).second + " weight = " + userLocationCandidatesDict.get(k.get(i)).weight);
-//                        }
                     }
 
                     // Evaluate candidates using heading
                     this.updateLocationCandidatesWithHeading();
                     k = getSortedCandidatesKeys();
-//                    for (int i = 0; i < k.size(); i++) {
-//                        Log.e("sorted candidate " + (i + 1) + " after heading : " + k.get(i).first + "," + k.get(i).second + " weight = " + userLocationCandidatesDict.get(k.get(i)).weight);
-//                    }
                     // Evaluate candidates using beacons
                     this.updateLocationCandidatesWithBeacons(this.closestBeacons);
                     // Final evaluation: return candidate with best score
                     k = getSortedCandidatesKeys();
-                    Log.d(TAG, "right before");
                     if (k != null) {
-                        Log.d(TAG, "right after"+k.size());
                         if (k.size() > 0) {
-//                            for (int i = 0; i < k.size(); i++) {
-//                                Log.e("sorted candidate " + (i + 1) + " after beacons : " + k.get(i).first + "," + k.get(i).second + " weight = " + userLocationCandidatesDict.get(k.get(i)).weight);
-//                            }
-                            Log.d(TAG, "updateUserLocationWithMotion");
                             setCurrentUserLocation(this.userLocationCandidatesDict.get(k.get(0)));
                             for (int i = 0; i < observers.size(); i++) {
                                 observers.get(i).userMovedToIndexPath(userLocationCandidatesDict.get(k.get(0)).indexPath, getSortedCandidatesKeys());
@@ -423,8 +405,9 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             GABeacon nearestBeacon = closestBeacons.get(0);
             if (nearestBeacon != null) {
 //                Log.e("nearest beacon: " + nearestBeacon.getMajor() + " " + nearestBeacon.getMinor());
-                this.updateCandidatesWithNearBeacon(nearestBeacon);
-                this.updateBestCandidatesWithClosestBeacon(nearestBeacon);
+                //this.updateCandidatesWithNearBeacon(nearestBeacon);
+                //this.updateBestCandidatesWithClosestBeacon(nearestBeacon);
+                //this.updateCandidatesWithRealDistanceAndClosestBeacon(nearestBeacon);
             }
 //            this.updateCandidatesWith2ClosestBeacons(closestBeacons);
         }
@@ -451,6 +434,27 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                                 beaconIP, candidate.indexPath);
                         this.userLocationCandidatesDict.put(nearestBeaconCandidateIP, new UserIndoorLocationCandidate(
                                 nearestBeaconCandidateIP, candidate.weight + 1));
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateCandidatesWithRealDistanceAndClosestBeacon(GABeacon nearestBeacon) {
+        if (nearestBeacon.getAccuracy() < this.beaconForceDistanceThreshold) {
+            Pair<Integer, Integer> beaconIP = nearestBeacon.getMapIndexPath();
+            if (beaconIP != null) {
+                Pair<Integer, Integer> key;
+                if(currentUserLocation != null && currentUserLocation.indexPath != null){
+                    int distanceBetweenUserAndClosestBeacon = this.mapHelper.pathFrom(beaconIP,currentUserLocation.indexPath).second;
+                    if (distanceBetweenUserAndClosestBeacon > distanceThresholdBetweenUserAndClosestBeacon){
+                        if (getSortedCandidatesKeys() != null && getSortedCandidatesKeys().size() != 0) {
+                            key = getSortedCandidatesKeys().get(0);
+                            UserIndoorLocationCandidate candidate = this.userLocationCandidatesDict.get(key);
+                            this.userLocationCandidatesDict.put(beaconIP, new UserIndoorLocationCandidate(
+                                    beaconIP, candidate.weight + 1));
+
+                        }
                     }
                 }
             }
@@ -573,114 +577,156 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     }
 
     // Return the 3 most probable directions for the provided heading
+//    private ArrayList<Pair<Integer, Integer>> directionsForHeading(double heading) {
+//        ArrayList<Pair<Integer, Integer>> sortedDirections = new ArrayList<>();
+//        int sectorNumber = (int) heading / 45;
+//        switch (sectorNumber) {
+//            case 0:
+//                if (heading < 22.5) {
+//                    sortedDirections.add(new Pair<>(0, -1));
+//                    sortedDirections.add(new Pair<>(1, -1));
+//                    sortedDirections.add(new Pair<>(-1, -1));
+//                } else {
+//                    sortedDirections.add(new Pair<>(1, -1));
+//                    sortedDirections.add(new Pair<>(0, -1));
+//                    sortedDirections.add(new Pair<>(1, 0));
+//                }
+//                break;
+//
+//            case 1:
+//                if (heading < 67.5) {
+//                    sortedDirections.add(new Pair<>(1, -1));
+//                    sortedDirections.add(new Pair<>(1, 0));
+//                    sortedDirections.add(new Pair<>(0, -1));
+//                } else {
+//                    sortedDirections.add(new Pair<>(1, 0));
+//                    sortedDirections.add(new Pair<>(1, -1));
+//                    sortedDirections.add(new Pair<>(1, 1));
+//                }
+//                break;
+//
+//            case 2:
+//                if (heading < 112.5) {
+//                    sortedDirections.add(new Pair<>(1, 0));
+//                    sortedDirections.add(new Pair<>(1, 1));
+//                    sortedDirections.add(new Pair<>(1, -1));
+//                } else {
+//                    sortedDirections.add(new Pair<>(1, 1));
+//                    sortedDirections.add(new Pair<>(1, 0));
+//                    sortedDirections.add(new Pair<>(0, 1));
+//                }
+//                break;
+//
+//            case 3:
+//                if (heading < 157.5) {
+//                    sortedDirections.add(new Pair<>(1, 1));
+//                    sortedDirections.add(new Pair<>(0, 1));
+//                    sortedDirections.add(new Pair<>(1, 0));
+//                } else {
+//                    sortedDirections.add(new Pair<>(0, 1));
+//                    sortedDirections.add(new Pair<>(1, 1));
+//                    sortedDirections.add(new Pair<>(-1, 1));
+//                }
+//                break;
+//
+//            case 4:
+//                if (heading < 202.5) {
+//                    sortedDirections.add(new Pair<>(0, 1));
+//                    sortedDirections.add(new Pair<>(-1, 1));
+//                    sortedDirections.add(new Pair<>(1, 1));
+//                } else {
+//                    sortedDirections.add(new Pair<>(-1, 1));
+//                    sortedDirections.add(new Pair<>(0, 1));
+//                    sortedDirections.add(new Pair<>(-1, 0));
+//                }
+//                break;
+//
+//            case 5:
+//                if (heading < 247.5) {
+//                    sortedDirections.add(new Pair<>(-1, 1));
+//                    sortedDirections.add(new Pair<>(-1, 0));
+//                    sortedDirections.add(new Pair<>(0, 1));
+//                } else {
+//                    sortedDirections.add(new Pair<>(-1, 0));
+//                    sortedDirections.add(new Pair<>(-1, 1));
+//                    sortedDirections.add(new Pair<>(-1, -1));
+//                }
+//                break;
+//
+//            case 6:
+//                if (heading < 292.5) {
+//                    sortedDirections.add(new Pair<>(-1, 0));
+//                    sortedDirections.add(new Pair<>(-1, -1));
+//                    sortedDirections.add(new Pair<>(-1, 1));
+//                } else {
+//                    sortedDirections.add(new Pair<>(-1, -1));
+//                    sortedDirections.add(new Pair<>(-1, 0));
+//                    sortedDirections.add(new Pair<>(0, -1));
+//                }
+//                break;
+//
+//            case 7:
+//                if (heading < 337.5) {
+//                    sortedDirections.add(new Pair<>(-1, -1));
+//                    sortedDirections.add(new Pair<>(0, -1));
+//                    sortedDirections.add(new Pair<>(-1, 0));
+//                } else {
+//                    sortedDirections.add(new Pair<>(0, -1));
+//                    sortedDirections.add(new Pair<>(-1, -1));
+//                    sortedDirections.add(new Pair<>(1, -1));
+//                }
+//                break;
+//
+//            default:
+//                // Illegal
+//                sortedDirections = new ArrayList<>();
+//        }
+//
+//        return sortedDirections;
+//    }
+
+
     private ArrayList<Pair<Integer, Integer>> directionsForHeading(double heading) {
+        //Log.d(TAG, "directionsForHeading: " + heading);
         ArrayList<Pair<Integer, Integer>> sortedDirections = new ArrayList<>();
-        int sectorNumber = (int) heading / 45;
-        switch (sectorNumber) {
-            case 0:
-                if (heading < 22.5) {
-                    sortedDirections.add(new Pair<>(-1, 0));
-                    sortedDirections.add(new Pair<>(-1, 1));
-                    sortedDirections.add(new Pair<>(0, 1));
-                } else {
-                    sortedDirections.add(new Pair<>(-1, 1));
-                    sortedDirections.add(new Pair<>(-1, 0));
-                    sortedDirections.add(new Pair<>(0, 1));
-                }
-                break;
-
-            case 1:
-                if (heading < 67.5) {
-                    sortedDirections.add(new Pair<>(-1, 1));
-                    sortedDirections.add(new Pair<>(0, 1));
-                    sortedDirections.add(new Pair<>(1, 1));
-                } else {
-                    sortedDirections.add(new Pair<>(0, 1));
-                    sortedDirections.add(new Pair<>(-1, 1));
-                    sortedDirections.add(new Pair<>(1, 1));
-                }
-                break;
-
-            case 2:
-                if (heading < 112.5) {
-                    sortedDirections.add(new Pair<>(0, 1));
-                    sortedDirections.add(new Pair<>(1, 1));
-                    sortedDirections.add(new Pair<>(1, 0));
-                } else {
-                    sortedDirections.add(new Pair<>(1, 1));
-                    sortedDirections.add(new Pair<>(0, 1));
-                    sortedDirections.add(new Pair<>(1, 0));
-                }
-                break;
-
-            case 3:
-                if (heading < 157.5) {
-                    sortedDirections.add(new Pair<>(1, 1));
-                    sortedDirections.add(new Pair<>(1, 0));
-                    sortedDirections.add(new Pair<>(1, -1));
-                } else {
-                    sortedDirections.add(new Pair<>(1, 0));
-                    sortedDirections.add(new Pair<>(1, 1));
-                    sortedDirections.add(new Pair<>(1, -1));
-                }
-                break;
-
-            case 4:
-                if (heading < 202.5) {
-                    sortedDirections.add(new Pair<>(1, 0));
-                    sortedDirections.add(new Pair<>(1, -1));
-                    sortedDirections.add(new Pair<>(0, -1));
-                } else {
-                    sortedDirections.add(new Pair<>(1, -1));
-                    sortedDirections.add(new Pair<>(1, 0));
-                    sortedDirections.add(new Pair<>(0, -1));
-                }
-                break;
-
-            case 5:
-                if (heading < 247.5) {
-                    sortedDirections.add(new Pair<>(1, -1));
-                    sortedDirections.add(new Pair<>(0, -1));
-                    sortedDirections.add(new Pair<>(-1, -1));
-                } else {
-                    sortedDirections.add(new Pair<>(0, -1));
-                    sortedDirections.add(new Pair<>(1, -1));
-                    sortedDirections.add(new Pair<>(-1, -1));
-                }
-                break;
-
-            case 6:
-                if (heading < 292.5) {
-                    sortedDirections.add(new Pair<>(0, -1));
-                    sortedDirections.add(new Pair<>(-1, 1));
-                    sortedDirections.add(new Pair<>(-1, 0));
-                } else {
-                    sortedDirections.add(new Pair<>(-1, 1));
-                    sortedDirections.add(new Pair<>(0, -1));
-                    sortedDirections.add(new Pair<>(-1, 0));
-                }
-                break;
-
-            case 7:
-                if (heading < 337.5) {
-                    sortedDirections.add(new Pair<>(-1, 1));
-                    sortedDirections.add(new Pair<>(-1, 0));
-                    sortedDirections.add(new Pair<>(-1, 1));
-                } else {
-                    sortedDirections.add(new Pair<>(-1, 0));
-                    sortedDirections.add(new Pair<>(-1, 1));
-                    sortedDirections.add(new Pair<>(-1, 1));
-                }
-                break;
-
-            default:
-                // Illegal
-                sortedDirections = new ArrayList<>();
+        if (315 < heading || heading < 45){
+            sortedDirections.add(new Pair<>(0, -1));
+            if(heading > 0 && heading < 315){
+                sortedDirections.add(new Pair<>(1, 0));
+            }else{
+                sortedDirections.add(new Pair<>(-1, 0));
+            }
+            direction = "North";
         }
-
+        if (45 < heading && heading < 135){
+            sortedDirections.add(new Pair<>(1, 0));
+            if(heading > 90){
+                sortedDirections.add(new Pair<>(0, 1));
+            }else{
+                sortedDirections.add(new Pair<>(0, -1));
+            }
+            direction = "East";
+        }
+        if (135 < heading && heading < 225){
+            sortedDirections.add(new Pair<>(0, 1));
+            if(heading > 180){
+                sortedDirections.add(new Pair<>(-1, 0));
+            }else{
+                sortedDirections.add(new Pair<>(1, 0));
+            }
+            direction = "South";
+        }
+        if (225 < heading && heading < 315) {
+            sortedDirections.add(new Pair<>(-1, 0));
+            if(heading > 270){
+                sortedDirections.add(new Pair<>(0, -1));
+            }else{
+                sortedDirections.add(new Pair<>(0, 1));
+            }
+            direction = "West";
+        }
         return sortedDirections;
     }
-
 
     // Update direction using the current candidates
     private void updateDirection() {
@@ -778,5 +824,16 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 
     public static GAFrameworkUserTracker sharedTracker() {
         return sharedTracker;
+    }
+
+    public void definePathTo(Pair<Integer, Integer> currentPosition, Pair<Integer, Integer> target) {
+        Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = this.mapHelper.pathFrom(currentPosition, target);
+        for (int i = 0; i < observers.size(); i++) {
+            observers.get(i).onPathChanged(path);
+        }
+    }
+
+    public void setTarget(Pair<Integer, Integer> target) {
+        this.target = target;
     }
 }
