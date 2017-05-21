@@ -8,16 +8,19 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
 import com.filiereticsa.arc.augmentepf.Localization.BeaconDetector;
 import com.filiereticsa.arc.augmentepf.Localization.BeaconDetectorInterface;
 import com.filiereticsa.arc.augmentepf.Localization.GAFrameworkUserTracker;
+import com.filiereticsa.arc.augmentepf.Localization.LocalizationFragment;
 import com.filiereticsa.arc.augmentepf.Managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.R;
 
@@ -137,8 +140,7 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
             beaconManager.setBackgroundMode(true);
     }
 
-    /* I don't know why, but there are errors in this function */
-    /*@Override
+    @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         super.dispatchTouchEvent(event);
         for (int i = 0; i < getSupportFragmentManager().getFragments().size(); i++) {
@@ -153,7 +155,7 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
             }
         }
         return false;
-    }*/
+    }
 
     public String doGetRequest(String url) throws IOException {
 //        Request request = new Request.Builder()

@@ -1,15 +1,11 @@
 package com.filiereticsa.arc.augmentepf.Localization;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -55,61 +51,62 @@ public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatI
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //paint.setColor(Color.parseColor("#4286f4"));
-        //paint.setStyle(Paint.Style.FILL);
         if (userCoordinates == null && userPosition != null) {
             userCoordinates = getCoordinatesFromIndexPath(userPosition);
         }
         if (userCoordinates != null) {
+            int radius = Math.min(imageWidth / gridDimension.first, imageHeight / gridDimension.second) * 2;
             // Draw the path first for the user position to be above the path
-            drawPath(canvas);
+            drawPath(canvas, radius);
             // Draw the user position above the path
-            drawUserPosition(canvas);
+            drawUserPosition(canvas, radius);
             // Draw the debug text that shows info that helps debugging
             drawDebugText(canvas);
         }
     }
 
-    public void drawPath(Canvas canvas){
+    public void drawPath(Canvas canvas, int radius) {
         path.reset();
+        //Set the paint color to blue
         paint.setColor(Color.parseColor("#4286f4"));
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(STROKE_WIDTH);
-        if(currentPath.size()!=0) {
-            path.moveTo(userCoordinates.second,userCoordinates.first);
+        if (currentPath.size() != 0) {
+            path.moveTo(userCoordinates.second, userCoordinates.first);
         }
         for (int i = 0; i < currentPath.size(); i++) {
             pathCoordinates = getCoordinatesFromIndexPath(currentPath.get(i));
-            if(i!= currentPath.size()-2) {
+            if (i < currentPath.size() - 1) {
                 path.lineTo(pathCoordinates.second, pathCoordinates.first);
-            }else{
-                path.lineTo(pathCoordinates.second, pathCoordinates.first);
-                path.addCircle(pathCoordinates.second,pathCoordinates.first,15, Path.Direction.CW);
+            }else {
+                canvas.drawCircle(pathCoordinates.second, pathCoordinates.first, (int)(radius/1.5), paint);
             }
         }
-        canvas.drawPath(path,paint);
+        canvas.drawPath(path, paint);
     }
 
-    public void drawUserPosition(Canvas canvas){
+    public void drawUserPosition(Canvas canvas,int radius) {
+        // Set paint color to red
         paint.setColor(Color.parseColor("#fa232e"));
         paint.setShadowLayer(20, 0, 0, Color.parseColor("#787878"));
         paint.setStyle(Paint.Style.FILL);
         setLayerType(LAYER_TYPE_SOFTWARE, paint);
-        int radius = Math.min(imageWidth / gridDimension.first, imageHeight / gridDimension.second) * 2;
-        canvas.drawCircle(userCoordinates.second , userCoordinates.first , radius, paint);
+
+        canvas.drawCircle(userCoordinates.second, userCoordinates.first, radius, paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5);
+        // Set paint color to grey
         paint.setColor(Color.parseColor("#e0e0e0"));
-        canvas.drawCircle(userCoordinates.second , userCoordinates.first , radius, paint);
+        canvas.drawCircle(userCoordinates.second, userCoordinates.first, radius, paint);
     }
 
-    public void drawDebugText(Canvas canvas){
+    public void drawDebugText(Canvas canvas) {
         //debug
         paint.setColor(Color.parseColor("#fa232e"));
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(50);
         canvas.drawText(/*"x: " + userPosition.first + " y: " + userPosition.second + */
-        " ang: " + (int)debugHeading+ " mag: "+(int)magneticHeading+ " "+direction, 50, 50, paint);
+                " ang: " + (int) debugHeading + " mag: " + (int) magneticHeading + " " + direction, 50, 50, paint);
     }
 
 
