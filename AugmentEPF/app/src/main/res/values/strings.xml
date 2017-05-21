@@ -44,7 +44,7 @@
     _____________________________________________________________________________________________-->
     <string name="text_warning">Do you want to be warned?</string>
 
-    <string name="text_warning_alerts">Choose the may to be warned</string>
+    <string name="text_warning_alerts">Choose the way to be warned</string>
     <!-- The DB with all alerts -->
     <string-array name="alerts">
         <item>None</item>
@@ -71,13 +71,14 @@
                                        <!-- User type -->
     <!-- Different specific attribute -->
     <string-array name="user_type_array">
-        <item>Visiteur</item>
-        <item>Élève</item>
-        <item>Professeur</item>
+        <item>Visitor</item>
+        <item>Student</item>
+        <item>Professor</item>
         <item>Administration</item>
     </string-array>
     <!-- The value of the choice above -->
     <string-array name="user_type_values_array">
+        <item>V</item>
         <item>S</item>
         <item>P</item>
         <item>A</item>
@@ -105,13 +106,13 @@
     <!-- Different mode of navigation -->
     <string-array name="navigation_array">
         <item>Plan</item>
-        <item>Boussole</item>
-        <item>Trajectoire</item>
+        <item>Compass</item>
+        <item>Trajectory</item>
     </string-array>
     <!-- The value of the choice above -->
     <string-array name="navigation_values_array">
         <item>P</item>
-        <item>B</item>
+        <item>C</item>
         <item>T</item>
     </string-array>
     <!--_________________________________________________________________________________________-->
