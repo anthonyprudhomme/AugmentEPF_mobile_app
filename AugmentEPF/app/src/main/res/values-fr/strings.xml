@@ -3,7 +3,7 @@
     <string name="app_name">AugmentEPF</string>
     <string name="app_need_location">Cette application requiet l\'accès à votre position.</string>
     <string name="app_need_location_message">Veuillez autoriser l\'accès à votre position pour que l\'application puisse vous localiser.</string>
-    <string name="format_ical">Doit être sous la forme : http://edt.epf.fr/pegasus/ical.php?v1=...</string>
+    <string name="format_ical">Doit être sous la forme : http://edt.epf.fr/pegasus/ical.php?v1=…</string>
     <string name="general">Général</string>
     <string name="ical_link">Lien iCal</string>
     <string name="ical_summary">Permet d\'éditer le lien de son emploi du temps iCal</string>
@@ -26,4 +26,10 @@
     <string name="text_when">"Quand ? "</string>
     <string name="type">Type</string>
     <string name="user_parameters">Paramètres de l\'utilisateur</string>
+    <string name="connect">Se connecter</string>
+    <string name="contact">Contactez-nous</string>
+    <string name="go">Go !</string>
+    <string name="hello_blank_fragment" />
+    <string name="trajectory_history">Historique des trajets</string>
+    <string name="planned_trajectory">Trajets planifiés</string>
 </resources>

@@ -12,11 +12,28 @@ public class ClassRoom {
     private String nom;
     private Position position;
     private boolean isFree;
+    private static ArrayList<ClassRoom> availableClassroomList = new ArrayList<>();
 
     public ClassRoom(String nom, Position position, boolean isFree) {
         this.nom = nom;
         this.position = position;
         this.isFree = isFree;
+    }
+
+    public static ArrayList<ClassRoom> getAvailableClassroomList() {
+        return availableClassroomList;
+    }
+
+    static{
+        availableClassroomList = new ArrayList<>();
+        for (int i=0; i < 20; i++){
+            ClassRoom classRoom = new ClassRoom(
+                    i +"L",
+                    new Position(i,i+i,i/2),
+                    i%2 ==0
+            );
+            availableClassroomList.add(classRoom);
+        }
     }
 
     public static ArrayList<ClassRoom> getClassRooms() {

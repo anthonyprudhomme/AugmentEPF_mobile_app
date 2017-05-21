@@ -137,4 +137,15 @@
     <string name="nav_mode">Navigation mode</string>
     <string name="select_nav_mode">Select the guidance mode</string>
     <string name="nav_parameters">Navigation parameters</string>
+    <string name="connect">Log in</string>
+
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="planned_trajectory">Planned pathes</string>
+    <string name="trajectory_history">Path history</string>
+    <string name="contact">Contact us</string>
+    <string name="go">Go !</string>
 </resources>

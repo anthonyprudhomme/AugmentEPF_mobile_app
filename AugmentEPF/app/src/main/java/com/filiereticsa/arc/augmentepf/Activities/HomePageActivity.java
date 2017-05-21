@@ -73,6 +73,8 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
         //GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(31, 4));
         new HttpAsyncTask().execute("http://192.168.206.106/AugmentEPF/php/getNextLesson.php");
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 
     /* Create a menu to go to settings activity */
