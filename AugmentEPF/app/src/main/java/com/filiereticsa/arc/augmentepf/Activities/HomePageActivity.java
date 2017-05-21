@@ -2,33 +2,27 @@ package com.filiereticsa.arc.augmentepf.Activities;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
-import android.view.MotionEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.filiereticsa.arc.augmentepf.Localization.BeaconDetector;
 import com.filiereticsa.arc.augmentepf.Localization.BeaconDetectorInterface;
 import com.filiereticsa.arc.augmentepf.Localization.GAFrameworkUserTracker;
-import com.filiereticsa.arc.augmentepf.Localization.LocalizationFragment;
 import com.filiereticsa.arc.augmentepf.Managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.R;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,8 +67,43 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
             }
         }
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
-        GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(31,4));
+        GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(31, 4));
         new HttpAsyncTask().execute("http://192.168.206.106/AugmentEPF/php/getNextLesson.php");
+    }
+
+    /* Create a menu to go to settings activity */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Display the menu
+        getMenuInflater().inflate(R.menu.home, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /* Item selected in the menu above */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Initialize the intention
+        Intent intent = new Intent();
+
+        // Which item is selected?
+        switch (item.getItemId()) {
+            // The user want to plan a path
+            case R.id.action_plan:
+                intent = new Intent(this, PathPlanningActivity.class);
+                break;
+            // The user want to see settings
+            case R.id.action_settings:
+                intent = new Intent(this, SettingsActivity.class);
+                break;
+            default:
+                break;
+        }
+
+        // Start the activity of the item selected
+        startActivity(intent);
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -108,7 +137,8 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
             beaconManager.setBackgroundMode(true);
     }
 
-    @Override
+    /* I don't know why, but there are errors in this function */
+    /*@Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         super.dispatchTouchEvent(event);
         for (int i = 0; i < getSupportFragmentManager().getFragments().size(); i++) {
@@ -123,7 +153,7 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
             }
         }
         return false;
-    }
+    }*/
 
     public String doGetRequest(String url) throws IOException {
 //        Request request = new Request.Builder()
@@ -133,12 +163,13 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
 //        Response response = client.newCall(request).execute();
 //        return response.body().string();
         HTTPRequestManager httpRequestManager =
-                new HTTPRequestManager("http://192.168.206.106/AugmentEPF/php/","getNextLesson.php","Send=144");
+                new HTTPRequestManager("http://192.168.206.106/AugmentEPF/php/", "getNextLesson.php", "Send=144");
         return httpRequestManager.doPostHTTPRequest();
     }
 
     public static final MediaType JSON
             = MediaType.parse("application/x-www-form-urlencoded");
+
     public String doPostHttpRequest(String url, String query) throws IOException {
         RequestBody body = RequestBody.create(JSON, query);
         Request request = new Request.Builder()
@@ -158,8 +189,8 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
             String valueReturned = "";
             //Log.d(TAG, "doInBackground: before request");
             try {
-                valueReturned = doPostHttpRequest(url,"Send=144");
-                Log.d(TAG, "doInBackground: "+valueReturned);
+                valueReturned = doPostHttpRequest(url, "Send=144");
+                Log.d(TAG, "doInBackground: " + valueReturned);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -1,9 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.filiereticsa.arc.augmentepf.Activities.PathPlanningActivity">
+    android:padding="5dp">
 
-</android.support.constraint.ConstraintLayout>
+    <!--============================================================================================
+                                       When the path is plan
+    =============================================================================================-->
+    <!-- The title -->
+    <TextView
+        android:text="@string/text_when"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- The field for the user (date & hour) -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal">
+
+        <!-- Button to choose a date -->
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/dateButton"
+            android:text="@string/text_dateButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="setDepartureDate"/>
+
+        <!-- Button to choose an hour -->
+        <android.support.v7.widget.AppCompatButton
+            android:layout_marginLeft="20dp"
+            android:id="@+id/hourButton"
+            android:text="@string/text_hourButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="setDepartureHour"/>
+    </LinearLayout>
+    <!--=========================================================================================-->
+
+
+    <!--============================================================================================
+                                        Arrival position
+    =============================================================================================-->
+    <!-- The title -->
+    <TextView
+        android:text="@string/text_classroom"
+        android:layout_marginTop="20dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- The autocompletion fiel to search a classroom like destination -->
+    <AutoCompleteTextView
+        android:id="@+id/search_classroom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dip"/>
+    <!--=========================================================================================-->
+
+
+    <!--============================================================================================
+                                             Warning
+    =============================================================================================-->
+    <!--____________________________________________________________________________________________
+                                          Switch button
+    _____________________________________________________________________________________________-->
+    <!-- The field for the switch button -->
+    <LinearLayout
+        android:layout_marginTop="20dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical">
+
+        <!-- The title -->
+        <TextView
+            android:text="@string/text_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!-- The switch button -->
+        <Switch
+            android:layout_gravity="right"
+            android:layout_weight="1"
+            android:id="@+id/switch_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setWarningDisplay"/>
+    </LinearLayout>
+
+    <!-- The field for the switch button -->
+    <LinearLayout
+        android:id="@+id/warningLayout"
+        android:layout_marginTop="20dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical">
+
+        <!-- The field for the user (date & hour) -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+
+        <!-- Visibility, enabled -->
+
+        <!-- Button to choose a date -->
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/warningDateButton"
+            android:text="@string/text_dateButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="setWarningDate"/>
+
+        <!-- Button to choose an hour -->
+        <android.support.v7.widget.AppCompatButton
+            android:layout_marginLeft="20dp"
+            android:id="@+id/warningHourButton"
+            android:text="@string/text_hourButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="setWarningHour"/>
+        </LinearLayout>
+
+        <!-- The field for the switch button -->
+        <LinearLayout
+            android:layout_marginTop="20dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+
+            <!-- The title -->
+            <TextView
+                android:text="@string/text_warning_alerts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"/>
+
+            <!-- The list of different alerts -->
+            <Spinner
+                android:id="@+id/warningAlerts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/alerts"/>
+        </LinearLayout>
+    </LinearLayout>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+
+    <!--============================================================================================
+                                       Button to validate
+    =============================================================================================-->
+    <LinearLayout
+        android:layout_marginTop="20dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/text_validate"
+            android:onClick="sendThePath"/>
+    </LinearLayout>
+    <!--=========================================================================================-->
+</LinearLayout>
