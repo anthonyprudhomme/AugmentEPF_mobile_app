@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.filiereticsa.arc.augmentepf.Localization.LockableScrollView
+        <com.filiereticsa.arc.augmentepf.localization.LockableScrollView
             android:id="@+id/horizontalScrollViewLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -35,7 +35,7 @@
 
             </ScrollView>
 
-        </com.filiereticsa.arc.augmentepf.Localization.LockableScrollView>
+        </com.filiereticsa.arc.augmentepf.localization.LockableScrollView>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

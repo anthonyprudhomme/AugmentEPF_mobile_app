@@ -82,7 +82,7 @@
         android:background="@drawable/white_left_button"
         android:onClick="onHistoryClick"
         android:text="@string/trajectory_history"
-        android:textSize="16dp"/>
+        android:textSize="16sp"/>
 
     <Button
         android:id="@+id/contact_button"
@@ -95,6 +95,6 @@
         android:onClick="onContactClick"
         android:padding="10dp"
         android:text="@string/contact"
-        android:textSize="16dp"/>
+        android:textSize="16sp"/>
 
 </LinearLayout>

@@ -171,5 +171,4 @@
             android:text="@string/text_validate"
             android:onClick="sendThePath"/>
     </LinearLayout>
-    <!--=========================================================================================-->
 </LinearLayout>

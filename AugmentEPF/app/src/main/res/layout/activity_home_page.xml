@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.filiereticsa.arc.augmentepf.Activities.HomePageActivity">
+    tools:context="com.filiereticsa.arc.augmentepf.activities.HomePageActivity">
 
     <fragment
-        android:name="com.filiereticsa.arc.augmentepf.Localization.LocalizationFragment"
+        android:name="com.filiereticsa.arc.augmentepf.localization.LocalizationFragment"
         android:id="@+id/localization_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

@@ -22,7 +22,6 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view  = super.onCreateView(inflater, container, savedInstanceState);
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 }

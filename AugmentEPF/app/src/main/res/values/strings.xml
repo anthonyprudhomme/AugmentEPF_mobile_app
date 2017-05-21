@@ -62,7 +62,20 @@
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
+    <string name="title_activity_main">MainActivity</string>
 
+    <string name="connect">Connect</string>
+    <string name="planned_trajectory">Planned itinerary</string>
+    <string name="trajectory_history">Itinerary history</string>
+    <string name="contact">Contact us</string>
+    <string name="go">Go!</string>
+    <string name="login">Login:</string>
+    <string name="password">Password:</string>
+    <string name="validate">Validate</string>
+    <string name="no_account">No account yet?</string>
+    <string name="create">Create</string>
+    <string name="confirm_password">Confirm password:</string>
+    <string name="account_created">Account created</string>
 
     <!--============================================================================================
                                            Settings menu
@@ -70,7 +83,8 @@
     <!--____________________________________________________________________________________________
                                          User parameters
     _____________________________________________________________________________________________-->
-                                       <!-- User type -->
+    <!-- User type -->
+
     <!-- Different specific attribute -->
     <string-array name="user_type_array">
         <item>Visitor</item>
@@ -86,7 +100,9 @@
         <item>A</item>
     </string-array>
     <!--.........................................................................................-->
-                                <!-- Specific attribute -->
+
+    <!-- Specific attribute -->
+
     <!-- Different specific attribute -->
     <string-array name="specific_attribute_array">
         <item>None</item>
@@ -104,7 +120,11 @@
     <!--____________________________________________________________________________________________
                                          Navigation parameters
     _____________________________________________________________________________________________-->
-                                      <!-- Navigation's mode -->
+
+    <!-- Navigation's mode -->
+    =======
+    <!-- Navigation's mode -->
+    >>>>>>> Views
     <!-- Different mode of navigation -->
     <string-array name="navigation_array">
         <item>Plan</item>
@@ -137,15 +157,5 @@
     <string name="nav_mode">Navigation mode</string>
     <string name="select_nav_mode">Select the guidance mode</string>
     <string name="nav_parameters">Navigation parameters</string>
-    <string name="connect">Log in</string>
-
-    <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="planned_trajectory">Planned pathes</string>
-    <string name="trajectory_history">Path history</string>
-    <string name="contact">Contact us</string>
-    <string name="go">Go !</string>
 </resources>

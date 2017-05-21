@@ -8,19 +8,20 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.filiereticsa.arc.augmentepf.Models.ClassRoom;
 import com.filiereticsa.arc.augmentepf.R;
+import com.filiereticsa.arc.augmentepf.models.ClassRoom;
 
 import java.util.List;
+
 
 /**
  * Created by Cécile on 21/05/2017.
  */
 
-public class SearchListAdapter extends ArrayAdapter<ClassRoom> implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class SearchListAdapter extends ArrayAdapter<ClassRoom> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    public SearchListAdapter(Context context, List<ClassRoom> listClient) {
-        super(context,0, listClient);
+    public SearchListAdapter(Context context, List<ClassRoom> classRoomList) {
+        super(context, 0, classRoomList);
 
     }
 
@@ -31,13 +32,13 @@ public class SearchListAdapter extends ArrayAdapter<ClassRoom> implements Shared
 
     public View getView(int position, View view, ViewGroup parent) {
 
-        if(view == null){
-            LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.item_search_list, parent,false);
+        if (view == null) {
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.item_search_list, parent, false);
         }
 
         ClassRoom classRoom = getItem(position);
-        TextView name = (TextView)view.findViewById(R.id.room_name);
+        TextView name = (TextView) view.findViewById(R.id.room_name);
         name.setText(classRoom.getNom());
 
         return view;

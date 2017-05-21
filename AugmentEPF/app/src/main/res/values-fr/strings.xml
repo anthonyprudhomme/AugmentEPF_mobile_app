@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AugmentEPF</string>
-    <string name="app_need_location">Cette application requiet l\'accès à votre position.</string>
-    <string name="app_need_location_message">Veuillez autoriser l\'accès à votre position pour que l\'application puisse vous localiser.</string>
-    <string name="format_ical">Doit être sous la forme : http://edt.epf.fr/pegasus/ical.php?v1=…</string>
-    <string name="general">Général</string>
-    <string name="ical_link">Lien iCal</string>
-    <string name="ical_summary">Permet d\'éditer le lien de son emploi du temps iCal</string>
-    <string name="loc_user_summary">Activer/désactiver la localisation de l\'appareil</string>
-    <string name="localisation">Localisation</string>
-    <string name="nav_mode">Mode de navigation</string>
-    <string name="nav_parameters">Paramètres de navigation</string>
-    <string name="notif_user_summary">Activer/désactiver les notifications</string>
-    <string name="notification">Notification</string>
-    <string name="select_nav_mode">Choisir le mode de guidage</string>
-    <string name="select_specific_attribute">Choisir un attribut spécifique</string>
-    <string name="select_user_type">Sélectionner sa catégorie d\'utilisateur</string>
-    <string name="specific_attribute">Sélectionner son attribut spécifique</string>
     <string name="text_classroom">Choisir une salle</string>
     <string name="text_dateButton">Choisir la date</string>
     <string name="text_hourButton">Choisir l\'heure</string>
@@ -24,12 +8,96 @@
     <string name="text_warning">\"Voulez-vous être prévenu(e) à l\'avance ? \"</string>
     <string name="text_warning_alerts">Choisissez la manière dont vous serez prévenu(e)</string>
     <string name="text_when">"Quand ? "</string>
-    <string name="type">Type</string>
-    <string name="user_parameters">Paramètres de l\'utilisateur</string>
+    <string name="hello_blank_fragment" />
+    <string name="app_need_location">L\'application a besoin d\'accéder à votre localisation</string>
+    <string name="app_need_location_message">Donnez accès à la localisation pour que l\'application puisse détecter les beacons en arrière plan</string>
+    <string name="title_activity_main">MainActivity</string>
+
     <string name="connect">Se connecter</string>
+    <string name="planned_trajectory">Trajets planifiés</string>
+    <string name="trajectory_history">Historique des trajets</string>
     <string name="contact">Contactez-nous</string>
     <string name="go">Go !</string>
-    <string name="hello_blank_fragment" />
-    <string name="trajectory_history">Historique des trajets</string>
-    <string name="planned_trajectory">Trajets planifiés</string>
+    <string name="login">Identifiant</string>
+    <string name="password">Mot de passe :</string>
+    <string name="validate">Valider</string>
+    <string name="no_account">Pas de compte ?</string>
+    <string name="create">Créer</string>
+    <string name="confirm_password">Confirmer mot de passe :</string>
+    <string name="account_created">Compte créé</string>
+
+    <!--============================================================================================
+                                           Settings menu
+    =============================================================================================-->
+    <!--____________________________________________________________________________________________
+                                         User parameters
+    _____________________________________________________________________________________________-->
+    <!-- User type -->
+    <!-- Different specific attribute -->
+    <string-array name="user_type_array">
+        <item>Visiteur</item>
+        <item>Etudiant</item>
+        <item>Professeur</item>
+        <item>Administration</item>
+    </string-array>
+    <!-- The value of the choice above -->
+    <string-array name="user_type_values_array">
+        <item>V</item>
+        <item>S</item>
+        <item>P</item>
+        <item>A</item>
+    </string-array>
+    <!--.........................................................................................-->
+    <!-- Specific attribute -->
+    <!-- Different specific attribute -->
+    <string-array name="specific_attribute_array">
+        <item>Aucun</item>
+        <item>Guidage vocal</item>
+        <item>Ascenceur</item>
+        <item>Les deux</item>
+    </string-array>
+    <!-- The value of the choice above -->
+    <string-array name="specific_attribute_values_array">
+        <item>0</item>
+        <item>V</item>
+        <item>A</item>
+        <item>VA</item>
+    </string-array>
+    <!--____________________________________________________________________________________________
+                                         Navigation parameters
+    _____________________________________________________________________________________________-->
+    <!-- Navigation's mode -->
+    <!-- Different mode of navigation -->
+    <string-array name="navigation_array">
+        <item>Plan</item>
+        <item>Compas</item>
+        <item>Trajectoire</item>
+    </string-array>
+    <!-- The value of the choice above -->
+    <string-array name="navigation_values_array">
+        <item>P</item>
+        <item>C</item>
+        <item>T</item>
+    </string-array>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+    <!--TODO put this at the right place-->
+    <string name="loc_user_summary">Activer/Désactiver la localisation de l\'appareil</string>
+    <string name="localisation">Localisation</string>
+    <string name="notif_user_summary">Activer/Désactiver les notifications</string>
+    <string name="notification">Notification</string>
+    <string name="general">Général</string>
+    <string name="type">Type</string>
+    <string name="select_user_type">Sélectionner le type d\'utilisateur</string>
+    <string name="specific_attribute">Attributs spécifiques</string>
+    <string name="select_specific_attribute">Sélectionner les attributs spécifiques</string>
+    <string name="ical_link">Lien iCal</string>
+    <string name="ical_summary">Permet l\'edition du lien du compte</string>
+    <string name="format_ical">Doit ressembler à : http://edt.epf.fr/pegasus/ical.php?v1=…</string>
+    <string name="nav_mode">Mode navigation</string>
+    <string name="select_nav_mode">Sélectionner le mode de navigation</string>
+    <string name="nav_parameters">Paramètres de navigation</string>
+    <string name="user_parameters">Paramètres utilisateur</string>
+    <string name="action_settings">Options</string>
 </resources>
