@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.ImageView;
 
@@ -16,8 +17,9 @@ import android.widget.ImageView;
  * Copyright © 2016 Granite Apps. All rights reserved.
  */
 
-public class LayoutOverlayImageView extends ImageView {
+public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatImageView {
 
+    private static final String TAG = "Ici";
     private Paint eraser;
     private Bitmap overlay;
     private Pair<Integer, Integer> userPosition;
@@ -25,7 +27,7 @@ public class LayoutOverlayImageView extends ImageView {
     private int imageHeight;
     private int imageWidth;
     private Pair<Integer, Integer> userCoordinates = null;
-    private int radius = 30;
+    //private int radius = 30;
 
     public LayoutOverlayImageView(Context context, int height, int width) {
         super(context);
@@ -51,7 +53,10 @@ public class LayoutOverlayImageView extends ImageView {
             userCoordinates = getCoordinatesFromIndexPath(userPosition);
         }
         if (userCoordinates != null) {
-            canvas.drawCircle(userCoordinates.first+radius/2, userCoordinates.second+radius/2, radius, eraser);
+            int radius = Math.min(imageWidth/gridDimension.first,imageHeight/gridDimension.second);
+            Log.d(TAG, "onDraw: "+radius);
+            canvas.drawCircle(userCoordinates.second+radius/2, userCoordinates.first+radius/2, radius, eraser);
+            //canvas.drawCircle(userCoordinates.first+radius/2, userCoordinates.second+radius/2, radius, eraser);
             canvas.drawBitmap(overlay, 0, 0, null);
         }
     }

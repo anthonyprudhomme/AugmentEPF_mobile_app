@@ -1,5 +1,6 @@
 package com.filiereticsa.arc.augmentepf.Localization;
 
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import java.util.PriorityQueue;
  * Copyright © 2016 Granite Apps. All rights reserved.
  */
 public class GABeaconMapHelper {
+
+    private static final String TAG = "Ici";
 
     private class Edge  {
         Vertex vertex1;
@@ -95,7 +98,9 @@ public class GABeaconMapHelper {
 
     public void setBeaconMap(GABeaconMap newBeaconMap) {
         this.map = newBeaconMap;
+        Log.d(TAG,"Starting graph building");
         this.buildGraph();
+        Log.d(TAG,"Done with graph building");
 
     }
 
@@ -388,6 +393,7 @@ public class GABeaconMapHelper {
     private void buildGraph() { // O(11n^3 + 19n^2)
         ArrayList<Pair<Integer, Integer>> mapItemsIndexPathsToVisit = new ArrayList<>();
         ArrayList<MapItem> mapItems = this.map.getMapItems(); // O(n)
+        Log.d(TAG, "buildGraph: right after initialisation");
         for (int i = 0; i < mapItems.size(); i++) { // O(n^2)
             mapItemsIndexPathsToVisit.add(mapItems.get(i).coordinates);
         }
@@ -395,6 +401,7 @@ public class GABeaconMapHelper {
             graph = new ArrayList<>();
             vertices = new HashMap<>();
             while (mapItemsIndexPathsToVisit.size() > 0) { // O(n x (11n^2 + 18n))
+                Log.d(TAG, "buildGraph: in the loop");
                 this.buildGraphFromIndexPath(mapItemsIndexPathsToVisit.remove(0)); // O( 11n^2 + 18n)
             }
         } else {
