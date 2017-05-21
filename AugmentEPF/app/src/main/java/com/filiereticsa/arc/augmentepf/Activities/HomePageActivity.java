@@ -3,6 +3,7 @@ package com.filiereticsa.arc.augmentepf.Activities;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 
 import com.filiereticsa.arc.augmentepf.Localization.BeaconDetector;
@@ -58,6 +61,41 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
     }
 
+    /* Create a menu to go to settings activity */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Display the menu
+        getMenuInflater().inflate(R.menu.home, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /* Item selected in the menu above */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Initialize the intention
+        Intent intent = new Intent();
+
+        // Which item is selected?
+        switch (item.getItemId()) {
+            // The user want to plan a path
+            case R.id.action_plan:
+                intent = new Intent(this,PathPlanningActivity.class);
+                break;
+            // The user want to see settings
+            case R.id.action_settings:
+                intent = new Intent(this,SettingsActivity.class);
+                break;
+            default:
+                break;
+        }
+
+        // Start the activity of the item selected
+        startActivity(intent);
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -89,7 +127,8 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
             beaconManager.setBackgroundMode(true);
     }
 
-    @Override
+    /* I don't know why, but there are errors in this function */
+    /*@Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         super.dispatchTouchEvent(event);
         for (int i = 0; i < getSupportFragmentManager().getFragments().size(); i++) {
@@ -104,6 +143,6 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
             }
         }
         return false;
-    }
+    }*/
 
 }

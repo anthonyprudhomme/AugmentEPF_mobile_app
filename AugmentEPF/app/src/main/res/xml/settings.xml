@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- General parameters -->
+    <PreferenceCategory
+        android:title="Général">
+
+        <!-- Notification -->
+        <CheckBoxPreference
+            android:key="notification_user"
+            android:title="Notification"
+            android:summary="Activer/désactiver les notifications"
+            android:defaultValue="true">
+        </CheckBoxPreference>
+
+        <!-- Localisation -->
+        <CheckBoxPreference
+            android:key="localisation_user"
+            android:title="Localisation"
+            android:summary="Activer/désactiver la localisation de l'appareil"
+            android:defaultValue="true">
+        </CheckBoxPreference>
+    </PreferenceCategory>
+
+    <!-- User parameters -->
+    <PreferenceCategory
+        android:title="Paramètres utilisateur">
+
+        <!-- User type -->
+        <ListPreference
+            android:key="type_user"
+            android:title="Type"
+            android:summary="Permet de sélectionner le type d'utilisateur"
+            android:entryValues="@array/user_type_values_array">
+        </ListPreference>
+
+        <!-- Specific attribute -->
+        <ListPreference
+            android:key="specific_attribute_user"
+            android:title="Attribut spécifique"
+            android:summary="Permet d'adapter l'application à chaque utilisateur"
+            android:entries="@array/specific_attribute_array"
+            android:entryValues="@array/specific_attribute_values_array">
+        </ListPreference>
+
+        <!-- Lien iCal -->
+        <EditTextPreference
+            android:key="edit"
+            android:title="Lien iCal"
+            android:summary="Permet de modifier le lien iCal lié au compte"
+            android:dialogTitle="Lien iCal"
+            android:dialogMessage="Doit être de la forme : http://edt.epf.fr/pegasus/ical.php?v1=..."
+            android:inputType="text"
+            android:singleLine="true">
+        </EditTextPreference>
+    </PreferenceCategory>
+
+    <!-- Navigation parameters -->
+    <PreferenceCategory
+        android:title="Paramètres de navigation">
+
+        <!-- Navigation mode -->
+        <ListPreference
+            android:key="mode_navigation"
+            android:title="Mode de navigation"
+            android:summary="Permet de choisir le mode de guidage"
+            android:entries="@array/navigation_array"
+            android:entryValues="@array/navigation_values_array">
+        </ListPreference>
+    </PreferenceCategory>
+
+</PreferenceScreen>

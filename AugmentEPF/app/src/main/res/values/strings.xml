@@ -1,5 +1,119 @@
 <resources>
     <string name="app_name">AugmentEPF</string>
+
+    <!-- Messages to activate the some configurations -->
     <string name="app_need_location">This app needs location access</string>
-    <string name="app_need_location_message">Please grant location access so this app can detect beacons in the background.</string>
+    <string name="app_need_location_message">Please grant location access so this app can detect
+        beacons in the background.</string>
+
+    <!--============================================================================================
+                                           Path planning
+    =============================================================================================-->
+    <!--____________________________________________________________________________________________
+    |                                  Departure date and hour                                     |
+    _____________________________________________________________________________________________-->
+    <!-- Title of the section -->
+    <string name="text_when">When?</string>
+
+    <!-- Text on buttons corresponding at the date, hour and other -->
+    <string name="text_dateButton">Choose the date</string>
+    <string name="text_hourButton">Choose the hour</string>
+    <!--____________________________________________________________________________________________
+    |                                        Classroom                                             |
+    _____________________________________________________________________________________________-->
+    <!-- Title of the section -->
+    <string name="text_classroom">Choose a classroom</string>
+
+    <!-- The DB with all classrooms -->
+    <string-array name="classrooms">
+        <item>1L</item>
+        <item>2L</item>
+        <item>3L</item>
+        <item>4L</item>
+        <item>5L</item>
+        <item>6L</item>
+        <item>i1</item>
+        <item>i2</item>
+        <item>i3</item>
+        <item>i4</item>
+        <item>i5</item>
+        <item>i6</item>
+    </string-array>
+    <!--____________________________________________________________________________________________
+    |                                          Warning                                             |
+    _____________________________________________________________________________________________-->
+    <string name="text_warning">Do you want to be warned?</string>
+
+    <string name="text_warning_alerts">Choose the may to be warned</string>
+    <!-- The DB with all alerts -->
+    <string-array name="alerts">
+        <item>None</item>
+        <item>Notification</item>
+        <item>Vibration</item>
+        <item>Alarm</item>
+        <item>E-mail</item>
+    </string-array>
+    <!--____________________________________________________________________________________________
+    |                                        Validate                                              |
+    _____________________________________________________________________________________________-->
+    <string name="text_validate">Validate the path</string>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+
+
+    <!--============================================================================================
+                                           Settings menu
+    =============================================================================================-->
+    <!--____________________________________________________________________________________________
+                                         User parameters
+    _____________________________________________________________________________________________-->
+                                       <!-- User type -->
+    <!-- Different specific attribute -->
+    <string-array name="user_type_array">
+        <item>Visiteur</item>
+        <item>Élève</item>
+        <item>Professeur</item>
+        <item>Administration</item>
+    </string-array>
+    <!-- The value of the choice above -->
+    <string-array name="user_type_values_array">
+        <item>S</item>
+        <item>P</item>
+        <item>A</item>
+    </string-array>
+    <!--.........................................................................................-->
+                                <!-- Specific attribute -->
+    <!-- Different specific attribute -->
+    <string-array name="specific_attribute_array">
+        <item>None</item>
+        <item>Voice guidance</item>
+        <item>Elevator</item>
+        <item>Both</item>
+    </string-array>
+    <!-- The value of the choice above -->
+    <string-array name="specific_attribute_values_array">
+        <item>0</item>
+        <item>V</item>
+        <item>A</item>
+        <item>VA</item>
+    </string-array>
+    <!--____________________________________________________________________________________________
+                                         Navigation parameters
+    _____________________________________________________________________________________________-->
+                                      <!-- Navigation's mode -->
+    <!-- Different mode of navigation -->
+    <string-array name="navigation_array">
+        <item>Plan</item>
+        <item>Boussole</item>
+        <item>Trajectoire</item>
+    </string-array>
+    <!-- The value of the choice above -->
+    <string-array name="navigation_values_array">
+        <item>P</item>
+        <item>B</item>
+        <item>T</item>
+    </string-array>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
 </resources>
