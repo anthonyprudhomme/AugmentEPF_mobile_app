@@ -17,6 +17,8 @@ import org.altbeacon.beacon.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by anthony on 09/05/2017.
@@ -29,6 +31,8 @@ public class BeaconDetector implements BeaconConsumer {
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(activity);
     private final static int REQUEST_CODE_ENABLE_BLUETOOTH = 4;
     public static BeaconDetector sharedBeaconDetector;
+    private ArrayList<Beacon> wholeBeaconList = new ArrayList<>();
+    private Map<Beacon, Integer> consecutiveUnknownMap = new HashMap<>();
 
     public BeaconManager getBeaconManager() {
         return beaconManager;
@@ -147,8 +151,68 @@ public class BeaconDetector implements BeaconConsumer {
     }
 
     private void myDidRangeBeaconsInRegion(Collection<Beacon> beacons) {
-        HomePageActivity.beaconObserver.rangedBeacons(new ArrayList<>(beacons));
-        GAFrameworkUserTracker.sharedTracker().rangedBeacons(new ArrayList<>(beacons));
+        ArrayList<GABeacon> beaconsFound = new ArrayList<>();
+        ArrayList<Beacon> beaconArrayList = new ArrayList<>(beacons);
+        ArrayList<Beacon> lostBeacons = new ArrayList<>();
+        // Get the list of the lost beacons
+        for (int i = 0; i < wholeBeaconList.size(); i++) {
+            if (!beaconArrayList.contains(wholeBeaconList.get(i))) {
+                lostBeacons.add(wholeBeaconList.get(i));
+                if (consecutiveUnknownMap.containsKey(wholeBeaconList.get(i))) {
+                    consecutiveUnknownMap.put(wholeBeaconList.get(i), consecutiveUnknownMap.get(wholeBeaconList.get(i)) + 1);
+                } else {
+                    consecutiveUnknownMap.put(wholeBeaconList.get(i), 1);
+                }
+            }
+        }
+        // Add the new beacons to the wholeBeaconList and update the distance of old ones
+        for (int i = 0; i < beaconArrayList.size(); i++) {
+            int count = 0;
+            Beacon currentBeacon = beaconArrayList.get(i);
+            if (consecutiveUnknownMap.containsKey(currentBeacon)) {
+                consecutiveUnknownMap.put(currentBeacon, 0);
+            }
+            if (wholeBeaconList.size() == 0) {
+                wholeBeaconList.add(currentBeacon);
+            }
+            for (int j = 0; j < wholeBeaconList.size(); j++) {
+                if ((!currentBeacon.getId2().equals(wholeBeaconList.get(j).getId2())) || (!currentBeacon.getId3().equals(wholeBeaconList.get(j).getId3()))) {
+                    //Count how many beacons are different from the one we are looking at
+                    count++;
+                } else {
+                    //Remove then add to refresh distance
+                    wholeBeaconList.remove(count);
+                    wholeBeaconList.add(count, currentBeacon);
+                }
+                //If we never found a beacon corresponding to the current one then we didn't have it in the list so let's add it
+
+            }
+            //Happens if the current beacon was different from every other beacons in the list
+            if (count == wholeBeaconList.size()) {
+                wholeBeaconList.add(currentBeacon);
+            }
+        }
+        for (int i = 0; i < wholeBeaconList.size(); i++) {
+
+            Beacon beacon = wholeBeaconList.get(i);
+            GABeacon currentBeacon = GABeacon.findBeacon(beacon);
+            double distance;
+            if (!lostBeacons.contains(beacon)) {
+                distance = beacon.getDistance();
+            } else {
+                distance = 10;
+                Log.d(TAG, "myDidRangeBeaconsInRegion: lost a beacon");
+                if (consecutiveUnknownMap.get(beacon) == GABeacon.getProximityHistorySize()) {
+                    wholeBeaconList.remove(beacon);
+                }
+            }
+            if (currentBeacon != null) {
+                currentBeacon.setDistance(distance);
+                beaconsFound.add(currentBeacon);
+            }
+        }
+        HomePageActivity.beaconObserver.rangedBeacons(beaconsFound);
+        GAFrameworkUserTracker.sharedTracker().rangedBeacons(beaconsFound);
 
     }
 

@@ -57,7 +57,9 @@ public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatI
         if (userCoordinates != null) {
             int radius = Math.min(imageWidth / gridDimension.first, imageHeight / gridDimension.second) * 2;
             // Draw the path first for the user position to be above the path
-            drawPath(canvas, radius);
+            if (currentPath!=null) {
+                drawPath(canvas, radius);
+            }
             // Draw the user position above the path
             drawUserPosition(canvas, radius);
             // Draw the debug text that shows info that helps debugging
@@ -143,7 +145,9 @@ public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatI
     }
 
     public void setCurrentPath(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path) {
-        currentPath = path.first;
+        if (path!=null) {
+            currentPath = path.first;
+        }
     }
 
     public void setMagneticHeading(double magneticHeading) {

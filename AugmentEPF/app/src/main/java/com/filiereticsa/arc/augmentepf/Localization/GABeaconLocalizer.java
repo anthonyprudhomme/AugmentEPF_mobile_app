@@ -54,11 +54,6 @@ public class GABeaconLocalizer {
     // Sorting methods to apply
     private ArrayList<ComparisonMethod> accSortComparatorStack = new ArrayList<>();
     private Integer lastAccuracySortIndex = null;
-    public Boolean sortUsingLastAccuracy;
-
-    public boolean isSortUsingLastAccuracy() {
-        return (lastAccuracySortIndex != null);
-    }
 
     public void setSortUsingLastAccuracy(Boolean useLastAccuracy) {
         if (!useLastAccuracy && lastAccuracySortIndex != null) {
@@ -84,29 +79,6 @@ public class GABeaconLocalizer {
     }
 
     private Integer avgAccuracySortIndex = null;
-    public Boolean sortUsingAverageAccuracy = null;
-
-    public Boolean isSortUsingAverageAccuracy() {
-        return (avgAccuracySortIndex != null);
-    }
-
-    public void setSortUsingAverageAccuracy(Boolean useAvgAccuracy) {
-
-
-        // If we want to disable it:
-        if (!useAvgAccuracy && avgAccuracySortIndex != null) {
-            accSortComparatorStack.remove((int) avgAccuracySortIndex);
-            avgAccuracySortIndex = null;
-        }
-        if (useAvgAccuracy) {
-            // If it was already enabled, we'll make sure it's applied last again
-            if (avgAccuracySortIndex != null && avgAccuracySortIndex != (accSortComparatorStack.size() - 1)) {
-                accSortComparatorStack.remove((int) avgAccuracySortIndex);
-            }
-            accSortComparatorStack.add(ComparisonMethod.AVERAGE_ACCURACY);
-            avgAccuracySortIndex = accSortComparatorStack.size() - 1;
-        }
-    }
 
     private int averageAccuracyComparison(ArrayList<LocalizedBeaconStatus> statuses1, ArrayList<LocalizedBeaconStatus> statuses2) {
         if (statuses1.size() != 0 && statuses2.size() != 0) {
@@ -150,18 +122,6 @@ public class GABeaconLocalizer {
     }
 
     private Map<String, ArrayList<LocalizedBeaconStatus>> beaconsStatuses = new HashMap<>();
-
-    public void clearHistory(String uuid) {
-        if (uuid == null) {
-            beaconsStatuses.clear();
-        } else {
-            for (Map.Entry<String, ArrayList<LocalizedBeaconStatus>> entry : beaconsStatuses.entrySet()) {
-                if (entry.getValue().get(0).regionUUIDString.equalsIgnoreCase(uuid)) {
-                    beaconsStatuses.remove(entry.getKey());
-                }
-            }
-        }
-    }
 
     // Returns the N closest beacon
     public ArrayList<GABeacon> nearestBeacons(Integer beaconsNr) {
@@ -278,13 +238,11 @@ public class GABeaconLocalizer {
             for (int j = 0; j < allBeacons.size(); j++) {
                 if (allBeacons.get(j).getKeyString().equalsIgnoreCase(statuses.get(i).keyString)) {
                     GABeacon beacon = allBeacons.get(j);
-                    beacon.setDistance(statuses.get(i).accuracy);
+                    //beacon.setDistance(statuses.get(i).accuracy);
                     beacons.add(beacon);
-                    //Log.d(TAG,"beacon " + (i + 1) + " " + beacon.getAccuracy() + " " + beacon.getMinor());
                 }
             }
         }
-//        Log.e("Closest beacons size: " +beacons.size());
         return beacons;
     }
 
@@ -301,64 +259,6 @@ public class GABeaconLocalizer {
         }
     }
 
-    // Sort beacons using proximity
-    private boolean lastProximityComparison(ArrayList<LocalizedBeaconStatus> status1, ArrayList<LocalizedBeaconStatus> status2) {
-
-        if (status1.size() != 0 && status2.size() != 0) {
-            switch (status2.get(status2.size() - 1).proximity.toLowerCase()) {
-                case "far":
-                    return (!status1.get(status1.size() - 1).proximity.toLowerCase().equalsIgnoreCase("unknown"));
-                case "near":
-                    return ((!status1.get(status1.size() - 1).proximity.toLowerCase().equalsIgnoreCase("immediate"))
-                            || (!status1.get(status1.size() - 1).proximity.toLowerCase().equalsIgnoreCase("near")));
-                case "immediate":
-                    return false;
-                default:
-                    return true;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    // Simple localization: looks for the 4 closest beacons
-    private Point simpleLocalization4() {
-        if (beaconsStatuses.size() != 0) {
-            // We need a coordinate method
-            if (phoneCoordinateMethod == null) {
-                phoneCoordinateCalcMethod = CoordinatesCalcMethod.CENTROID;
-            }
-
-            // Let's apply data filters to beacon statuses
-            for (Map.Entry<String, ArrayList<LocalizedBeaconStatus>> entry : beaconsStatuses.entrySet()) {
-                beaconsStatuses.put(entry.getKey(), replaceUnknownAccuracy(kUnknownAccuracyValue, unknownAccuracyReplaceValue, beaconsStatuses.get(entry.getKey())));
-            }
-
-            // Let's sort the beacons using their last accuracy or other method
-            // Let's use last comparator method in stack
-            ArrayList<String> sortedKeys;
-            ComparisonMethod sortingMethod = accSortComparatorStack.get(accSortComparatorStack.size() - 1);
-            if (sortingMethod != null) {
-                sortedKeys = sortedBeaconKeys(beaconsStatuses, sortingMethod);
-            } else {
-                sortedKeys = new ArrayList<>(this.beaconsStatuses.keySet());
-            }
-
-            ArrayList<Point> coords = new ArrayList<>();
-            for (int i = 0; i < sortedKeys.size(); i++) {
-                if (beaconsStatuses.get(i).size() > 0) {
-                    coords.add(beaconsStatuses.get(i).get(beaconsStatuses.get(i).size() - 1).coordinates);
-                }
-            }
-
-            return meshCoordinates(coords, phoneCoordinateMethod);
-        } else {
-            return null;
-        }
-
-    }
-
-
     private Point meshCoordinates(ArrayList<Point> beaconsCoordinates, CoordinatesCalcMethod method) {
         switch (method) {
             case SQUARE:
@@ -374,25 +274,6 @@ public class GABeaconLocalizer {
                 return null;
         }
     }
-
-    private Point meshCoordinates(ArrayList<GABeacon> beacons) {
-        if (beacons.size() != 0) {
-            Collections.sort(beacons, new Comparator<GABeacon>() {
-                @Override
-                public int compare(GABeacon beacon1, GABeacon beacon2) {
-                    if (beacon1.xCoord <= beacon2.xCoord && beacon1.yCoord <= beacon2.yCoord) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                }
-            });
-            return new Point(beacons.get(0).xCoord, beacons.get(0).yCoord);
-        } else {
-            return null;
-        }
-    }
-
 
     private Point nearestBeaconCoordinates(ArrayList<Point> coordinates) {
         if (coordinates != null && coordinates.size() != 0) {

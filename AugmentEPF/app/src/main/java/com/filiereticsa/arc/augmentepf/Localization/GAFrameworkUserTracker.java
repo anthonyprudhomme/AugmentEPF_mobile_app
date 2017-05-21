@@ -90,7 +90,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 //                try {
 //                    JSONObject jsonObject = new JSONObject(data);
 //                    //currentMap = new GABeaconMap(jsonObject);
-            currentMap = new GABeaconMap();
+            currentMap = new GABeaconMap(newMapId);
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
@@ -407,7 +407,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 //                Log.e("nearest beacon: " + nearestBeacon.getMajor() + " " + nearestBeacon.getMinor());
                 //this.updateCandidatesWithNearBeacon(nearestBeacon);
                 //this.updateBestCandidatesWithClosestBeacon(nearestBeacon);
-                //this.updateCandidatesWithRealDistanceAndClosestBeacon(nearestBeacon);
+                this.updateCandidatesWithRealDistanceAndClosestBeacon(nearestBeacon);
             }
 //            this.updateCandidatesWith2ClosestBeacons(closestBeacons);
         }
@@ -528,7 +528,6 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             return;
         }
         double correctedHeading = -(this.headingGyro - this.currentMap.heading);
-//        double correctedHeading = -(this.currentHeading - this.currentMap.heading);
         if (correctedHeading > 360) {
             correctedHeading -= 360;
         }
@@ -536,7 +535,6 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             correctedHeading += 360;
         }
         // Sorted according to their proximity to current heading
-//        Log.e("correctedHeading:"+ correctedHeading );
         ArrayList<Pair<Integer, Integer>> sortedDirections = this.directionsForHeading(correctedHeading);
         ArrayList<Pair<Integer, Integer>> sortedDirectionsToRemove = this.getOppositeDirections(sortedDirections);
         Pair<Integer, Integer> currentIp = this.currentUserLocation.indexPath;
@@ -736,11 +734,11 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     }
 
     @Override
-    public void rangedBeacons(ArrayList<Beacon> beacons) {
+    public void rangedBeacons(ArrayList<GABeacon> beacons) {
 
         ArrayList<GABeacon> localizationBeacons = new ArrayList<>();
         for (int i = 0; i < beacons.size(); i++) {
-            GABeacon beacon = GABeacon.findBeacon(beacons.get(i));
+            GABeacon beacon = beacons.get(i);
             if (beacon != null) {
                 if (beacon.mapIndexPath != null) {
                     localizationBeacons.add(beacon);
@@ -751,6 +749,9 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 
         // Let's retrieve the 3 closest ones
         this.closestBeacons = this.beaconLocalizer.nearestBeacons(3);
+        if (closestBeacons != null && closestBeacons.size() != 0) {
+            Log.d(TAG, "rangedBeacons: " + closestBeacons.get(0).getAccuracy()+ " "+ closestBeacons.get(0).getMinor());
+        }
         //Log.d(TAG, ""+closestBeacons.size());
         // If we don't have any map id, let's set it using the closest beacon
         if (closestBeacons != null && closestBeacons.size() != 0) {

@@ -19,6 +19,7 @@ import android.view.MotionEvent;
 
 import com.filiereticsa.arc.augmentepf.Localization.BeaconDetector;
 import com.filiereticsa.arc.augmentepf.Localization.BeaconDetectorInterface;
+import com.filiereticsa.arc.augmentepf.Localization.GABeacon;
 import com.filiereticsa.arc.augmentepf.Localization.GAFrameworkUserTracker;
 import com.filiereticsa.arc.augmentepf.Localization.LocalizationFragment;
 import com.filiereticsa.arc.augmentepf.Managers.HTTPRequestManager;
@@ -70,7 +71,7 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
             }
         }
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
-        GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(31, 4));
+        //GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(31, 4));
         new HttpAsyncTask().execute("http://192.168.206.106/AugmentEPF/php/getNextLesson.php");
     }
 
@@ -119,7 +120,7 @@ public class HomePageActivity extends AppCompatActivity implements BeaconDetecto
     }
 
     @Override
-    public void rangedBeacons(ArrayList<Beacon> beacons) {
+    public void rangedBeacons(ArrayList<GABeacon> beacons) {
         //Log.d(TAG,"Ranging beacons " + beacons.size());
         for (int i = 0; i < beacons.size(); i++) {
             //Log.d(TAG,""+beacons.get(i).getDistance());

@@ -17,11 +17,14 @@ public class GABeacon {
     private final static double LIMIT_IMMEDIATE_NEAR = 0.5;
     private final static double LIMIT_NEAR_FAR = 3;
     private static final String TAG = "Ici";
-    private static Integer proximityHistorySize = 1;
+    private static int proximityHistorySize = 1;
     private String name;
     public int xCoord;
     public int yCoord;
     private double accuracy = -1;
+    private double oldAccuracy = Double.MAX_VALUE;
+    private int amountOfSameAccuracy = 0;
+    private final static int MAXIMUM_SAME_ACCURACY = 3;
     private String proximity = "Unknown";
     private String uuid;
     private int major;
@@ -39,18 +42,33 @@ public class GABeacon {
     static {
         allBeacons = new ArrayList<>();
 
-        //Anthony
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 42194, "BeaconName1", "White", 10, 8, 3));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43216, "BeaconName2", "White", 10, 12, 3));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43364, "BeaconName3", "White", 6, 19, 3));
+        //Lakanal Floor 2 i1 to i6
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 42194, "BeaconName1", "White", 10, 8, 3,0));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43216, "BeaconName2", "White", 10, 12, 3,0));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43364, "BeaconName3", "White", 6, 19, 3,0));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 40935, "BeaconName4", "White", 3,25, 3,0));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43348, "BeaconName5", "White", 6, 31, 3,0));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 44020, "BeaconName6", "White", 10, 31, 3,0));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 39757, "BeaconName7", "White", 10, 39, 3,0));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 42742, "BeaconName8", "White", 6, 13, 4,0));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43184, "BeaconName8", "White", 4, 37, 3,0));
 
-        //Hugo
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 40935, "BeaconName4", "White", 3,25, 3));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43348, "BeaconName5", "White", 6, 31, 3));
+        //Lakanal Floor 1 1L to 6L
+        //New beacons
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43232, "BeaconName8", "White", 10, 12, 3,1));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43989, "BeaconName8", "White", 10, 18, 3,1));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43060, "BeaconName8", "White", 7, 19, 3,1));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43032, "BeaconName8", "White", 5, 25, 3,1));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43104, "BeaconName8", "White", 7, 30, 3,1));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43277, "BeaconName8", "White", 10, 31, 3,1));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43045, "BeaconName8", "White", 10, 37, 3,1));
 
-        //Cecile
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 44020, "BeaconName6", "White", 10, 31, 3));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 39757, "BeaconName7", "White", 10, 39, 3));
+        //Unused beacon
+        //allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 44067, "BeaconName8", "White", 10, 12, 3,1));
+    }
+
+    public static int getProximityHistorySize() {
+        return proximityHistorySize;
     }
 
     public int getGraniteId() {
@@ -63,7 +81,8 @@ public class GABeacon {
 
     private int graniteId=-1;
 
-    GABeacon(String uuidBeacon, int majorBeacon, int minorBeacon, String beaconName, String color, int xCoord, int yCoord, int threshold) {
+    GABeacon(String uuidBeacon, int majorBeacon, int minorBeacon, String beaconName, String color, int xCoord, int yCoord, int threshold
+    ,int mapId) {
         this.uuid = uuidBeacon;
         this.major = majorBeacon;
         this.minor = minorBeacon;
@@ -73,7 +92,7 @@ public class GABeacon {
         this.yCoord = yCoord;
         proximityHistorySize = threshold;
         this.setIndexPath(yCoord,xCoord);
-        this.setMapId(0);
+        this.setMapId(mapId);
     }
 
     private String getProximityFromDistance(double distance) {
@@ -89,8 +108,21 @@ public class GABeacon {
     }
 
     public void setDistance(double accuracy) {
+//        Log.d(TAG, "setDistance: "+this.oldAccuracy +" "+ accuracy);
+//        if(this.oldAccuracy == accuracy && this.oldAccuracy != Double.MAX_VALUE){
+//            Log.d(TAG, "setDistance: same value");
+//            amountOfSameAccuracy++;
+//            if (amountOfSameAccuracy == MAXIMUM_SAME_ACCURACY){
+//                //Log.d(TAG, "setDistance: "+this.getMinor()+" "+ this.getAccuracy());
+//                accuracy = Double.MAX_VALUE;
+//                amountOfSameAccuracy = 0;
+//            }
+//        }else{
+//            amountOfSameAccuracy = 0;
+//        }
         this.accuracy = accuracy;
         setProximity(accuracy);
+//        this.oldAccuracy = accuracy;
     }
 
     private boolean hasConsecutiveProximity(String proximity, int number) {

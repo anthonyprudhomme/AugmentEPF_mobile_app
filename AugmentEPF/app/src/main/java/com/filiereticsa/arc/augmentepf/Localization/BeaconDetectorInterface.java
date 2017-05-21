@@ -11,6 +11,6 @@ import java.util.Collection;
 
 public interface BeaconDetectorInterface {
 
-    void rangedBeacons(ArrayList<Beacon> beacons);
+    void rangedBeacons(ArrayList<GABeacon> beacons);
 
 }

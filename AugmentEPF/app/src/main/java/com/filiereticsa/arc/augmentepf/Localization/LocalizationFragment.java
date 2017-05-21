@@ -153,7 +153,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             //BitmapManager bitmapManager = new BitmapManager();
             //final Bitmap mapBitmap = bitmapManager.loadBitmapFromFile("PATH_TO_MAP");
             final Bitmap mapBitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                    R.drawable.plan_lakanal_etage2);
+                    map.getImageResId());
             if(mapBitmap!=null) {
                 int height = mapBitmap.getHeight();
                 int width = mapBitmap.getWidth();
