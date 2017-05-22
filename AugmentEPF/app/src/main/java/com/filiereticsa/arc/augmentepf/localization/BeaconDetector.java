@@ -217,7 +217,6 @@ public class BeaconDetector implements BeaconConsumer {
                 beaconsFound.add(currentBeacon);
             }
         }
-        HomePageActivity.beaconObserver.rangedBeacons(beaconsFound);
         GAFrameworkUserTracker.sharedTracker().rangedBeacons(beaconsFound);
 
     }
