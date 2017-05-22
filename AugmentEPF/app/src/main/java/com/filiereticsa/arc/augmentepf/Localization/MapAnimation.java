@@ -41,7 +41,7 @@ public class MapAnimation extends Animation {
         mapContainer.setScaleX(1 / angleMovement);
         mapContainer.setScaleY(1 / angleMovement);
         layoutParams.leftMargin = screenWidth / 2 - movementX;
-        layoutParams.topMargin = screenHeight / 4 - movementY;
+        layoutParams.topMargin = screenHeight / 2 - movementY;
         mapContainer.setLayoutParams(layoutParams);
         mapContainer.requestLayout();
     }

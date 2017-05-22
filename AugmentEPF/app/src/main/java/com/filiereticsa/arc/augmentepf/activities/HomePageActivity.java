@@ -2,21 +2,27 @@ package com.filiereticsa.arc.augmentepf.activities;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.localization.BeaconDetector;
-import com.filiereticsa.arc.augmentepf.localization.BeaconDetectorInterface;
 import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
 import com.filiereticsa.arc.augmentepf.localization.LocalizationFragment;
 
@@ -25,8 +31,12 @@ import org.altbeacon.beacon.BeaconManager;
 public class HomePageActivity extends AppCompatActivity {
     private static final String TAG = "Ici";
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
-    public static BeaconDetectorInterface beaconObserver;
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
+    private SlidingDrawer leftSlidingDrawer;
+    private SlidingDrawer rightSlidingDrawer;
+    private boolean isShowingSlidingDrawer = true;
+    private boolean touchedEditText = false;
+    private ImageButton leftHandle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +44,8 @@ public class HomePageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_page);
         askForPermission();
         setUpSlidingDrawers();
+        setUpEditText();
+        GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(8,10));
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
     }
 
@@ -61,15 +73,20 @@ public class HomePageActivity extends AppCompatActivity {
     }
 
     public void setUpSlidingDrawers() {
-        final SlidingDrawer leftSlidingDrawer = (SlidingDrawer) findViewById(R.id.leftSlidingDrawer); // initiate the SlidingDrawer
-        final SlidingDrawer rightSlidingDrawer = (SlidingDrawer) findViewById(R.id.rightSlidingDrawer); // initiate the SlidingDrawer
+        // initiate the SlidingDrawer
+        leftSlidingDrawer = (SlidingDrawer) findViewById(R.id.leftSlidingDrawer);
+        // initiate the SlidingDrawer
+        rightSlidingDrawer = (SlidingDrawer) findViewById(R.id.rightSlidingDrawer);
+        leftHandle = (ImageButton) findViewById(R.id.left_handle);
 
-
+        final FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_action_button);
         leftSlidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener() {
             @Override
             public void onDrawerOpened() {
                 rightSlidingDrawer.close();
                 rightSlidingDrawer.setVisibility(View.GONE);
+                leftHandle.setBackgroundResource(R.drawable.nav_left_bar_close);
+                floatingActionButton.setVisibility(View.GONE);
             }
         });
         // implement setOnDrawerCloseListener event
@@ -77,6 +94,9 @@ public class HomePageActivity extends AppCompatActivity {
             @Override
             public void onDrawerClosed() {
                 rightSlidingDrawer.setVisibility(View.VISIBLE);
+                leftHandle.setBackgroundResource(R.drawable.nav_left_bar_open);
+                floatingActionButton.setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -86,6 +106,7 @@ public class HomePageActivity extends AppCompatActivity {
             public void onDrawerOpened() {
                 leftSlidingDrawer.close();
                 leftSlidingDrawer.setVisibility(View.GONE);
+                floatingActionButton.setVisibility(View.GONE);
             }
         });
         // implement setOnDrawerCloseListener event
@@ -93,6 +114,29 @@ public class HomePageActivity extends AppCompatActivity {
             @Override
             public void onDrawerClosed() {
                 leftSlidingDrawer.setVisibility(View.VISIBLE);
+                if (touchedEditText == true){
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput (InputMethodManager.SHOW_FORCED, 0);
+                }
+                floatingActionButton.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void setUpEditText(){
+        EditText searchInput = (EditText) findViewById(R.id.search_input);
+        searchInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    touchedEditText=true;
+                    Log.d("Test","FOCUS");
+                }else {
+                    touchedEditText=false;
+                    Log.d("Test","UNFOCUS");
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput (InputMethodManager.SHOW_FORCED, 0);
+                }
             }
         });
     }
@@ -147,7 +191,7 @@ public class HomePageActivity extends AppCompatActivity {
     }
 
     public void onConnectClick(View view) {
-        Intent intent = new Intent(this, CreateAccountActivity.class);
+        Intent intent = new Intent(this, ConnectionActivity.class);
         startActivity(intent);
     }
 
@@ -170,5 +214,18 @@ public class HomePageActivity extends AppCompatActivity {
     }
 
     public void onContactClick(View view) {
+    }
+
+    public void onFullScreenClick(View view) {
+        if (isShowingSlidingDrawer) {
+            leftSlidingDrawer.setVisibility(View.GONE);
+            rightSlidingDrawer.setVisibility(View.GONE);
+            isShowingSlidingDrawer = false;
+        } else {
+            leftSlidingDrawer.setVisibility(View.VISIBLE);
+            rightSlidingDrawer.setVisibility(View.VISIBLE);
+            isShowingSlidingDrawer = true;
+        }
+        LocalizationFragment.homePageInterface.onFullScreenModeChanged(!isShowingSlidingDrawer);
     }
 }

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatI
             // Draw the user position above the path
             drawUserPosition(canvas, radius);
             // Draw the debug text that shows info that helps debugging
-            // drawDebugText(canvas);
+            //drawDebugText(canvas);
         }
     }
 
@@ -71,6 +72,7 @@ public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatI
         paint.setColor(Color.parseColor("#4286f4"));
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(STROKE_WIDTH);
+        paint.setShadowLayer(5, 0, 0, Color.parseColor("#4286f4"));
         if (currentPath.size() != 0) {
             path.moveTo(userCoordinates.second, userCoordinates.first);
         }
@@ -88,7 +90,12 @@ public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatI
     public void drawUserPosition(Canvas canvas, int radius) {
         // Set paint color to red
         paint.setColor(Color.parseColor("#fa232e"));
-        paint.setShadowLayer(20, 0, 0, Color.parseColor("#787878"));
+        paint.setStyle(Paint.Style.FILL);
+        paint.setAlpha(30);
+        canvas.drawCircle(userCoordinates.second, userCoordinates.first, radius*4, paint);
+        paint.setAlpha(255);
+        paint.setColor(Color.parseColor("#fa232e"));
+        paint.setShadowLayer(50, 0, 0, Color.parseColor("#fa232e"));
         paint.setStyle(Paint.Style.FILL);
         setLayerType(LAYER_TYPE_SOFTWARE, paint);
 
@@ -143,6 +150,7 @@ public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatI
     }
 
     public void setCurrentPath(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path) {
+
         if (path != null) {
             currentPath = path.first;
         }

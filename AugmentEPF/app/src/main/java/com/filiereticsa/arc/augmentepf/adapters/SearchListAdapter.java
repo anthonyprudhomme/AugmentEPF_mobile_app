@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.models.ClassRoom;
+import com.filiereticsa.arc.augmentepf.models.Place;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,13 +20,12 @@ import java.util.List;
  * Created by Cécile on 21/05/2017.
  */
 
-public class SearchListAdapter extends ArrayAdapter<ClassRoom> implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SearchListAdapter extends ArrayAdapter<Place> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    public SearchListAdapter(Context context, List<ClassRoom> classRoomList) {
-        super(context, 0, classRoomList);
+    public SearchListAdapter(Context context, ArrayList<Place> list) {
+        super(context, 0,list);
 
     }
-
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         notifyDataSetChanged();
@@ -37,9 +38,9 @@ public class SearchListAdapter extends ArrayAdapter<ClassRoom> implements Shared
             view = inflater.inflate(R.layout.item_search_list, parent, false);
         }
 
-        ClassRoom classRoom = getItem(position);
+        Place place = getItem(position);
         TextView name = (TextView) view.findViewById(R.id.room_name);
-        name.setText(classRoom.getNom());
+        name.setText(place.getName());
 
         return view;
     }

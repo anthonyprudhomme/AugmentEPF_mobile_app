@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="com.filiereticsa.arc.augmentepf.activities.HomePageActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +27,7 @@
         </activity>
         <activity android:name="com.filiereticsa.arc.augmentepf.activities.PathPlanningActivity" />
         <activity android:name="com.filiereticsa.arc.augmentepf.activities.PathConsultationActivity" />
-        <activity android:name="com.filiereticsa.arc.augmentepf.activities.NavigationActivity" />
+        <activity android:name="com.filiereticsa.arc.augmentepf.activities.ConnectionActivity" />
         <activity android:name="com.filiereticsa.arc.augmentepf.activities.SettingsActivity" />
         <activity android:name="com.filiereticsa.arc.augmentepf.activities.AdminActivity" />
         <activity

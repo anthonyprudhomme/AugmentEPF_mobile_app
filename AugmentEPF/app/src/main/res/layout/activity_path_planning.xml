@@ -106,24 +106,24 @@
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal">
 
-        <!-- Visibility, enabled -->
+            <!-- Visibility, enabled -->
 
-        <!-- Button to choose a date -->
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/warningDateButton"
-            android:text="@string/text_dateButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="setWarningDate"/>
+            <!-- Button to choose a date -->
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/warningDateButton"
+                android:text="@string/text_dateButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="setWarningDate"/>
 
-        <!-- Button to choose an hour -->
-        <android.support.v7.widget.AppCompatButton
-            android:layout_marginLeft="20dp"
-            android:id="@+id/warningHourButton"
-            android:text="@string/text_hourButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="setWarningHour"/>
+            <!-- Button to choose an hour -->
+            <android.support.v7.widget.AppCompatButton
+                android:layout_marginLeft="20dp"
+                android:id="@+id/warningHourButton"
+                android:text="@string/text_hourButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="setWarningHour"/>
         </LinearLayout>
 
         <!-- The field for the switch button -->
@@ -171,4 +171,5 @@
             android:text="@string/text_validate"
             android:onClick="sendThePath"/>
     </LinearLayout>
+    <!--=========================================================================================-->
 </LinearLayout>

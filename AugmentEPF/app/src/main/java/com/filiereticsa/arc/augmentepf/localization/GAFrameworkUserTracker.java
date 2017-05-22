@@ -35,8 +35,8 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     private long alarmForAccelerometer = 0;
     private long alarmForGyroscope = 0;
     private Pair<Integer, Integer> target;
-    private double stepsPerMapItem = 1;
-    private double beaconForceDistanceThreshold = 1.5;
+    private double stepsPerMapItem = 1.5;
+    private double beaconForceDistanceThreshold = 2;
     private int beaconForceDistanceMapItemMax = 2;  // In map items
     private double kGyroThreshold = 40;
     private long gyroAlarm = 0;
@@ -120,7 +120,11 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 //                try {
 //                    JSONObject jsonObject = new JSONObject(data);
 //                    //currentMap = new GABeaconMap(jsonObject);
-            currentMap = new GABeaconMap(newMapId);
+            if (GABeaconMap.maps != null && GABeaconMap.maps.containsKey(newMapId)){
+                currentMap = GABeaconMap.maps.get(newMapId);
+            }else {
+                currentMap = new GABeaconMap(newMapId);
+            }
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
@@ -498,7 +502,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             GABeacon nearestBeacon = closestBeacons.get(0);
             if (nearestBeacon != null) {
 //                Log.e("nearest beacon: " + nearestBeacon.getMajor() + " " + nearestBeacon.getMinor());
-                //this.updateCandidatesWithNearBeacon(nearestBeacon);
+                this.updateCandidatesWithNearBeacon(nearestBeacon);
                 //this.updateBestCandidatesWithClosestBeacon(nearestBeacon);
                 this.updateCandidatesWithRealDistanceAndClosestBeacon(nearestBeacon);
             }

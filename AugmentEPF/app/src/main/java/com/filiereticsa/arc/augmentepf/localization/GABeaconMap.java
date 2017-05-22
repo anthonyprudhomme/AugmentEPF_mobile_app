@@ -34,7 +34,12 @@ public class GABeaconMap {
     // Map items accessor
     private ArrayList<MapItem> mapItems = null;
 
+    public static HashMap<Integer,GABeaconMap> maps;
+
     public GABeaconMap(int id) {
+        if(maps == null){
+            maps = new HashMap<>();
+        }
         this.id = id;
         int j = 0;
         switch (id) {
@@ -86,7 +91,6 @@ public class GABeaconMap {
                 for (int i = 5; i <= 7; i++) {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(13, i)));
                 }
-
                 break;
 
             case 1:
@@ -140,7 +144,7 @@ public class GABeaconMap {
                 }
                 break;
         }
-
+        maps.put(this.id,this);
     }
 
     // JSON from server

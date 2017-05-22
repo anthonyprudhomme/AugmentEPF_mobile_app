@@ -33,6 +33,7 @@
             android:key="type_user"
             android:title="@string/type"
             android:summary="@string/select_user_type"
+            android:entries="@array/user_type_array"
             android:entryValues="@array/user_type_values_array">
         </ListPreference>
 

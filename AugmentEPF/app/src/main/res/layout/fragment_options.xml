@@ -11,13 +11,15 @@
         style="@style/Button"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/red_button"
         android:onClick="onConnectClick"
         android:padding="15dp"
         android:text="@string/connect"
         android:textColor="@color/white"
-        android:textSize="16dp"/>
+        android:textSize="18sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,10 +36,10 @@
             android:src="@drawable/calendar_icon"
             android:scaleType="fitXY"
             android:padding="10dp"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@color/green"
-            android:layout_margin="10dp"/>
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/calendar_button"
+            android:layout_margin="5dp"/>
 
         <ImageButton
             android:id="@+id/settings_button"
@@ -45,10 +47,10 @@
             android:src="@drawable/settings_icon"
             android:scaleType="fitXY"
             android:padding="10dp"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@color/blue"
-            android:layout_margin="10dp"/>
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/settings_button"
+            android:layout_margin="5dp"/>
 
         <ImageButton
             android:id="@+id/admin_button"
@@ -56,33 +58,33 @@
             android:src="@drawable/admin_icon"
             android:scaleType="fitXY"
             android:padding="10dp"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@color/gold"
-            android:layout_margin="10dp"/>
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/admin_button"
+            android:layout_margin="5dp"/>
     </LinearLayout>
 
     <Button
         android:id="@+id/planned_trajectory_button"
         style="@style/Button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/white_left_button"
         android:onClick="onPlannedClick"
         android:text="@string/planned_trajectory"
-        android:textSize="16dp"/>
+        android:textSize="18dp"/>
 
     <Button
         android:id="@+id/history_button"
         style="@style/Button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/white_left_button"
         android:onClick="onHistoryClick"
         android:text="@string/trajectory_history"
-        android:textSize="16sp"/>
+        android:textSize="18sp"/>
 
     <Button
         android:id="@+id/contact_button"
@@ -90,7 +92,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/white_button"
         android:onClick="onContactClick"
         android:padding="10dp"

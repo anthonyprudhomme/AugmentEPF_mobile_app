@@ -6,31 +6,33 @@ import java.util.ArrayList;
  * Created by anthony on 07/05/2017.
  */
 
-public class ClassRoom {
+public class ClassRoom extends Place {
 
     private static ArrayList<ClassRoom> classRooms;
-    private static ArrayList<ClassRoom> availableClassroomList;
 
-    static {
+    private boolean isFree;
+    private static ArrayList<Place> availableClassroomList = new ArrayList<>();
+
+    public ClassRoom(String name, Position position, boolean isFree) {
+        super(name, position);
+        this.isFree = isFree;
+    }
+
+
+    public static ArrayList<Place> getAvailableClassroomList() {
+        return availableClassroomList;
+    }
+
+    static{
         availableClassroomList = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i=0; i < 20; i++){
             ClassRoom classRoom = new ClassRoom(
-                    i + "L",
-                    new Position(i, i * i, i),
-                    i % 2 == 0
+                    i +"L",
+                    new Position(i,i+i,i/2),
+                    i%2 ==0
             );
             availableClassroomList.add(classRoom);
         }
-    }
-
-    private String nom;
-    private Position position;
-    private boolean isFree;
-
-    public ClassRoom(String nom, Position position, boolean isFree) {
-        this.nom = nom;
-        this.position = position;
-        this.isFree = isFree;
     }
 
     public static ArrayList<ClassRoom> getClassRooms() {
@@ -39,26 +41,6 @@ public class ClassRoom {
 
     public static void setClassRooms(ArrayList<ClassRoom> classRooms) {
         ClassRoom.classRooms = classRooms;
-    }
-
-    public static ArrayList<ClassRoom> getAvailableClassroomList() {
-        return availableClassroomList;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
     }
 
     public boolean isFree() {

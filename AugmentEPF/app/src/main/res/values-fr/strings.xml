@@ -5,9 +5,9 @@
     <string name="text_dateButton">Choisir la date</string>
     <string name="text_hourButton">Choisir l\'heure</string>
     <string name="text_validate">Enregistrer le trajet</string>
-    <string name="text_warning">\"Voulez-vous être prévenu(e) à l\'avance ? \"</string>
+    <string name="text_warning">Voulez-vous être prévenu(e) à l\'avance ?</string>
     <string name="text_warning_alerts">Choisissez la manière dont vous serez prévenu(e)</string>
-    <string name="text_when">"Quand ? "</string>
+    <string name="text_when">Quand ?</string>
     <string name="hello_blank_fragment" />
     <string name="app_need_location">L\'application a besoin d\'accéder à votre localisation</string>
     <string name="app_need_location_message">Donnez accès à la localisation pour que l\'application puisse détecter les beacons en arrière plan</string>
@@ -100,4 +100,6 @@
     <string name="nav_parameters">Paramètres de navigation</string>
     <string name="user_parameters">Paramètres utilisateur</string>
     <string name="action_settings">Options</string>
+
+
 </resources>

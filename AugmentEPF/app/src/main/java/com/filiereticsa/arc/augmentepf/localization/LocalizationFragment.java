@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.filiereticsa.arc.augmentepf.R;
+import com.filiereticsa.arc.augmentepf.interfaces.HomePageInterface;
 
 import java.util.ArrayList;
 
@@ -31,7 +32,7 @@ import java.util.ArrayList;
  * Copyright © 2016 Granite Apps. All rights reserved.
  */
 
-public class LocalizationFragment extends Fragment implements GAFrameworkUserTrackerObserver {
+public class LocalizationFragment extends Fragment implements GAFrameworkUserTrackerObserver, HomePageInterface {
 
     public static final float DEFAULT_ZOOM = 0.4f;
     private static final String TAG = "Ici";
@@ -60,7 +61,10 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     private Pair<Integer, Integer> oldUserPosition;
 
     private boolean isUserMovingTheMap = false;
+    private boolean fullScreenModeEnabled = false;
     private boolean gestureEnabled = false;
+
+    public static HomePageInterface homePageInterface;
 
     public boolean isGestureEnabled() {
         return gestureEnabled;
@@ -79,6 +83,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             rootView = inflater.inflate(R.layout.fragment_localization, container, false);
         }
         setRetainInstance(true);
+        homePageInterface = this;
         new GAFrameworkUserTracker(getActivity());
         GAFrameworkUserTracker.sharedTracker().registerObserver(this);
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
@@ -113,7 +118,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
                 if (numberOfFingerTouchingTheScreen == 2) {
-                    if (!isUserMovingTheMap) {
+                    if (!isUserMovingTheMap && fullScreenModeEnabled) {
                         floatingActionButton.setVisibility(View.VISIBLE);
                     }
                     isUserMovingTheMap = true;
@@ -275,6 +280,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
 
     @Override
     public void onPathChanged(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path) {
+
         if (layoutOverlay != null) {
             layoutOverlay.setCurrentPath(path);
         }
@@ -300,6 +306,16 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         return new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
     }
 
+    @Override
+    public void onFullScreenModeChanged(boolean isActive) {
+        fullScreenModeEnabled = isActive;
+        if (isActive) {
+            floatingActionButton.setVisibility(View.VISIBLE);
+        }else{
+            floatingActionButton.setVisibility(View.GONE);
+        }
+    }
+
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
 
@@ -311,7 +327,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         @Override
         public boolean onScroll(MotionEvent event, MotionEvent event2,
                                 final float distanceX, final float distanceY) {
-            if (!isUserMovingTheMap) {
+            if (!isUserMovingTheMap && fullScreenModeEnabled) {
                 floatingActionButton.setVisibility(View.VISIBLE);
             }
             isUserMovingTheMap = true;
@@ -329,30 +345,32 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            isUserMovingTheMap = false;
-            mScale = 1;
-            effectiveScale = 1;
-            mapContainer.setPivotX(0);
-            mapContainer.setPivotY(0);
-            mapContainer.setScaleX(1 / effectiveScale);
-            mapContainer.setScaleY(1 / effectiveScale);
-            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mapContainer.getLayoutParams();
-            layoutParams.leftMargin = 0;
-            layoutParams.topMargin = 0;
-            layoutParams.rightMargin = -currentMapWidth;
-            layoutParams.bottomMargin = -currentMapHeight;
-            mapContainer.setLayoutParams(layoutParams);
-            rootView.findViewById(R.id.horizontalScrollViewLayout).setScrollX(0);
-            rootView.findViewById(R.id.scrollViewLayout).setScrollY(0);
-            mapContainer.setX(0);
-            mapContainer.setY(0);
-            int[] map = new int[2];
-            mapContainer.getLocationInWindow(map);
-            //Log.d(TAG,"position: " + mapContainer.getX() + " " + ((FrameLayout.LayoutParams) mapContainer.getLayoutParams()).leftMargin
-            //       + " " + map[0] + " " + map[1]);
-            mapContainer.postInvalidate();
+//            isUserMovingTheMap = false;
+//            mScale = 1;
+//            effectiveScale = 1;
+//            mapContainer.setPivotX(0);
+//            mapContainer.setPivotY(0);
+//            mapContainer.setScaleX(1 / effectiveScale);
+//            mapContainer.setScaleY(1 / effectiveScale);
+//            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mapContainer.getLayoutParams();
+//            layoutParams.leftMargin = 0;
+//            layoutParams.topMargin = 0;
+//            layoutParams.rightMargin = -currentMapWidth;
+//            layoutParams.bottomMargin = -currentMapHeight;
+//            mapContainer.setLayoutParams(layoutParams);
+//            rootView.findViewById(R.id.horizontalScrollViewLayout).setScrollX(0);
+//            rootView.findViewById(R.id.scrollViewLayout).setScrollY(0);
+//            mapContainer.setX(0);
+//            mapContainer.setY(0);
+//            int[] map = new int[2];
+//            mapContainer.getLocationInWindow(map);
+//            //Log.d(TAG,"position: " + mapContainer.getX() + " " + ((FrameLayout.LayoutParams) mapContainer.getLayoutParams()).leftMargin
+//            //       + " " + map[0] + " " + map[1]);
+//            mapContainer.postInvalidate();
             return true;
         }
     }
+
+
 }
 
