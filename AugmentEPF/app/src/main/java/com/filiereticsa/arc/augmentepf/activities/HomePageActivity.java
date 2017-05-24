@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -22,13 +23,20 @@ import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 
 import com.filiereticsa.arc.augmentepf.R;
+import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 import com.filiereticsa.arc.augmentepf.localization.BeaconDetector;
 import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
 import com.filiereticsa.arc.augmentepf.localization.LocalizationFragment;
+import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
 import org.altbeacon.beacon.BeaconManager;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class HomePageActivity extends AppCompatActivity {
+import java.io.IOException;
+
+public class HomePageActivity extends AppCompatActivity implements HTTPRequestInterface {
     private static final String TAG = "Ici";
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
@@ -47,6 +55,37 @@ public class HomePageActivity extends AppCompatActivity {
         setUpEditText();
         GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(8,10));
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
+        postRequestExample();
+    }
+
+    private void postRequestExample() {
+        // Create the JSONObject that will be sent in the request
+        JSONObject jsonObject = new JSONObject();
+        try {
+            // Add the different element in the JSONObject with the method put
+            // The first parameter is the key and the second one is the value
+            // The first parameter has to be a constant in order to change it easily
+            // The second parameter shouldn't be hardcoded in most cases
+            jsonObject.put("name","Anthony");
+            jsonObject.put("type","Student");
+            jsonObject.put("password","Lol1234");
+            jsonObject.put("email","anthony.prudhomme@epfedu.fr");
+            // If you need to add an array in the JSONObject do as the 3 next lines shows
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put("elevator");
+            jsonArray.put("biggerText");
+            jsonObject.put("specificAttributes",jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // Start the postrequest method that takes 3 parameters :
+        // - The name of the method in the server (given by Guilhem)
+        // - The data of the request : the JSONObject you've just created as a string
+        // - A reference to the listener : see the implementation in the class declaration above
+        //   There is an HTTPRequestInterface that contains a method called onRequestDone
+        //   This method will be executed when the request is done and will give the result as a String
+        //   You have to put the result in a JSONObject to use it. See the example below (onRequestDone)
+        HTTPRequestManager.doPostRequest("accountCreation.php",jsonObject.toString(),this);
     }
 
     private void askForPermission() {
@@ -227,5 +266,17 @@ public class HomePageActivity extends AppCompatActivity {
             isShowingSlidingDrawer = true;
         }
         LocalizationFragment.homePageInterface.onFullScreenModeChanged(!isShowingSlidingDrawer);
+    }
+
+    @Override
+    public void onRequestDone(String result) {
+        try{
+            // Put the result in a JSONObject to use it.
+            JSONObject jsonObject = new JSONObject(result);
+            // Show in the log the message given by the result : it will give error or success information
+            Log.d(TAG, "onRequestDone: "+jsonObject.getString("message"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
