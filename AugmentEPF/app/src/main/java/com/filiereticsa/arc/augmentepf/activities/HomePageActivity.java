@@ -9,18 +9,24 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
+import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
@@ -44,7 +50,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     private SlidingDrawer rightSlidingDrawer;
     private boolean isShowingSlidingDrawer = true;
     private boolean touchedEditText = false;
-    private ImageButton leftHandle;
+    private ImageButton drawerHandle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,29 +122,58 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         leftSlidingDrawer = (SlidingDrawer) findViewById(R.id.leftSlidingDrawer);
         // initiate the SlidingDrawer
         rightSlidingDrawer = (SlidingDrawer) findViewById(R.id.rightSlidingDrawer);
-        leftHandle = (ImageButton) findViewById(R.id.left_handle);
+        drawerHandle = (ImageButton) findViewById(R.id.left_handle);
 
         final FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_action_button);
+
+      /*==========================================================================================
+        |                                Set left sliding drawer listeners                        |
+        ==========================================================================================*/
+
+        // When the drawer is opened
         leftSlidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener() {
             @Override
             public void onDrawerOpened() {
                 rightSlidingDrawer.close();
                 rightSlidingDrawer.setVisibility(View.GONE);
-                leftHandle.setBackgroundResource(R.drawable.nav_left_bar_close);
+                drawerHandle.setBackgroundResource(R.drawable.nav_left_bar_close);
                 floatingActionButton.setVisibility(View.GONE);
             }
         });
-        // implement setOnDrawerCloseListener event
+
+        // When the drawer is dragged
+        leftSlidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener() {
+
+            @Override
+            public void onScrollStarted() {
+                rightSlidingDrawer.close();
+                rightSlidingDrawer.setVisibility(View.GONE);
+                drawerHandle.setBackgroundResource(R.drawable.nav_left_bar_close);
+                floatingActionButton.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onScrollEnded() {
+
+            }
+        });
+
+        // When the drawer is closed
         leftSlidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener() {
             @Override
             public void onDrawerClosed() {
                 rightSlidingDrawer.setVisibility(View.VISIBLE);
-                leftHandle.setBackgroundResource(R.drawable.nav_left_bar_open);
+                drawerHandle.setBackgroundResource(R.drawable.nav_left_bar_open);
                 floatingActionButton.setVisibility(View.VISIBLE);
-
             }
+
         });
 
+
+        /*==========================================================================================
+        |                                Set right sliding drawer listeners                        |
+        ==========================================================================================*/
 
         rightSlidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener() {
             @Override
@@ -148,7 +183,26 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                 floatingActionButton.setVisibility(View.GONE);
             }
         });
-        // implement setOnDrawerCloseListener event
+
+        // When the drawer is dragged
+        rightSlidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener() {
+
+            @Override
+            public void onScrollStarted() {
+                Log.d("DRAWER","Drag");
+                leftSlidingDrawer.close();
+                leftSlidingDrawer.setVisibility(View.GONE);
+                floatingActionButton.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onScrollEnded() {
+
+            }
+        });
+
+        // When the drawer is closed
         rightSlidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener() {
             @Override
             public void onDrawerClosed() {

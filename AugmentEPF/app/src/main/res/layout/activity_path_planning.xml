@@ -5,6 +5,12 @@
     android:layout_height="match_parent"
     android:padding="5dp">
 
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/path_icon"
+        android:layout_gravity="center_horizontal" />
+
     <!--============================================================================================
                                        When the path is plan
     =============================================================================================-->
@@ -12,31 +18,40 @@
     <TextView
         android:text="@string/text_when"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/colorPrimaryDark"/>
 
     <!-- The field for the user (date & hour) -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="20dip"
         android:layout_gravity="center_horizontal">
 
         <!-- Button to choose a date -->
-        <android.support.v7.widget.AppCompatButton
+        <Button
             android:id="@+id/dateButton"
-            android:text="@string/text_dateButton"
+            style="@android:style/Widget.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="setDepartureDate"/>
+            android:background="@drawable/grey_button"
+            android:onClick="setDepartureDate"
+            android:text="@string/text_dateButton"
+            android:textSize="16sp" />
 
         <!-- Button to choose an hour -->
-        <android.support.v7.widget.AppCompatButton
-            android:layout_marginLeft="20dp"
+        <Button
             android:id="@+id/hourButton"
-            android:text="@string/text_hourButton"
+            style="@android:style/Widget.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="setDepartureHour"/>
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/grey_button"
+            android:onClick="setDepartureHour"
+            android:text="@string/text_hourButton"
+            android:textSize="16sp" />
     </LinearLayout>
     <!--=========================================================================================-->
 
@@ -49,14 +64,17 @@
         android:text="@string/text_classroom"
         android:layout_marginTop="20dip"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="16sp"/>
 
     <!-- The autocompletion fiel to search a classroom like destination -->
     <AutoCompleteTextView
         android:id="@+id/search_classroom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dip"/>
+        android:layout_marginLeft="5dip"
+        android:textSize="16sp"/>
     <!--=========================================================================================-->
 
 
@@ -72,13 +90,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_gravity="center_vertical">
+        android:layout_gravity="center_vertical"
+        android:textSize="16sp">
 
         <!-- The title -->
         <TextView
             android:text="@string/text_warning"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="16sp"/>
 
         <!-- The switch button -->
         <Switch
@@ -109,21 +130,29 @@
             <!-- Visibility, enabled -->
 
             <!-- Button to choose a date -->
-            <android.support.v7.widget.AppCompatButton
+            <Button
                 android:id="@+id/warningDateButton"
-                android:text="@string/text_dateButton"
+                style="@android:style/Widget.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="setWarningDate"/>
+                android:background="@drawable/grey_button"
+                android:onClick="setWarningDate"
+                android:text="@string/text_dateButton"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp" />
 
             <!-- Button to choose an hour -->
-            <android.support.v7.widget.AppCompatButton
-                android:layout_marginLeft="20dp"
+            <Button
                 android:id="@+id/warningHourButton"
-                android:text="@string/text_hourButton"
+                style="@android:style/Widget.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="setWarningHour"/>
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/grey_button"
+                android:onClick="setWarningHour"
+                android:text="@string/text_hourButton"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <!-- The field for the switch button -->
@@ -137,13 +166,16 @@
             <!-- The title -->
             <TextView
                 android:text="@string/text_warning_alerts"
+                android:textColor="@color/colorPrimaryDark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"/>
+                android:layout_gravity="left"
+                android:textSize="16sp"/>
 
             <!-- The list of different alerts -->
             <Spinner
                 android:id="@+id/warningAlerts"
+                android:layout_marginTop="10dip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:entries="@array/alerts"/>
@@ -158,18 +190,23 @@
     =============================================================================================-->
     <LinearLayout
         android:layout_marginTop="20dip"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_gravity="right">
 
         <Button
             android:id="@+id/button_send"
+            style="@android:style/Widget.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="15dp"
             android:layout_weight="1"
+            android:background="@drawable/red_button"
+            android:onClick="sendThePath"
+            android:textColor="@color/white"
             android:text="@string/text_validate"
-            android:onClick="sendThePath"/>
+            android:textSize="16sp"/>
     </LinearLayout>
     <!--=========================================================================================-->
 </LinearLayout>

@@ -15,10 +15,12 @@
 
     <string name="connect">Se connecter</string>
     <string name="planned_trajectory">Trajets planifiés</string>
+    <string name="plan_trajectory">Planifier un trajet</string>
     <string name="trajectory_history">Historique des trajets</string>
     <string name="contact">Contactez-nous</string>
     <string name="go">Go !</string>
     <string name="login">Identifiant</string>
+    <string name="mail">Email</string>
     <string name="password">Mot de passe :</string>
     <string name="validate">Valider</string>
     <string name="no_account">Pas de compte ?</string>
@@ -100,6 +102,17 @@
     <string name="nav_parameters">Paramètres de navigation</string>
     <string name="user_parameters">Paramètres utilisateur</string>
     <string name="action_settings">Options</string>
+    <string name="nearby_points_of_interest">Points d"'"interêt alentours</string>
+    <string name="available_classrooms">Salles libres</string>
+    <string name="fullscreen">Plein écran</string>
+
+    <string-array name="alerts">
+        <item>Aucune</item>
+        <item>Notification</item>
+        <item>Vibration</item>
+        <item>Sonnerie</item>
+        <item>E-mail</item>
+    </string-array>
 
 
 </resources>

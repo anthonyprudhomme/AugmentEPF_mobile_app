@@ -12,66 +12,77 @@
         android:layout_height="wrap_content"
         android:layout_weight="9"/>
 
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/user_icon"
+        android:layout_margin="10dp"
+        android:layout_gravity="center_horizontal" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        android:background="@color/colorLightGrey"
+        android:padding="15dp"
+        android:layout_margin="20dp"
         android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login"
-            android:textSize="24sp"
-            android:textColor="@color/white"/>
+            android:textSize="16sp"
+            android:textColor="@color/colorPrimaryDark"/>
 
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textColor="@color/white"
-            android:layout_weight="9"/>
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
+        android:background="@color/colorLightGrey"
+        android:padding="15dp"
+        android:layout_margin="20dp"
         android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/password"
-            android:textSize="24sp"
-            android:layout_gravity="center"/>
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="16sp" />
 
         <android.support.design.widget.TextInputLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:passwordToggleEnabled="true"
-            android:layout_weight="9">
+            app:passwordToggleEnabled="true">
 
             <android.support.design.widget.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:textSize="24sp"/>
+                android:textSize="16sp"/>
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
     <Button
         android:id="@+id/login_button"
-        android:onClick="onValidateClick"
-        android:text="@string/validate"
+        style="@android:style/Widget.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
+        android:layout_margin="15dp"
+        android:background="@drawable/red_button"
+        android:onClick="onValidateClick"
         android:padding="10dp"
-        android:layout_margin="10dp"
-        android:background="@color/colorAccent"
-        android:textColor="@color/white"/>
+        android:text="@string/validate"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -83,18 +94,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/no_account"
+            android:textSize="16sp"
             android:padding="10dp"
             android:layout_margin="10dp"/>
 
         <Button
-            android:text="@string/create"
-            android:onClick="onCreateAccountClick"
+            style="@android:style/Widget.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:layout_margin="10dp"
-            android:background="@color/colorPrimaryDark"
-            android:textColor="@color/white"/>
+            android:background="@drawable/grey_button"
+            android:onClick="onCreateAccountClick"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:text="@string/create"
+            android:textColor="@color/colorPrimaryDark" />
     </LinearLayout>
 
     <LinearLayout
