@@ -11,7 +11,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.activities.AugmentEPFApplication;
-import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -217,7 +216,9 @@ public class BeaconDetector implements BeaconConsumer {
                 beaconsFound.add(currentBeacon);
             }
         }
-        GAFrameworkUserTracker.sharedTracker().rangedBeacons(beaconsFound);
+        if(GAFrameworkUserTracker.sharedTracker()!=null) {
+            GAFrameworkUserTracker.sharedTracker().rangedBeacons(beaconsFound);
+        }
 
     }
 

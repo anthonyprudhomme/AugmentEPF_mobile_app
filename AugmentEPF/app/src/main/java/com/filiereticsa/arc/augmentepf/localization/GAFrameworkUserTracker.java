@@ -11,7 +11,6 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.filiereticsa.arc.augmentepf.models.SpecificAttribute;
-import com.filiereticsa.arc.augmentepf.models.UserType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,6 +98,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     private float[] gyroscopeValues;
     private int x = 0, y = 1, z = 2;
     private long lastTimeStamp = 0;
+
     public GAFrameworkUserTracker(FragmentActivity activity) {
         if (sharedTracker == null) {
             sensorManager = (SensorManager) activity.getSystemService(activity.SENSOR_SERVICE);
@@ -128,9 +128,9 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 //                try {
 //                    JSONObject jsonObject = new JSONObject(data);
 //                    //currentMap = new GABeaconMap(jsonObject);
-            if (GABeaconMap.maps != null && GABeaconMap.maps.containsKey(newMapId)){
+            if (GABeaconMap.maps != null && GABeaconMap.maps.containsKey(newMapId)) {
                 currentMap = GABeaconMap.maps.get(newMapId);
-            }else {
+            } else {
                 currentMap = new GABeaconMap(newMapId);
             }
             currentUserLocation = null;
@@ -811,23 +811,23 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 
     }
 
-    public void definePathTo(Pair<Integer, Integer> currentPosition, Pair<Integer, Integer> target,Integer floorTarget) {
-        if (floorTarget!= null && currentMap.getFloor() == floorTarget){
+    public void definePathTo(Pair<Integer, Integer> currentPosition, Pair<Integer, Integer> target, Integer floorTarget) {
+        if (floorTarget != null && currentMap.getFloor() == floorTarget) {
             Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = this.mapHelper.pathFrom(currentPosition, target);
             for (int i = 0; i < observers.size(); i++) {
-                observers.get(i).onPathChanged(path,null);
+                observers.get(i).onPathChanged(path, null);
             }
-        }else{
+        } else {
             ArrayList<FloorAccess> initialFloorAccesses = currentMap.getFloorAccesses();
             ArrayList<FloorAccess> possibleFloorAccesses = new ArrayList<>();
             FloorAccess.FloorAccessType floorAccessType = FloorAccess.FloorAccessType.STAIRS;
             for (int i = 0; i < initialFloorAccesses.size(); i++) {
                 FloorAccess currentFloorAccess = initialFloorAccesses.get(i);
-                if (currentFloorAccess.getFloorsPossibilities().contains(floorTarget)){
-                    switch (currentSpecificAttribute){
+                if (currentFloorAccess.getFloorsPossibilities().contains(floorTarget)) {
+                    switch (currentSpecificAttribute) {
                         case NONE:
                         case SOUND_GUIDANCE:
-                            if (currentFloorAccess.getFloorAccessType() == FloorAccess.FloorAccessType.STAIRS){
+                            if (currentFloorAccess.getFloorAccessType() == FloorAccess.FloorAccessType.STAIRS) {
                                 possibleFloorAccesses.add(currentFloorAccess);
                                 floorAccessType = FloorAccess.FloorAccessType.STAIRS;
                             }
@@ -835,7 +835,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 
                         case ELEVATOR:
                         case BOTH:
-                            if (currentFloorAccess.getFloorAccessType() == FloorAccess.FloorAccessType.ELEVATOR){
+                            if (currentFloorAccess.getFloorAccessType() == FloorAccess.FloorAccessType.ELEVATOR) {
                                 possibleFloorAccesses.add(currentFloorAccess);
                                 floorAccessType = FloorAccess.FloorAccessType.ELEVATOR;
                             }
@@ -849,18 +849,18 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             }
             Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = getFastestPath(possibleFloorAccesses);
             for (int i = 0; i < observers.size(); i++) {
-                observers.get(i).onPathChanged(path,floorAccessType);
+                observers.get(i).onPathChanged(path, floorAccessType);
             }
         }
     }
 
-    private Pair<ArrayList<Pair<Integer, Integer>>,Integer> getFastestPath(ArrayList<FloorAccess> possibleFloorAccesses){
-        Pair<ArrayList<Pair<Integer, Integer>>,Integer> fastestPath = null;
+    private Pair<ArrayList<Pair<Integer, Integer>>, Integer> getFastestPath(ArrayList<FloorAccess> possibleFloorAccesses) {
+        Pair<ArrayList<Pair<Integer, Integer>>, Integer> fastestPath = null;
         for (int i = 0; i < possibleFloorAccesses.size(); i++) {
-            Pair<ArrayList<Pair<Integer, Integer>>,Integer> currentPath =
+            Pair<ArrayList<Pair<Integer, Integer>>, Integer> currentPath =
                     mapHelper.pathFrom(currentUserLocation.indexPath,
                             possibleFloorAccesses.get(i).getPosition());
-            if(fastestPath == null || currentPath.second < fastestPath.second){
+            if (fastestPath == null || currentPath.second < fastestPath.second) {
                 fastestPath = currentPath;
             }
         }
@@ -874,8 +874,8 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        String specificAttribute = sharedPreferences.getString("specific_attribute_values_array","0");
-        switch (specificAttribute){
+        String specificAttribute = sharedPreferences.getString("specific_attribute_values_array", "0");
+        switch (specificAttribute) {
             case "0":
                 currentSpecificAttribute = SpecificAttribute.NONE;
                 break;
@@ -896,6 +896,6 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                 currentSpecificAttribute = SpecificAttribute.NONE;
                 break;
         }
-        definePathTo(currentUserLocation.indexPath,target,floorTarget);
+        definePathTo(currentUserLocation.indexPath, target, floorTarget);
     }
 }

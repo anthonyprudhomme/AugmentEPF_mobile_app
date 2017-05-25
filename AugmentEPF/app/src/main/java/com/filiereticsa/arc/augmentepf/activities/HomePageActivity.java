@@ -50,6 +50,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     private SlidingDrawer rightSlidingDrawer;
     private boolean isShowingSlidingDrawer = true;
     private boolean touchedEditText = false;
+    private boolean canMapBeMoved = true;
     private ImageButton drawerHandle;
 
     @Override
@@ -59,7 +60,6 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         askForPermission();
         setUpSlidingDrawers();
         setUpEditText();
-        //GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(8,10));
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
         postRequestExample();
     }
@@ -84,7 +84,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        // Start the postrequest method that takes 3 parameters :
+        // Start the post request method that takes 3 parameters :
         // - The name of the method in the server (given by Guilhem)
         // - The data of the request : the JSONObject you've just created as a string
         // - A reference to the listener : see the implementation in the class declaration above
@@ -146,6 +146,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
 
             @Override
             public void onScrollStarted() {
+                canMapBeMoved = false;
                 rightSlidingDrawer.close();
                 rightSlidingDrawer.setVisibility(View.GONE);
                 drawerHandle.setBackgroundResource(R.drawable.nav_left_bar_close);
@@ -155,7 +156,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
 
             @Override
             public void onScrollEnded() {
-
+                canMapBeMoved = true;
             }
         });
 
@@ -189,7 +190,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
 
             @Override
             public void onScrollStarted() {
-                Log.d("DRAWER","Drag");
+                canMapBeMoved = false;
                 leftSlidingDrawer.close();
                 leftSlidingDrawer.setVisibility(View.GONE);
                 floatingActionButton.setVisibility(View.GONE);
@@ -198,7 +199,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
 
             @Override
             public void onScrollEnded() {
-
+                canMapBeMoved = true;
             }
         });
 
@@ -223,10 +224,8 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
                     touchedEditText=true;
-                    Log.d("Test","FOCUS");
                 }else {
                     touchedEditText=false;
-                    Log.d("Test","UNFOCUS");
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput (InputMethodManager.SHOW_FORCED, 0);
                 }
@@ -263,14 +262,16 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         super.dispatchTouchEvent(event);
-        for (int i = 0; i < getSupportFragmentManager().getFragments().size(); i++) {
-            Fragment currentFragment = getSupportFragmentManager().getFragments().get(i);
-            if (currentFragment instanceof LocalizationFragment) {
-                if (((LocalizationFragment) currentFragment).isGestureEnabled()) {
-                    LocalizationFragment currentLocalizationFragment = (LocalizationFragment) currentFragment;
-                    currentLocalizationFragment.getGestureDetector().onTouchEvent(event);
-                    currentLocalizationFragment.setPointerCount(event.getPointerCount());
-                    return currentLocalizationFragment.getScaleDetector().onTouchEvent(event);
+        if(canMapBeMoved) {
+            for (int i = 0; i < getSupportFragmentManager().getFragments().size(); i++) {
+                Fragment currentFragment = getSupportFragmentManager().getFragments().get(i);
+                if (currentFragment instanceof LocalizationFragment) {
+                    if (((LocalizationFragment) currentFragment).isGestureEnabled()) {
+                        LocalizationFragment currentLocalizationFragment = (LocalizationFragment) currentFragment;
+                        currentLocalizationFragment.getGestureDetector().onTouchEvent(event);
+                        currentLocalizationFragment.setPointerCount(event.getPointerCount());
+                        return currentLocalizationFragment.getScaleDetector().onTouchEvent(event);
+                    }
                 }
             }
         }

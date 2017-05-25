@@ -8,12 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.R;
-import com.filiereticsa.arc.augmentepf.activities.PathPlanningActivity;
 import com.filiereticsa.arc.augmentepf.adapters.SearchListAdapter;
 import com.filiereticsa.arc.augmentepf.models.ClassRoom;
 import com.filiereticsa.arc.augmentepf.models.Place;
@@ -29,15 +26,6 @@ public class SearchFragment extends Fragment {
     private SearchListAdapter adapter;
     private AutoCompleteTextView searchInput;
 
-    public SearchFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,7 +34,7 @@ public class SearchFragment extends Fragment {
 
         initiateLists(view);
         setAutoCompleteSearch(view);
-
+        setRetainInstance(true);
         return view;
     }
 
@@ -73,15 +61,15 @@ public class SearchFragment extends Fragment {
     }
 
     public void setAutoCompleteSearch(View view){
-        // Get the string array created in file string.xml
-        String[] allClassrooms = getResources().getStringArray(R.array.classrooms);
+        // Get the string array of all class names
+        String[] allClassrooms = ClassRoom.getClassroomsAsStrings();
 
         // Get the AutoCompleteTextView from the search fragment
         searchInput = (AutoCompleteTextView) view.findViewById(R.id.search_input);
 
         // Create an autocompletion list with string array entryUser
         // "simple_dropdown_item_1line" is a display style
-        ArrayAdapter adapter = new ArrayAdapter(getContext(),
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_dropdown_item_1line, allClassrooms);
 
         // Put the autocompletion list in our object of autocompletion

@@ -21,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.interfaces.HomePageInterface;
@@ -36,17 +37,14 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
 
     public static final float DEFAULT_ZOOM = 0.4f;
     private static final String TAG = "Ici";
-    private final int SHOW_INDOOR_MAP = 0;
-    private final int SHOW_OUTDOOR_MAP = 1;
+    public static HomePageInterface homePageInterface;
     private View rootView = null;
-    private RelativeLayout indoorLayout;
     private ImageView currentMapImageView;
     private FloatingActionButton floatingActionButton;
     private UserAndPathView layoutOverlay = null;
     private GABeaconMap currentMap;
     private int currentMapHeight = 0;
     private int currentMapWidth = 0;
-    private int currentMapState = SHOW_OUTDOOR_MAP;
     private Pair<Integer, Integer> gridDimensions;
     private FrameLayout mapContainer;
     private float mScale = 1f;
@@ -56,15 +54,12 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     private int numberOfFingerTouchingTheScreen = 0;
     private int screenWidth;
     private int screenHeight;
-
     private Pair<Integer, Integer> oldPosition;
     private Pair<Integer, Integer> oldUserPosition;
-
     private boolean isUserMovingTheMap = false;
     private boolean fullScreenModeEnabled = false;
     private boolean gestureEnabled = false;
-
-    public static HomePageInterface homePageInterface;
+    private Bitmap mapBitmap;
 
     public boolean isGestureEnabled() {
         return gestureEnabled;
@@ -79,16 +74,14 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (rootView == null) {
-            rootView = inflater.inflate(R.layout.fragment_localization, container, false);
-        }
+        rootView = inflater.inflate(R.layout.fragment_localization, container, false);
         setRetainInstance(true);
         homePageInterface = this;
         new GAFrameworkUserTracker(getActivity());
         GAFrameworkUserTracker.sharedTracker().registerObserver(this);
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        indoorLayout = (RelativeLayout) rootView.findViewById(R.id.indoorLayout);
+        RelativeLayout indoorLayout = (RelativeLayout) rootView.findViewById(R.id.indoorLayout);
         indoorLayout.setVisibility(View.VISIBLE);
         currentMapImageView = (ImageView) rootView.findViewById(R.id.currentMap);
         mapContainer = (FrameLayout) rootView.findViewById(R.id.mapContainer);
@@ -139,8 +132,12 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             @Override
             public void onClick(View v) {
                 isUserMovingTheMap = false;
-                userMovedToIndexPath(oldUserPosition, 0, 0, "");
-                floatingActionButton.setVisibility(View.GONE);
+                if (currentMap != null) {
+                    userMovedToIndexPath(oldUserPosition, 0, 0, "");
+                    floatingActionButton.setVisibility(View.GONE);
+                } else {
+                    Toast.makeText(getContext(), R.string.not_localized, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return rootView;
@@ -154,7 +151,10 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             // TODO Uncomment this and give the real path to the map
             //BitmapManager bitmapManager = new BitmapManager();
             //final Bitmap mapBitmap = bitmapManager.loadBitmapFromFile("PATH_TO_MAP");
-            final Bitmap mapBitmap = BitmapFactory.decodeResource(getContext().getResources(),
+            if (mapBitmap!=null){
+                mapBitmap.recycle();
+            }
+            mapBitmap = BitmapFactory.decodeResource(getContext().getResources(),
                     map.getImageResId());
             if (mapBitmap != null) {
                 int height = mapBitmap.getHeight();
@@ -216,6 +216,9 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                         layoutParams.width = currentMapWidth;
                         layoutParams.height = currentMapHeight;
                         layoutOverlay.setLayoutParams(layoutParams);
+                        if (layoutOverlay.getParent() != null) {
+                            ((ViewGroup) layoutOverlay.getParent()).removeView(layoutOverlay);
+                        }
                         mapContainer.addView(layoutOverlay);
                         layoutOverlay.bringToFront();
                         layoutOverlay.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -288,7 +291,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     @Override
     public void onPathChanged(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path, FloorAccess.FloorAccessType floorAccessType) {
         if (layoutOverlay != null) {
-            layoutOverlay.setCurrentPath(path,floorAccessType);
+            layoutOverlay.setCurrentPath(path, floorAccessType);
         }
     }
 
@@ -317,7 +320,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         fullScreenModeEnabled = isActive;
         if (isActive) {
             floatingActionButton.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             floatingActionButton.setVisibility(View.GONE);
         }
     }
@@ -348,35 +351,6 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
 
             return true;
         }
-
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-//            isUserMovingTheMap = false;
-//            mScale = 1;
-//            effectiveScale = 1;
-//            mapContainer.setPivotX(0);
-//            mapContainer.setPivotY(0);
-//            mapContainer.setScaleX(1 / effectiveScale);
-//            mapContainer.setScaleY(1 / effectiveScale);
-//            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mapContainer.getLayoutParams();
-//            layoutParams.leftMargin = 0;
-//            layoutParams.topMargin = 0;
-//            layoutParams.rightMargin = -currentMapWidth;
-//            layoutParams.bottomMargin = -currentMapHeight;
-//            mapContainer.setLayoutParams(layoutParams);
-//            rootView.findViewById(R.id.horizontalScrollViewLayout).setScrollX(0);
-//            rootView.findViewById(R.id.scrollViewLayout).setScrollY(0);
-//            mapContainer.setX(0);
-//            mapContainer.setY(0);
-//            int[] map = new int[2];
-//            mapContainer.getLocationInWindow(map);
-//            //Log.d(TAG,"position: " + mapContainer.getX() + " " + ((FrameLayout.LayoutParams) mapContainer.getLayoutParams()).leftMargin
-//            //       + " " + map[0] + " " + map[1]);
-//            mapContainer.postInvalidate();
-            return true;
-        }
     }
-
-
 }
 

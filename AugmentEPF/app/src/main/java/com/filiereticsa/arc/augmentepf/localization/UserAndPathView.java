@@ -93,7 +93,7 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
         paint.setColor(Color.parseColor("#fa232e"));
         paint.setStyle(Paint.Style.FILL);
         paint.setAlpha(30);
-        canvas.drawCircle(userCoordinates.second, userCoordinates.first, radius*4, paint);
+        canvas.drawCircle(userCoordinates.second, userCoordinates.first, radius * 4, paint);
         paint.setAlpha(255);
         paint.setColor(Color.parseColor("#fa232e"));
         paint.setShadowLayer(50, 0, 0, Color.parseColor("#fa232e"));

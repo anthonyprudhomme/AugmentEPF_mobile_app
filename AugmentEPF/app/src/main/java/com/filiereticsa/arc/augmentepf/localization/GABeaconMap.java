@@ -20,6 +20,7 @@ import java.util.Map;
 public class GABeaconMap {
 
     private static final String TAG = "Ici";
+    public static HashMap<Integer, GABeaconMap> maps;
     double heading = 0;
     // Image url and image
     String imagePath;
@@ -33,13 +34,10 @@ public class GABeaconMap {
     private Map<Integer, MapItem> itemIdsToMapItems = new HashMap<>();
     // Map items accessor
     private ArrayList<MapItem> mapItems = null;
-
     private ArrayList<FloorAccess> floorAccesses;
 
-    public static HashMap<Integer,GABeaconMap> maps;
-
     public GABeaconMap(int id) {
-        if(maps == null){
+        if (maps == null) {
             maps = new HashMap<>();
         }
         this.id = id;
@@ -100,20 +98,20 @@ public class GABeaconMap {
                 // Stairs on the left of the map
                 ArrayList<Integer> nextFloors21 = new ArrayList<>();
                 nextFloors21.add(1);
-                FloorAccess floorAccess1 = new FloorAccess(new Pair<>(13,7), FloorAccess.FloorAccessType.STAIRS,nextFloors21);
+                FloorAccess floorAccess1 = new FloorAccess(new Pair<>(13, 7), FloorAccess.FloorAccessType.STAIRS, nextFloors21);
                 this.floorAccesses.add(floorAccess1);
 
                 // Stairs on the right of the map
                 ArrayList<Integer> nextFloors22 = new ArrayList<>();
                 nextFloors22.add(1);
-                FloorAccess floorAccess2 = new FloorAccess(new Pair<>(37,7), FloorAccess.FloorAccessType.STAIRS,nextFloors22);
+                FloorAccess floorAccess2 = new FloorAccess(new Pair<>(37, 7), FloorAccess.FloorAccessType.STAIRS, nextFloors22);
                 this.floorAccesses.add(floorAccess2);
 
                 // Elevator
                 ArrayList<Integer> nextFloors23 = new ArrayList<>();
                 nextFloors23.add(1);
                 nextFloors23.add(0);
-                FloorAccess floorAccess3 = new FloorAccess(new Pair<>(25,4), FloorAccess.FloorAccessType.ELEVATOR,nextFloors23);
+                FloorAccess floorAccess3 = new FloorAccess(new Pair<>(25, 4), FloorAccess.FloorAccessType.ELEVATOR, nextFloors23);
                 this.floorAccesses.add(floorAccess3);
                 break;
 
@@ -183,36 +181,36 @@ public class GABeaconMap {
                 // Stairs on the left of the map
                 ArrayList<Integer> nextFloors11 = new ArrayList<>();
                 nextFloors11.add(2);
-                FloorAccess floorAccess11 = new FloorAccess(new Pair<>(13,7), FloorAccess.FloorAccessType.STAIRS,nextFloors11);
+                FloorAccess floorAccess11 = new FloorAccess(new Pair<>(13, 7), FloorAccess.FloorAccessType.STAIRS, nextFloors11);
                 this.floorAccesses.add(floorAccess11);
 
                 // Stairs on the right of the map
                 ArrayList<Integer> nextFloors12 = new ArrayList<>();
                 nextFloors12.add(2);
-                FloorAccess floorAccess21 = new FloorAccess(new Pair<>(36,7), FloorAccess.FloorAccessType.STAIRS,nextFloors12);
+                FloorAccess floorAccess21 = new FloorAccess(new Pair<>(36, 7), FloorAccess.FloorAccessType.STAIRS, nextFloors12);
                 this.floorAccesses.add(floorAccess21);
 
                 // Stairs on the left of the map
                 ArrayList<Integer> nextFloors14 = new ArrayList<>();
                 nextFloors14.add(0);
-                FloorAccess floorAccess14 = new FloorAccess(new Pair<>(15,8), FloorAccess.FloorAccessType.STAIRS,nextFloors14);
+                FloorAccess floorAccess14 = new FloorAccess(new Pair<>(15, 8), FloorAccess.FloorAccessType.STAIRS, nextFloors14);
                 this.floorAccesses.add(floorAccess14);
 
                 // Stairs on the right of the map
                 ArrayList<Integer> nextFloors15 = new ArrayList<>();
                 nextFloors15.add(0);
-                FloorAccess floorAccess25 = new FloorAccess(new Pair<>(35,8), FloorAccess.FloorAccessType.STAIRS,nextFloors15);
+                FloorAccess floorAccess25 = new FloorAccess(new Pair<>(35, 8), FloorAccess.FloorAccessType.STAIRS, nextFloors15);
                 this.floorAccesses.add(floorAccess25);
 
                 // Elevator
                 ArrayList<Integer> nextFloors13 = new ArrayList<>();
                 nextFloors13.add(2);
                 nextFloors13.add(0);
-                FloorAccess floorAccess31 = new FloorAccess(new Pair<>(25,5), FloorAccess.FloorAccessType.ELEVATOR,nextFloors13);
+                FloorAccess floorAccess31 = new FloorAccess(new Pair<>(25, 5), FloorAccess.FloorAccessType.ELEVATOR, nextFloors13);
                 this.floorAccesses.add(floorAccess31);
                 break;
         }
-        maps.put(this.id,this);
+        maps.put(this.id, this);
     }
 
     // JSON from server

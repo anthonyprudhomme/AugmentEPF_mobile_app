@@ -9,5 +9,6 @@ public enum AlarmType {
     NONE,
     NOTIFICATION,
     VIBRATION,
-    ALARM
+    ALARM,
+    EMAIL
 }

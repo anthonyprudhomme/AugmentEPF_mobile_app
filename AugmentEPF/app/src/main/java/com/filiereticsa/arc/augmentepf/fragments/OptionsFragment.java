@@ -10,17 +10,6 @@ import com.filiereticsa.arc.augmentepf.R;
 
 public class OptionsFragment extends Fragment {
 
-    public OptionsFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

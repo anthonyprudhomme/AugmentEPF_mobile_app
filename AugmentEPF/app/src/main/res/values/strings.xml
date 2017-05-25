@@ -18,27 +18,7 @@
     <!-- Text on buttons corresponding at the date, hour and other -->
     <string name="text_dateButton">Choose the date</string>
     <string name="text_hourButton">Choose the hour</string>
-    <!--____________________________________________________________________________________________
-    |                                        Classroom                                             |
-    _____________________________________________________________________________________________-->
-    <!-- Title of the section -->
-    <string name="text_classroom">Choose a classroom</string>
 
-    <!-- The DB with all classrooms -->
-    <string-array name="classrooms">
-        <item>1L</item>
-        <item>2L</item>
-        <item>3L</item>
-        <item>4L</item>
-        <item>5L</item>
-        <item>6L</item>
-        <item>i1</item>
-        <item>i2</item>
-        <item>i3</item>
-        <item>i4</item>
-        <item>i5</item>
-        <item>i6</item>
-    </string-array>
     <!--____________________________________________________________________________________________
     |                                          Warning                                             |
     _____________________________________________________________________________________________-->
@@ -161,6 +141,7 @@
     <string name="fullscreen">FullScreen</string>
     <string name="nearby_points_of_interest">Nearby points of interest</string>
     <string name="available_classrooms">Available classrooms</string>
+    <string name="not_localized">You haven\'t been localized yet</string>
 
 
 </resources>

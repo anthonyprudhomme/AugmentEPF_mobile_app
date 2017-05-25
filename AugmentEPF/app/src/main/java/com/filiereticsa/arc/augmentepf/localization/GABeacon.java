@@ -31,7 +31,7 @@ public class GABeacon {
         allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43348, "BeaconName5", "White", 6, 31, 3, 0));
         allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 44020, "BeaconName6", "White", 10, 31, 3, 0));
         allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 39757, "BeaconName7", "White", 10, 39, 3, 0));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 42742, "BeaconName8", "White", 6, 13, 4, 0));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 42742, "BeaconName8", "White", 6, 13, 3, 0));
         allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43184, "BeaconName8", "White", 4, 37, 3, 0));
 
         //Lakanal Floor 1 1L to 6L

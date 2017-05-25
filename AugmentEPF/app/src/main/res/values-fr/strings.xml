@@ -113,6 +113,7 @@
         <item>Sonnerie</item>
         <item>E-mail</item>
     </string-array>
+    <string name="not_localized">Vous n\'avez pas encore été localisé</string>
 
 
 </resources>
