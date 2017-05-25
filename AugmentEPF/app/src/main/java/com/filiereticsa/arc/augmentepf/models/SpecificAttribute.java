@@ -8,6 +8,6 @@ public enum SpecificAttribute {
 
     NONE,
     ELEVATOR,
-    BIGGER_TEXT,
-    SOUND_GUIDANCE
+    SOUND_GUIDANCE,
+    BOTH
 }

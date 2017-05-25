@@ -47,14 +47,14 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/place_button"
             style="@style/Button"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:background="@drawable/red_button"
             android:padding="10dp"
-            android:text="Go"
+            android:text="@string/go"
             android:textColor="@color/white"
             android:textSize="16dp" />
 

@@ -124,9 +124,7 @@
     _____________________________________________________________________________________________-->
 
     <!-- Navigation's mode -->
-    =======
-    <!-- Navigation's mode -->
-    >>>>>>> Views
+
     <!-- Different mode of navigation -->
     <string-array name="navigation_array">
         <item>Plan</item>

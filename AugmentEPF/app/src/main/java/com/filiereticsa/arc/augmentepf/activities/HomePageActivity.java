@@ -59,7 +59,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         askForPermission();
         setUpSlidingDrawers();
         setUpEditText();
-        GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(8,10));
+        //GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(8,10));
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
         postRequestExample();
     }

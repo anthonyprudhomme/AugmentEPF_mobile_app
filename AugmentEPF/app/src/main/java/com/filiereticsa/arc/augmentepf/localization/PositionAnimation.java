@@ -10,30 +10,30 @@ import android.view.animation.Transformation;
 
 public class PositionAnimation extends Animation {
 
-    private LayoutOverlayImageView layoutOverlayImageView;
+    private UserAndPathView userAndPathView;
 
     private Pair<Integer, Integer> oldPosition;
     private Pair<Integer, Integer> newPosition;
 
-    public PositionAnimation(LayoutOverlayImageView layoutOverlayImageView, Pair<Integer, Integer> newPosition) {
-        this.oldPosition = layoutOverlayImageView.getUserPosition();
+    public PositionAnimation(UserAndPathView userAndPathView, Pair<Integer, Integer> newPosition) {
+        this.oldPosition = userAndPathView.getUserPosition();
         this.newPosition = newPosition;
-        this.layoutOverlayImageView = layoutOverlayImageView;
+        this.userAndPathView = userAndPathView;
     }
 
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation transformation) {
-        layoutOverlayImageView.setUserPosition(newPosition);
+        userAndPathView.setUserPosition(newPosition);
         Pair<Integer, Integer> oldCoordinates;
         if (oldPosition != null) {
-            oldCoordinates = layoutOverlayImageView.getCoordinatesFromIndexPath(oldPosition);
+            oldCoordinates = userAndPathView.getCoordinatesFromIndexPath(oldPosition);
         } else {
             oldCoordinates = new Pair<>(0, 0);
         }
-        Pair<Integer, Integer> newCoordinates = layoutOverlayImageView.getCoordinatesFromIndexPath(newPosition);
+        Pair<Integer, Integer> newCoordinates = userAndPathView.getCoordinatesFromIndexPath(newPosition);
         int movementX = (int) (oldCoordinates.first + ((newCoordinates.first - oldCoordinates.first) * interpolatedTime));
         int movementY = (int) (oldCoordinates.second + ((newCoordinates.second - oldCoordinates.second) * interpolatedTime));
-        layoutOverlayImageView.setUserCoordinates(new Pair<>(movementX, movementY));
-        layoutOverlayImageView.requestLayout();
+        userAndPathView.setUserCoordinates(new Pair<>(movementX, movementY));
+        userAndPathView.requestLayout();
     }
 }

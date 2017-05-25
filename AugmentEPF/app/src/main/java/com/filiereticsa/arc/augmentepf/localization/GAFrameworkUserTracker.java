@@ -1,6 +1,7 @@
 package com.filiereticsa.arc.augmentepf.localization;
 
 
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -8,6 +9,9 @@ import android.hardware.SensorManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.util.Pair;
+
+import com.filiereticsa.arc.augmentepf.models.SpecificAttribute;
+import com.filiereticsa.arc.augmentepf.models.UserType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +24,7 @@ import java.util.Map;
  * Copyright © 2016 Granite Apps. All rights reserved.
  */
 
-public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEventListener {
+public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEventListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static final double distanceThresholdBetweenUserAndClosestBeacon = 5;
     private static final String TAG = "Ici";
@@ -34,7 +38,11 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     private String direction = "";
     private long alarmForAccelerometer = 0;
     private long alarmForGyroscope = 0;
+
     private Pair<Integer, Integer> target;
+    private Integer floorTarget = null;
+    private SpecificAttribute currentSpecificAttribute = SpecificAttribute.NONE;
+
     private double stepsPerMapItem = 1.5;
     private double beaconForceDistanceThreshold = 2;
     private int beaconForceDistanceMapItemMax = 2;  // In map items
@@ -125,6 +133,8 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             }else {
                 currentMap = new GABeaconMap(newMapId);
             }
+            currentUserLocation = null;
+            userLocationHistory.clear();
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
@@ -166,7 +176,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                 observers.get(i).userMovedToIndexPath(newUserLocation.indexPath, headingGyro, currentHeading, direction);
             }
             this.currentUserLocation = newUserLocation;
-            this.definePathTo(currentUserLocation.indexPath, target);
+            this.definePathTo(currentUserLocation.indexPath, target, floorTarget);
         }
     }
 
@@ -543,6 +553,8 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             if (beaconIP != null) {
                 Pair<Integer, Integer> key;
                 if (currentUserLocation != null && currentUserLocation.indexPath != null) {
+//                    Log.d(TAG, "updateCandidatesWithRealDistanceAndClosestBeacon: "+beaconIP.first+" "+ beaconIP.second
+//                    + " "+ currentUserLocation.indexPath.first+" "+ currentUserLocation.indexPath.second);
                     int distanceBetweenUserAndClosestBeacon = this.mapHelper.pathFrom(beaconIP, currentUserLocation.indexPath).second;
                     if (distanceBetweenUserAndClosestBeacon > distanceThresholdBetweenUserAndClosestBeacon) {
                         if (getSortedCandidatesKeys() != null && getSortedCandidatesKeys().size() != 0) {
@@ -736,10 +748,6 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 
         // Let's retrieve the 3 closest ones
         this.closestBeacons = this.beaconLocalizer.nearestBeacons(3);
-        if (closestBeacons != null && closestBeacons.size() != 0) {
-            Log.d(TAG, "rangedBeacons: " + closestBeacons.get(0).getAccuracy() + " " + closestBeacons.get(0).getMinor());
-        }
-        //Log.d(TAG, ""+closestBeacons.size());
         // If we don't have any map id, let's set it using the closest beacon
         if (closestBeacons != null && closestBeacons.size() != 0) {
             GABeacon closestBeacon = this.closestBeacons.get(0);
@@ -803,14 +811,91 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 
     }
 
-    public void definePathTo(Pair<Integer, Integer> currentPosition, Pair<Integer, Integer> target) {
-        Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = this.mapHelper.pathFrom(currentPosition, target);
-        for (int i = 0; i < observers.size(); i++) {
-            observers.get(i).onPathChanged(path);
+    public void definePathTo(Pair<Integer, Integer> currentPosition, Pair<Integer, Integer> target,Integer floorTarget) {
+        if (floorTarget!= null && currentMap.getFloor() == floorTarget){
+            Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = this.mapHelper.pathFrom(currentPosition, target);
+            for (int i = 0; i < observers.size(); i++) {
+                observers.get(i).onPathChanged(path,null);
+            }
+        }else{
+            ArrayList<FloorAccess> initialFloorAccesses = currentMap.getFloorAccesses();
+            ArrayList<FloorAccess> possibleFloorAccesses = new ArrayList<>();
+            FloorAccess.FloorAccessType floorAccessType = FloorAccess.FloorAccessType.STAIRS;
+            for (int i = 0; i < initialFloorAccesses.size(); i++) {
+                FloorAccess currentFloorAccess = initialFloorAccesses.get(i);
+                if (currentFloorAccess.getFloorsPossibilities().contains(floorTarget)){
+                    switch (currentSpecificAttribute){
+                        case NONE:
+                        case SOUND_GUIDANCE:
+                            if (currentFloorAccess.getFloorAccessType() == FloorAccess.FloorAccessType.STAIRS){
+                                possibleFloorAccesses.add(currentFloorAccess);
+                                floorAccessType = FloorAccess.FloorAccessType.STAIRS;
+                            }
+                            break;
+
+                        case ELEVATOR:
+                        case BOTH:
+                            if (currentFloorAccess.getFloorAccessType() == FloorAccess.FloorAccessType.ELEVATOR){
+                                possibleFloorAccesses.add(currentFloorAccess);
+                                floorAccessType = FloorAccess.FloorAccessType.ELEVATOR;
+                            }
+                            break;
+
+                        default:
+
+                            break;
+                    }
+                }
+            }
+            Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = getFastestPath(possibleFloorAccesses);
+            for (int i = 0; i < observers.size(); i++) {
+                observers.get(i).onPathChanged(path,floorAccessType);
+            }
         }
     }
 
-    public void setTarget(Pair<Integer, Integer> target) {
+    private Pair<ArrayList<Pair<Integer, Integer>>,Integer> getFastestPath(ArrayList<FloorAccess> possibleFloorAccesses){
+        Pair<ArrayList<Pair<Integer, Integer>>,Integer> fastestPath = null;
+        for (int i = 0; i < possibleFloorAccesses.size(); i++) {
+            Pair<ArrayList<Pair<Integer, Integer>>,Integer> currentPath =
+                    mapHelper.pathFrom(currentUserLocation.indexPath,
+                            possibleFloorAccesses.get(i).getPosition());
+            if(fastestPath == null || currentPath.second < fastestPath.second){
+                fastestPath = currentPath;
+            }
+        }
+        return fastestPath;
+    }
+
+    public void setTarget(Pair<Integer, Integer> target, int floor) {
         this.target = target;
+        this.floorTarget = floor;
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        String specificAttribute = sharedPreferences.getString("specific_attribute_values_array","0");
+        switch (specificAttribute){
+            case "0":
+                currentSpecificAttribute = SpecificAttribute.NONE;
+                break;
+
+            case "V":
+                currentSpecificAttribute = SpecificAttribute.SOUND_GUIDANCE;
+                break;
+
+            case "A":
+                currentSpecificAttribute = SpecificAttribute.ELEVATOR;
+                break;
+
+            case "VA":
+                currentSpecificAttribute = SpecificAttribute.BOTH;
+                break;
+
+            default:
+                currentSpecificAttribute = SpecificAttribute.NONE;
+                break;
+        }
+        definePathTo(currentUserLocation.indexPath,target,floorTarget);
     }
 }

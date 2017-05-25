@@ -42,7 +42,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     private RelativeLayout indoorLayout;
     private ImageView currentMapImageView;
     private FloatingActionButton floatingActionButton;
-    private LayoutOverlayImageView layoutOverlay = null;
+    private UserAndPathView layoutOverlay = null;
     private GABeaconMap currentMap;
     private int currentMapHeight = 0;
     private int currentMapWidth = 0;
@@ -184,6 +184,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                 imageParams.width = (int) imageWidth;
                 currentMapHeight = (int) imageHeight;
                 currentMapWidth = (int) imageWidth;
+                gridDimensions = currentMap.getMapDimensions();
                 if (isAdded()) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -201,14 +202,13 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     @Override
     public void userMovedToIndexPath(Pair<Integer, Integer> position, double heading, double magneticHeading, String direction) {
         oldUserPosition = position;
-        //Log.d(TAG,"user moved" + position.first = " " + position.second);
         if ((layoutOverlay == null || layoutOverlay.getWidth() == 0 || layoutOverlay.getHeight() == 0)
                 && currentMapHeight != 0 && currentMapWidth != 0) {
             if (isAdded()) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        layoutOverlay = new LayoutOverlayImageView(getActivity(), currentMapHeight, currentMapWidth);
+                        layoutOverlay = new UserAndPathView(getActivity(), currentMapHeight, currentMapWidth);
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                                 RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -224,14 +224,21 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             }
         }
         if (currentMapWidth != 0 && currentMapHeight != 0) {
-            if (gridDimensions == null) {
-                gridDimensions = currentMap.getDebugMapDimensions();
-            }
+//            if (gridDimensions == null) {
+//                gridDimensions = currentMap.getMapDimensions();
+//            }
             if (layoutOverlay != null) {
                 layoutOverlay.dimensionChanged(gridDimensions, currentMapHeight, currentMapWidth);
-                PositionAnimation animation = new PositionAnimation(layoutOverlay, position);
+                final PositionAnimation animation = new PositionAnimation(layoutOverlay, position);
                 animation.setDuration(500);
-                layoutOverlay.startAnimation(animation);
+                if (isAdded()) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            layoutOverlay.startAnimation(animation);
+                        }
+                    });
+                }
                 //debug
                 layoutOverlay.setHeading(heading);
                 layoutOverlay.setMagneticHeading(magneticHeading);
@@ -279,10 +286,9 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     }
 
     @Override
-    public void onPathChanged(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path) {
-
+    public void onPathChanged(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path, FloorAccess.FloorAccessType floorAccessType) {
         if (layoutOverlay != null) {
-            layoutOverlay.setCurrentPath(path);
+            layoutOverlay.setCurrentPath(path,floorAccessType);
         }
     }
 

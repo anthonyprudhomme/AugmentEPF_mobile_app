@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Copyright © 2016 Granite Apps. All rights reserved.
  */
 
-public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatImageView {
+public class UserAndPathView extends android.support.v7.widget.AppCompatImageView {
 
     private static final String TAG = "Ici";
     private static final int STROKE_WIDTH = 10;
@@ -33,17 +33,18 @@ public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatI
     private ArrayList<Pair<Integer, Integer>> currentPath;
     private double magneticHeading = 0;
     private String direction;
+    private FloorAccess.FloorAccessType currentFloorAccesType;
 
 
     //private int radius = 30;
 
-    public LayoutOverlayImageView(Context context, int height, int width) {
+    public UserAndPathView(Context context, int height, int width) {
         super(context);
         paint = new Paint();
         path = new Path();
     }
 
-    public LayoutOverlayImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public UserAndPathView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -149,10 +150,11 @@ public class LayoutOverlayImageView extends android.support.v7.widget.AppCompatI
         this.debugHeading = heading;
     }
 
-    public void setCurrentPath(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path) {
-
+    public void setCurrentPath(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path, FloorAccess.FloorAccessType floorAccessType) {
+        Log.d(TAG, "setCurrentPath: ");
         if (path != null) {
             currentPath = path.first;
+            currentFloorAccesType = floorAccessType;
         }
     }
 

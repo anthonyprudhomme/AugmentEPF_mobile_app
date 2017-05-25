@@ -25,6 +25,10 @@ public class ClassRoom extends Place {
 
     static{
         availableClassroomList = new ArrayList<>();
+        ClassRoom room3L = new ClassRoom("Real 3L", new Position(31,10,1),true);
+        availableClassroomList.add(room3L);
+        ClassRoom roomi3 = new ClassRoom("Real i3", new Position(32,10,2),true);
+        availableClassroomList.add(roomi3);
         for (int i=0; i < 20; i++){
             ClassRoom classRoom = new ClassRoom(
                     i +"L",

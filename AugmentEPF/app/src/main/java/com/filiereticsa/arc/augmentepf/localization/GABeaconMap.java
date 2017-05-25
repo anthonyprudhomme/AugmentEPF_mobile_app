@@ -34,6 +34,8 @@ public class GABeaconMap {
     // Map items accessor
     private ArrayList<MapItem> mapItems = null;
 
+    private ArrayList<FloorAccess> floorAccesses;
+
     public static HashMap<Integer,GABeaconMap> maps;
 
     public GABeaconMap(int id) {
@@ -46,9 +48,9 @@ public class GABeaconMap {
             case 0:
                 this.nbRow = 20;
                 this.nbCol = 50;
-                this.floor = 0;
+                this.floor = 2;
                 this.heading = 210;
-                this.imageResId = R.drawable.plan_lakanal_etage2;
+                this.imageResId = R.drawable.plan_epf_etage2;
                 dimensions = new Pair<>(nbRow, nbCol);
                 this.mapItems = new ArrayList<>();
 
@@ -91,14 +93,36 @@ public class GABeaconMap {
                 for (int i = 5; i <= 7; i++) {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(13, i)));
                 }
+
+                // This variable contains all the points where you can switch floors
+                this.floorAccesses = new ArrayList<>();
+
+                // Stairs on the left of the map
+                ArrayList<Integer> nextFloors21 = new ArrayList<>();
+                nextFloors21.add(1);
+                FloorAccess floorAccess1 = new FloorAccess(new Pair<>(13,7), FloorAccess.FloorAccessType.STAIRS,nextFloors21);
+                this.floorAccesses.add(floorAccess1);
+
+                // Stairs on the right of the map
+                ArrayList<Integer> nextFloors22 = new ArrayList<>();
+                nextFloors22.add(1);
+                FloorAccess floorAccess2 = new FloorAccess(new Pair<>(37,7), FloorAccess.FloorAccessType.STAIRS,nextFloors22);
+                this.floorAccesses.add(floorAccess2);
+
+                // Elevator
+                ArrayList<Integer> nextFloors23 = new ArrayList<>();
+                nextFloors23.add(1);
+                nextFloors23.add(0);
+                FloorAccess floorAccess3 = new FloorAccess(new Pair<>(25,4), FloorAccess.FloorAccessType.ELEVATOR,nextFloors23);
+                this.floorAccesses.add(floorAccess3);
                 break;
 
             case 1:
-                this.nbRow = 48;
-                this.nbCol = 19;
-                this.floor = 0;
+                this.nbRow = 19;
+                this.nbCol = 48;
+                this.floor = 1;
                 this.heading = 210;
-                this.imageResId = R.drawable.plan_lakanal_etage1;
+                this.imageResId = R.drawable.plan_epf_etage1;
                 dimensions = new Pair<>(nbRow, nbCol);
                 this.mapItems = new ArrayList<>();
 
@@ -127,21 +151,65 @@ public class GABeaconMap {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 10)));
                 }
 
-                //Escaliers droite
-                for (int i = 31; i <= 36; i++) {
+                //Escaliers droite descente
+                for (int i = 30; i <= 36; i++) {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 5)));
                 }
                 for (int i = 6; i <= 7; i++) {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(36, i)));
                 }
 
-                //Escaliers gauche
+                //Escaliers droite montée
+                for (int i = 15; i <= 18; i++) {
+                    this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 8)));
+                }
+
+                //Escaliers gauche descente
                 for (int i = 18; i >= 13; i--) {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 5)));
                 }
                 for (int i = 6; i <= 7; i++) {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(13, i)));
                 }
+
+                //Escaliers gauche montée
+                for (int i = 31; i <= 35; i++) {
+                    this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 8)));
+                }
+
+                // This variable contains all the points where you can switch floors
+                this.floorAccesses = new ArrayList<>();
+
+                // Stairs on the left of the map
+                ArrayList<Integer> nextFloors11 = new ArrayList<>();
+                nextFloors11.add(2);
+                FloorAccess floorAccess11 = new FloorAccess(new Pair<>(13,7), FloorAccess.FloorAccessType.STAIRS,nextFloors11);
+                this.floorAccesses.add(floorAccess11);
+
+                // Stairs on the right of the map
+                ArrayList<Integer> nextFloors12 = new ArrayList<>();
+                nextFloors12.add(2);
+                FloorAccess floorAccess21 = new FloorAccess(new Pair<>(36,7), FloorAccess.FloorAccessType.STAIRS,nextFloors12);
+                this.floorAccesses.add(floorAccess21);
+
+                // Stairs on the left of the map
+                ArrayList<Integer> nextFloors14 = new ArrayList<>();
+                nextFloors14.add(0);
+                FloorAccess floorAccess14 = new FloorAccess(new Pair<>(15,8), FloorAccess.FloorAccessType.STAIRS,nextFloors14);
+                this.floorAccesses.add(floorAccess14);
+
+                // Stairs on the right of the map
+                ArrayList<Integer> nextFloors15 = new ArrayList<>();
+                nextFloors15.add(0);
+                FloorAccess floorAccess25 = new FloorAccess(new Pair<>(35,8), FloorAccess.FloorAccessType.STAIRS,nextFloors15);
+                this.floorAccesses.add(floorAccess25);
+
+                // Elevator
+                ArrayList<Integer> nextFloors13 = new ArrayList<>();
+                nextFloors13.add(2);
+                nextFloors13.add(0);
+                FloorAccess floorAccess31 = new FloorAccess(new Pair<>(25,5), FloorAccess.FloorAccessType.ELEVATOR,nextFloors13);
+                this.floorAccesses.add(floorAccess31);
                 break;
         }
         maps.put(this.id,this);
@@ -247,11 +315,19 @@ public class GABeaconMap {
         return id;
     }
 
-    public Pair<Integer, Integer> getDebugMapDimensions() {
+    public Pair<Integer, Integer> getMapDimensions() {
         return new Pair<>(nbRow, nbCol);
     }
 
     public String getImagePath() {
         return imagePath;
+    }
+
+    public int getFloor() {
+        return floor;
+    }
+
+    public ArrayList<FloorAccess> getFloorAccesses() {
+        return floorAccesses;
     }
 }
