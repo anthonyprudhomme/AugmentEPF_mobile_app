@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.util.Pair;
@@ -99,6 +100,8 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     private int x = 0, y = 1, z = 2;
     private long lastTimeStamp = 0;
 
+    private SharedPreferences sharedPreferences;
+
     public GAFrameworkUserTracker(FragmentActivity activity) {
         if (sharedTracker == null) {
             sensorManager = (SensorManager) activity.getSystemService(activity.SENSOR_SERVICE);
@@ -106,6 +109,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
             gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
             linearAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
             sharedTracker = this;
         }
     }
@@ -812,14 +816,25 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     }
 
     public void definePathTo(Pair<Integer, Integer> currentPosition, Pair<Integer, Integer> target, Integer floorTarget) {
+        // If the target is on the same floor
         if (floorTarget != null && currentMap.getFloor() == floorTarget) {
             Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = this.mapHelper.pathFrom(currentPosition, target);
-            for (int i = 0; i < observers.size(); i++) {
-                observers.get(i).onPathChanged(path, null);
+            if (path != null && path.first != null) {
+                path.first.add(target);
+                for (int i = 0; i < observers.size(); i++) {
+                    observers.get(i).onPathChanged(path, null);
+                }
             }
-        } else {
+        }
+        // If the target is on an other floor
+        else {
             ArrayList<FloorAccess> initialFloorAccesses = currentMap.getFloorAccesses();
             ArrayList<FloorAccess> possibleFloorAccesses = new ArrayList<>();
+            // Get preferences corresponding to specific attributes : will say if we need to take
+            // elevator or not
+            String specificAttribute = sharedPreferences.getString("specific_attribute_user", "0");
+            currentSpecificAttribute = getCurrentSpecificAttribute(specificAttribute);
+            // Set default value to floorAccessType
             FloorAccess.FloorAccessType floorAccessType = FloorAccess.FloorAccessType.STAIRS;
             for (int i = 0; i < initialFloorAccesses.size(); i++) {
                 FloorAccess currentFloorAccess = initialFloorAccesses.get(i);
@@ -836,6 +851,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                         case ELEVATOR:
                         case BOTH:
                             if (currentFloorAccess.getFloorAccessType() == FloorAccess.FloorAccessType.ELEVATOR) {
+                                Log.d(TAG, "definePathTo: elevator access");
                                 possibleFloorAccesses.add(currentFloorAccess);
                                 floorAccessType = FloorAccess.FloorAccessType.ELEVATOR;
                             }
@@ -862,6 +878,9 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                             possibleFloorAccesses.get(i).getPosition());
             if (fastestPath == null || currentPath.second < fastestPath.second) {
                 fastestPath = currentPath;
+                if (fastestPath != null && fastestPath.first != null) {
+                    fastestPath.first.add(possibleFloorAccesses.get(i).getPosition());
+                }
             }
         }
         return fastestPath;
@@ -875,6 +894,11 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         String specificAttribute = sharedPreferences.getString("specific_attribute_values_array", "0");
+        getCurrentSpecificAttribute(specificAttribute);
+        definePathTo(currentUserLocation.indexPath, target, floorTarget);
+    }
+
+    private SpecificAttribute getCurrentSpecificAttribute(String specificAttribute) {
         switch (specificAttribute) {
             case "0":
                 currentSpecificAttribute = SpecificAttribute.NONE;
@@ -896,6 +920,10 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                 currentSpecificAttribute = SpecificAttribute.NONE;
                 break;
         }
-        definePathTo(currentUserLocation.indexPath, target, floorTarget);
+        return currentSpecificAttribute;
+    }
+
+    public GABeaconMapHelper getMapHelper() {
+        return mapHelper;
     }
 }

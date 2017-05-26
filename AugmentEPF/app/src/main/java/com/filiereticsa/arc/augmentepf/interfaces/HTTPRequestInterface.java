@@ -6,5 +6,5 @@ package com.filiereticsa.arc.augmentepf.interfaces;
 
 public interface HTTPRequestInterface {
 
-    void onRequestDone(String result);
+    void onRequestDone(String result, int requestId);
 }

@@ -142,6 +142,10 @@
     <string name="nearby_points_of_interest">Nearby points of interest</string>
     <string name="available_classrooms">Available classrooms</string>
     <string name="not_localized">You haven\'t been localized yet</string>
+    <string name="man_restroom">Man restroom</string>
+    <string name="info_restroom_man">Restroom for men.</string>
+    <string name="woman_restroom">Woman restroom</string>
+    <string name="info_restroom_woman">Restroom for women.</string>
 
 
 </resources>

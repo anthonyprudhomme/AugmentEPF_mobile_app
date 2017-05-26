@@ -24,15 +24,15 @@ public class GABeacon {
         allBeacons = new ArrayList<>();
 
         //Lakanal Floor 2 i1 to i6
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 42194, "BeaconName1", "White", 10, 8, 3, 0));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43216, "BeaconName2", "White", 10, 12, 3, 0));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43364, "BeaconName3", "White", 6, 19, 3, 0));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 40935, "BeaconName4", "White", 3, 25, 3, 0));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43348, "BeaconName5", "White", 6, 31, 3, 0));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 44020, "BeaconName6", "White", 10, 31, 3, 0));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 39757, "BeaconName7", "White", 10, 39, 3, 0));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 42742, "BeaconName8", "White", 6, 13, 3, 0));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43184, "BeaconName8", "White", 4, 37, 3, 0));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 42194, "BeaconName1", "White", 10, 8, 3, 2));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43216, "BeaconName2", "White", 10, 12, 3, 2));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43364, "BeaconName3", "White", 6, 19, 3, 2));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 40935, "BeaconName4", "White", 3, 25, 3, 2));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43348, "BeaconName5", "White", 6, 31, 3, 2));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 44020, "BeaconName6", "White", 10, 31, 3, 2));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 39757, "BeaconName7", "White", 10, 39, 3, 2));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 42742, "BeaconName8", "White", 6, 13, 3, 2));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43184, "BeaconName8", "White", 4, 37, 3, 2));
 
         //Lakanal Floor 1 1L to 6L
         //New beacons
@@ -41,7 +41,7 @@ public class GABeacon {
         allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43060, "BeaconName8", "White", 7, 19, 3, 1));
         allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43032, "BeaconName8", "White", 5, 25, 3, 1));
         allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43104, "BeaconName8", "White", 7, 30, 3, 1));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43277, "BeaconName8", "White", 10, 31, 3, 1));
+        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43277, "BeaconName8", "White", 10, 30, 3, 1));
         allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43045, "BeaconName8", "White", 10, 37, 3, 1));
 
         //Unused beacon

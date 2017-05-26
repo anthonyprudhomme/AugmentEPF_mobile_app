@@ -24,7 +24,9 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.R;
+import com.filiereticsa.arc.augmentepf.interfaces.DestinationSelectedInterface;
 import com.filiereticsa.arc.augmentepf.interfaces.HomePageInterface;
+import com.filiereticsa.arc.augmentepf.models.Place;
 
 import java.util.ArrayList;
 
@@ -33,15 +35,16 @@ import java.util.ArrayList;
  * Copyright © 2016 Granite Apps. All rights reserved.
  */
 
-public class LocalizationFragment extends Fragment implements GAFrameworkUserTrackerObserver, HomePageInterface {
+public class LocalizationFragment extends Fragment implements GAFrameworkUserTrackerObserver, HomePageInterface, DestinationSelectedInterface {
 
     public static final float DEFAULT_ZOOM = 0.4f;
     private static final String TAG = "Ici";
     public static HomePageInterface homePageInterface;
+    public static DestinationSelectedInterface destinationSelectedInterface;
     private View rootView = null;
     private ImageView currentMapImageView;
     private FloatingActionButton floatingActionButton;
-    private UserAndPathView layoutOverlay = null;
+    private UserAndPathView userAndPathView = null;
     private GABeaconMap currentMap;
     private int currentMapHeight = 0;
     private int currentMapWidth = 0;
@@ -77,6 +80,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         rootView = inflater.inflate(R.layout.fragment_localization, container, false);
         setRetainInstance(true);
         homePageInterface = this;
+        destinationSelectedInterface = this;
         new GAFrameworkUserTracker(getActivity());
         GAFrameworkUserTracker.sharedTracker().registerObserver(this);
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
@@ -202,50 +206,50 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     @Override
     public void userMovedToIndexPath(Pair<Integer, Integer> position, double heading, double magneticHeading, String direction) {
         oldUserPosition = position;
-        if ((layoutOverlay == null || layoutOverlay.getWidth() == 0 || layoutOverlay.getHeight() == 0)
+        if ((userAndPathView == null || userAndPathView.getWidth() == 0 || userAndPathView.getHeight() == 0)
                 && currentMapHeight != 0 && currentMapWidth != 0) {
             if (isAdded()) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        layoutOverlay = new UserAndPathView(getActivity(), currentMapHeight, currentMapWidth);
+                        userAndPathView = new UserAndPathView(getActivity(), currentMapHeight, currentMapWidth);
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        layoutOverlay.requestLayout();
+                        userAndPathView.requestLayout();
                         layoutParams.width = currentMapWidth;
                         layoutParams.height = currentMapHeight;
-                        layoutOverlay.setLayoutParams(layoutParams);
-                        if (layoutOverlay.getParent() != null) {
-                            ((ViewGroup) layoutOverlay.getParent()).removeView(layoutOverlay);
+                        userAndPathView.setLayoutParams(layoutParams);
+                        if (userAndPathView.getParent() != null) {
+                            ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
                         }
-                        mapContainer.addView(layoutOverlay);
-                        layoutOverlay.bringToFront();
-                        layoutOverlay.setScaleType(ImageView.ScaleType.FIT_XY);
+                        if(userAndPathView.getParent()!=null){
+                            ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
+                        }
+                        mapContainer.addView(userAndPathView);
+                        userAndPathView.bringToFront();
+                        userAndPathView.setScaleType(ImageView.ScaleType.FIT_XY);
                     }
                 });
             }
         }
         if (currentMapWidth != 0 && currentMapHeight != 0) {
-//            if (gridDimensions == null) {
-//                gridDimensions = currentMap.getMapDimensions();
-//            }
-            if (layoutOverlay != null) {
-                layoutOverlay.dimensionChanged(gridDimensions, currentMapHeight, currentMapWidth);
-                final PositionAnimation animation = new PositionAnimation(layoutOverlay, position);
+            if (userAndPathView != null) {
+                userAndPathView.dimensionChanged(gridDimensions, currentMapHeight, currentMapWidth);
+                final PositionAnimation animation = new PositionAnimation(userAndPathView, position);
                 animation.setDuration(500);
                 if (isAdded()) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            layoutOverlay.startAnimation(animation);
+                            userAndPathView.startAnimation(animation);
                         }
                     });
                 }
                 //debug
-                layoutOverlay.setHeading(heading);
-                layoutOverlay.setMagneticHeading(magneticHeading);
-                layoutOverlay.setDirection(direction);
+                userAndPathView.setHeading(heading);
+                userAndPathView.setMagneticHeading(magneticHeading);
+                userAndPathView.setDirection(direction);
             }
         }
 
@@ -283,15 +287,15 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     @Override
     public void userChangedDirection(Pair<Integer, Integer> newDirection) {
 //        Log.e("user changed direction "+ newDirection.first + " "+ newDirection.second);
-//        scrollLayout.setPivotX(layoutOverlay.getUserCoordinates().first);
-//        scrollLayout.setPivotY(layoutOverlay.getUserCoordinates().second);
+//        scrollLayout.setPivotX(userAndPathView.getUserCoordinates().first);
+//        scrollLayout.setPivotY(userAndPathView.getUserCoordinates().second);
 //        scrollLayout.setRotation((float) (Math.atan2(newDirection.second,newDirection.first)*180/Math.PI));
     }
 
     @Override
     public void onPathChanged(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path, FloorAccess.FloorAccessType floorAccessType) {
-        if (layoutOverlay != null) {
-            layoutOverlay.setCurrentPath(path, floorAccessType);
+        if (userAndPathView != null) {
+            userAndPathView.setCurrentPath(path, floorAccessType);
         }
     }
 
@@ -323,6 +327,11 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         } else {
             floatingActionButton.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onDestinationSelected(Place place) {
+        mapContainer.invalidate();
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {

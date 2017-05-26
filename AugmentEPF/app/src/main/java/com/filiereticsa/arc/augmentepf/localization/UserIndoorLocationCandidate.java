@@ -9,8 +9,8 @@ import android.util.Pair;
 
 public class UserIndoorLocationCandidate {
 
-    Pair<Integer, Integer> indexPath;
-    double weight = 0;
+    public Pair<Integer, Integer> indexPath;
+    public double weight = 0;
 
     public UserIndoorLocationCandidate(Pair<Integer, Integer> indexPath, double weight) {
         this.indexPath = indexPath;

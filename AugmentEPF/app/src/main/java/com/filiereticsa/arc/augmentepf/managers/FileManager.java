@@ -89,7 +89,7 @@ public class FileManager {
 
     // this method will save the file with the name you gave in the constructor. The content of this
     // file will be the data you gave in the parameter
-    void saveFile(String data) {
+    public void saveFile(String data) {
         FileOutputStream outputStream;
         File directory;
         File file;

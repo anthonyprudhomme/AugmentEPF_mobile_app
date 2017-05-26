@@ -151,7 +151,6 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
     }
 
     public void setCurrentPath(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path, FloorAccess.FloorAccessType floorAccessType) {
-        Log.d(TAG, "setCurrentPath: ");
         if (path != null) {
             currentPath = path.first;
             currentFloorAccesType = floorAccessType;

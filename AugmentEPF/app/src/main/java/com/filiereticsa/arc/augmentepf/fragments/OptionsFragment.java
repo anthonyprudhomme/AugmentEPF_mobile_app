@@ -16,4 +16,5 @@ public class OptionsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         return inflater.inflate(R.layout.fragment_options, container, false);
     }
+
 }

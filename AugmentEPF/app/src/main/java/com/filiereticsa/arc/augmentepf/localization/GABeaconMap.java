@@ -43,7 +43,7 @@ public class GABeaconMap {
         this.id = id;
         int j = 0;
         switch (id) {
-            case 0:
+            case 2:
                 this.nbRow = 20;
                 this.nbCol = 50;
                 this.floor = 2;
@@ -63,7 +63,7 @@ public class GABeaconMap {
                 }
 
                 //Passage avec l'ascenseur
-                for (int i = 20; i <= 31; i++) {
+                for (int i = 20; i <= 30; i++) {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 3)));
                 }
 
@@ -72,12 +72,12 @@ public class GABeaconMap {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(31, i)));
                 }
                 //Couloir vers les salles i1/i2
-                for (int i = 32; i <= 44; i++) {
+                for (int i = 32; i <= 45; i++) {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 10)));
                 }
 
                 //Escaliers droite
-                for (int i = 31; i <= 37; i++) {
+                for (int i = 30; i <= 37; i++) {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 4)));
                 }
                 for (int i = 5; i <= 7; i++) {
@@ -111,7 +111,7 @@ public class GABeaconMap {
                 ArrayList<Integer> nextFloors23 = new ArrayList<>();
                 nextFloors23.add(1);
                 nextFloors23.add(0);
-                FloorAccess floorAccess3 = new FloorAccess(new Pair<>(25, 4), FloorAccess.FloorAccessType.ELEVATOR, nextFloors23);
+                FloorAccess floorAccess3 = new FloorAccess(new Pair<>(25, 3), FloorAccess.FloorAccessType.ELEVATOR, nextFloors23);
                 this.floorAccesses.add(floorAccess3);
                 break;
 
@@ -126,7 +126,7 @@ public class GABeaconMap {
 
                 // Couloir 5L/6L jusqu'aux toilettes
                 j = 0;
-                for (int i = 12; i <= 19; i++) {
+                for (int i = 11; i <= 19; i++) {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 10)));
                 }
 
@@ -145,7 +145,7 @@ public class GABeaconMap {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(30, i)));
                 }
                 //Couloir vers les salles 1L/2L
-                for (int i = 31; i <= 37; i++) {
+                for (int i = 31; i <= 38; i++) {
                     this.mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 10)));
                 }
 
