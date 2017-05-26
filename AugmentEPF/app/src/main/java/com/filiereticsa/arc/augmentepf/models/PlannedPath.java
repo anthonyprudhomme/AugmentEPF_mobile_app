@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Created by anthony on 07/05/2017.
+ * Created by ARC© Team for AugmentEPF project on 07/05/2017.
  */
 
 public class PlannedPath extends Path {

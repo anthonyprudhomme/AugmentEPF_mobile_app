@@ -1,9 +1,5 @@
 package com.filiereticsa.arc.augmentepf.models;
 
-/**
- * Created by anthony on 07/05/2017.
- */
-
 public enum AlarmType {
 
     NONE,
@@ -11,4 +7,7 @@ public enum AlarmType {
     VIBRATION,
     ALARM,
     EMAIL
+/**
+ * Created by ARC© Team for AugmentEPF project on 07/05/2017.
+ */
 }

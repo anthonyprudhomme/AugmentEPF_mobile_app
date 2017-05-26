@@ -134,9 +134,10 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 //                    //currentMap = new GABeaconMap(jsonObject);
             if (GABeaconMap.maps != null && GABeaconMap.maps.containsKey(newMapId)) {
                 currentMap = GABeaconMap.maps.get(newMapId);
-            } else {
-                currentMap = new GABeaconMap(newMapId);
             }
+//            else {
+//                currentMap = new GABeaconMap(newMapId);
+//            }
             currentUserLocation = null;
             userLocationHistory.clear();
 //                } catch (JSONException e) {

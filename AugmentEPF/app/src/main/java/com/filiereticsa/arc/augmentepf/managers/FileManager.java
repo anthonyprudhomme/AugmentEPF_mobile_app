@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by anthony on 07/05/2017.
+ * Created by ARC© Team for AugmentEPF project on 07/05/2017.
  */
 
 // This manager will help you to handle file writing and reading

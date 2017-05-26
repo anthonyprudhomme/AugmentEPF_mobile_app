@@ -43,24 +43,22 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         httpRequestInterface = this;
-        initClassRoomsLoading();
-        initAvailableClassRoomsRequest();
-        loadPOI();
+        //initClassRoomsLoading();
+        //initAvailableClassRoomsRequest();
+        //initPOILoading();
         initiateLists(view);
         setAutoCompleteSearch(view);
         return view;
     }
 
-    private void initAvailableClassRoomsRequest() {
+
+
+    private void initPOILoading() {
         if (HomePageActivity.isNetworkAvailable()) {
-            ClassRoom.askForAvailableClassRooms();
+            PointOfInterest.askForPointOfInterests();
         } else {
-            Log.d(TAG, "initAvailableClassRoomsRequest: no internet");
+            PointOfInterest.loadPOIFromFile();
         }
-    }
-
-    private void loadPOI() {
-
     }
 
     private void initClassRoomsLoading() {
@@ -69,6 +67,12 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
         } else {
             Log.d(TAG, "initAvailableClassRoomsRequest: no internet");
             ClassRoom.loadClassRoomsFromFile();
+        }
+    }
+
+    private void initAvailableClassRoomsRequest() {
+        if (HomePageActivity.isNetworkAvailable()) {
+            ClassRoom.askForAvailableClassRooms();
         }
     }
 
@@ -150,7 +154,21 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
                 break;
 
             case HTTPRequestManager.POI:
-                PointOfInterest.onPoiRequestDone(result);
+                if(result.equals("Error")){
+                    PointOfInterest.loadPOIFromFile();
+                }else {
+                    try {
+                        JSONObject jsonObject = new JSONObject(result);
+                        String success = jsonObject.getString(SUCCESS);
+                        if (success.equals("success")) {
+                            PointOfInterest.onPoiRequestDone(result);
+                        } else {
+                            PointOfInterest.loadPOIFromFile();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 break;
             default:
 

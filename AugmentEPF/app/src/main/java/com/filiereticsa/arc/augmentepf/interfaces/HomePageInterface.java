@@ -1,7 +1,7 @@
 package com.filiereticsa.arc.augmentepf.interfaces;
 
 /**
- * Created by anthony on 22/05/2017.
+ * Created by ARC© Team for AugmentEPF project on 22/05/2017.
  */
 
 public interface HomePageInterface {

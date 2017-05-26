@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * Created by anthony on 07/05/2017.
+ * Created by ARC© Team for AugmentEPF project on 07/05/2017.
  */
 
 public class ClassRoom extends Place {
@@ -35,6 +35,8 @@ public class ClassRoom extends Place {
     public static final String MESSAGE = "message";
     public static final String CLASSROOMS_JSON = "classrooms.json";
     public static final String CLASS_ROOMS = "classRooms";
+    public static final String GET_AVAILABLE_CLASS_ROOMS_PHP = "getAvailableClassRooms.php";
+    public static final String GET_CLASS_ROOMS_PHP = "getClassRooms.php";
 
     private static ArrayList<ClassRoom> classRooms;
 
@@ -200,7 +202,6 @@ public class ClassRoom extends Place {
             classRoomsAsJsonArray = classRoomsAsJson.getJSONArray(CLASS_ROOMS);
             for (int i = 0; i < classRoomsAsJsonArray.length(); i++) {
                 JSONObject currentClassRoomJsonObject = classRoomsAsJsonArray.getJSONObject(i);
-                Log.d(TAG, "loadClassRoomsFromFile: " + currentClassRoomJsonObject.toString());
                 String name = currentClassRoomJsonObject.getString(NAME);
                 int floor = currentClassRoomJsonObject.getInt(FLOOR);
                 int positionX = currentClassRoomJsonObject.getInt(POS_X);
@@ -235,14 +236,14 @@ public class ClassRoom extends Place {
             e.printStackTrace();
         }
         // TODO rename this according to Guilhem's name
-        HTTPRequestManager.doPostRequest("getAvailableClassRooms.php", jsonObject.toString(),
+        HTTPRequestManager.doPostRequest(GET_AVAILABLE_CLASS_ROOMS_PHP, jsonObject.toString(),
                 SearchFragment.httpRequestInterface, HTTPRequestManager.AVAILABLE_CLASSROOMS);
     }
 
     public static void askForClassRooms() {
         JSONObject jsonObject = new JSONObject();
         // TODO rename this according to Guilhem's name
-        HTTPRequestManager.doPostRequest("getClassRooms.php", jsonObject.toString(),
+        HTTPRequestManager.doPostRequest(GET_CLASS_ROOMS_PHP, jsonObject.toString(),
                 SearchFragment.httpRequestInterface, HTTPRequestManager.CLASSROOMS);
     }
 
@@ -290,6 +291,7 @@ public class ClassRoom extends Place {
                         classRooms.add(
                                 new ClassRoom(classRoomsJsonArray.getJSONObject(i)));
                     }
+                    ClassRoom.saveClassRoomsToFile();
                     break;
 
 

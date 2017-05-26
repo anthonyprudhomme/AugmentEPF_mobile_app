@@ -27,10 +27,14 @@ import com.filiereticsa.arc.augmentepf.fragments.SearchFragment;
 import com.filiereticsa.arc.augmentepf.interfaces.DestinationSelectedInterface;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 import com.filiereticsa.arc.augmentepf.localization.BeaconDetector;
+import com.filiereticsa.arc.augmentepf.localization.GABeacon;
+import com.filiereticsa.arc.augmentepf.localization.GABeaconMap;
 import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
 import com.filiereticsa.arc.augmentepf.localization.LocalizationFragment;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
+import com.filiereticsa.arc.augmentepf.models.ClassRoom;
 import com.filiereticsa.arc.augmentepf.models.Place;
+import com.filiereticsa.arc.augmentepf.models.PointOfInterest;
 
 import org.altbeacon.beacon.BeaconManager;
 import org.json.JSONArray;
@@ -40,6 +44,8 @@ import org.json.JSONObject;
 public class HomePageActivity extends AppCompatActivity implements HTTPRequestInterface, DestinationSelectedInterface {
     private static final String TAG = "Ici";
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+    public static final String SUCCESS = "success";
+    public static HTTPRequestInterface httpRequestInterface;
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
     private SlidingDrawer leftSlidingDrawer;
     private SlidingDrawer rightSlidingDrawer;
@@ -56,12 +62,24 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         destinationSelectedInterface = this;
+        httpRequestInterface = this;
+        loadBeaconsAndMaps();
         initFragments();
         askForPermission();
         setUpSlidingDrawers();
         setUpEditText();
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
         postRequestExample();
+    }
+
+    private void loadBeaconsAndMaps() {
+        if (isNetworkAvailable()) {
+            GABeacon.askForBeacons();
+            GABeaconMap.askForMaps();
+        } else {
+            GABeacon.loadBeaconsFromFile();
+            GABeaconMap.loadMapsFromFile();
+        }
     }
 
     private void initFragments() {
@@ -333,6 +351,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     public void onRequestDone(String result,int requestId) {
         // Do the action corresponding to the request you did
         // You can retrieve your request thanks to the requestId
+        Log.d(TAG, "onRequestDone: ");
         switch (requestId){
             case HTTPRequestManager.ACCOUNT_CREATION:
                 try {
@@ -342,6 +361,43 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                     Log.d(TAG, "onRequestDone: " + jsonObject.getString("message"));
                 } catch (JSONException e) {
                     e.printStackTrace();
+                }
+                break;
+
+            case HTTPRequestManager.BEACONS:
+                if(result.equals("Error")){
+                    Log.d(TAG, "onRequestDone: load beacons from file");
+                    GABeacon.loadBeaconsFromFile();
+                }else {
+                    try {
+                        JSONObject jsonObject = new JSONObject(result);
+                        String success = jsonObject.getString(SUCCESS);
+                        if (success.equals("success")) {
+                            GABeacon.onBeaconRequestDone(result);
+                        } else {
+                            GABeacon.loadBeaconsFromFile();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
+            case HTTPRequestManager.MAPS:
+                if(result.equals("Error")){
+                    GABeaconMap.loadMapsFromFile();
+                }else {
+                    try {
+                        JSONObject jsonObject = new JSONObject(result);
+                        String success = jsonObject.getString(SUCCESS);
+                        if (success.equals("success")) {
+                            GABeaconMap.onMapsRequestDone(result);
+                        } else {
+                            GABeaconMap.loadMapsFromFile();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
         }

@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 
 /**
- * Created by anthony on 07/05/2017.
+ * Created by ARC© Team for AugmentEPF project on 07/05/2017.
  */
 
 // This class helps you handle bitmaps. It contains method that let you for example load or save

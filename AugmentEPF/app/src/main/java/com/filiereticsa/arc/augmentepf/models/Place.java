@@ -1,7 +1,7 @@
 package com.filiereticsa.arc.augmentepf.models;
 
 /**
- * Created by Cécile on 22/05/2017.
+ * Created by ARC© Team for AugmentEPF project on 22/05/2017.
  */
 
 public class Place {

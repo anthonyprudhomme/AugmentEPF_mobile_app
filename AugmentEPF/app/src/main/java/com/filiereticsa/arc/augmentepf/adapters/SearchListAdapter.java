@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 
 /**
- * Created by Cécile on 21/05/2017.
+ * Created by ARC© Team for AugmentEPF project on 21/05/2017.
  */
 
 public class SearchListAdapter extends ArrayAdapter<Place> implements SharedPreferences.OnSharedPreferenceChangeListener {

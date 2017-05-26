@@ -9,7 +9,7 @@ import org.altbeacon.beacon.service.RangedBeacon;
 
 
 /**
- * Created by anthony on 07/05/2017.
+ * Created by ARC© Team for AugmentEPF project on 07/05/2017.
  */
 
 public class AugmentEPFApplication extends Application {

@@ -13,7 +13,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Created by anthony on 07/05/2017.
+ * Created by ARC© Team for AugmentEPF project on 07/05/2017.
  */
 // This manager will help you handle http requests
 public class HTTPRequestManager {
