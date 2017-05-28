@@ -9,5 +9,6 @@ public enum UserType {
     VISITOR,
     STUDENT,
     TEACHER,
-    CONTRIBUTOR
+    CONTRIBUTOR,
+    ADMINISTRATOR
 }

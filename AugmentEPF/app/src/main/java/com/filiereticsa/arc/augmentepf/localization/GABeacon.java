@@ -36,9 +36,10 @@ public class GABeacon {
     private static final String FLOOR = "floor";
     private static final String POS_X = "posX";
     private static final String POS_Y = "posY";
-    private static final String OK = "ok";
-    private static final String PROBLEM = "problem";
     private static final String MESSAGE = "message";
+    private static final String VALIDATE = "validate";
+    private static final String YES = "y";
+    private static final String NO = "n";
 
     static {
         allBeacons = new ArrayList<>();
@@ -267,9 +268,10 @@ public class GABeacon {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
+            String validate = jsonObject.getString(VALIDATE);
             String message = jsonObject.getString(MESSAGE);
-            switch (message) {
-                case OK:
+            switch (validate) {
+                case YES:
                     JSONArray beaconJsonArray = jsonObject.getJSONArray(BEACON);
                     if (allBeacons == null) {
                         allBeacons = new ArrayList<>();
@@ -282,7 +284,7 @@ public class GABeacon {
                     GABeacon.saveBeaconsToFile();
                     break;
 
-                case PROBLEM:
+                case NO:
 
                     break;
             }

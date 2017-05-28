@@ -69,10 +69,11 @@
 
     <!-- Different specific attribute -->
     <string-array name="user_type_array">
-        <item>Visitor</item>
         <item>Student</item>
+        <item>Visitor</item>
         <item>Professor</item>
-        <item>Administration</item>
+        <item>Contributor</item>
+        <item>Admin</item>
     </string-array>
     <!-- The value of the choice above -->
     <string-array name="user_type_values_array">
@@ -146,6 +147,16 @@
     <string name="info_restroom_man">Restroom for men.</string>
     <string name="woman_restroom">Woman restroom</string>
     <string name="info_restroom_woman">Restroom for women.</string>
+    <string name="password_password_confirmation_no_match">Your password confirmation doesn\'t match your password</string>
+    <string name="text_classroom">Pick a classroom</string>
+    <string name="admin_code">Admin code</string>
+    <string name="enter_login">Please enter a login</string>
+    <string name="enter_email">Please enter an e-mail</string>
+    <string name="enter_password">Pleaser enter a password</string>
+    <string name="enter_password_confirmation">Please enter a password confirmation</string>
+    <string name="error_server">Something went wrong with the server</string>
+    <string name="need_internet_account">You need internet connection to create an account</string>
+    <string name="connected">Authentification successful</string>
 
 
 </resources>

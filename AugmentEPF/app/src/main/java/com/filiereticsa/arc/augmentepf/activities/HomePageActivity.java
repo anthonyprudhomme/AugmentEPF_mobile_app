@@ -44,7 +44,9 @@ import org.json.JSONObject;
 public class HomePageActivity extends AppCompatActivity implements HTTPRequestInterface, DestinationSelectedInterface {
     private static final String TAG = "Ici";
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
-    public static final String SUCCESS = "success";
+    private static final String VALIDATE = "validate";
+    private static final String YES = "y";
+    public static final String ERROR = "Error";
     public static HTTPRequestInterface httpRequestInterface;
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
     private SlidingDrawer leftSlidingDrawer;
@@ -351,7 +353,6 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     public void onRequestDone(String result,int requestId) {
         // Do the action corresponding to the request you did
         // You can retrieve your request thanks to the requestId
-        Log.d(TAG, "onRequestDone: ");
         switch (requestId){
             case HTTPRequestManager.ACCOUNT_CREATION:
                 try {
@@ -365,14 +366,13 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                 break;
 
             case HTTPRequestManager.BEACONS:
-                if(result.equals("Error")){
-                    Log.d(TAG, "onRequestDone: load beacons from file");
+                if(result.equals(ERROR)){
                     GABeacon.loadBeaconsFromFile();
                 }else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(SUCCESS);
-                        if (success.equals("success")) {
+                        String success = jsonObject.getString(VALIDATE);
+                        if (success.equals(YES)) {
                             GABeacon.onBeaconRequestDone(result);
                         } else {
                             GABeacon.loadBeaconsFromFile();
@@ -384,13 +384,13 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                 break;
 
             case HTTPRequestManager.MAPS:
-                if(result.equals("Error")){
+                if(result.equals(ERROR)){
                     GABeaconMap.loadMapsFromFile();
                 }else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(SUCCESS);
-                        if (success.equals("success")) {
+                        String success = jsonObject.getString(VALIDATE);
+                        if (success.equals(YES)) {
                             GABeaconMap.onMapsRequestDone(result);
                         } else {
                             GABeaconMap.loadMapsFromFile();

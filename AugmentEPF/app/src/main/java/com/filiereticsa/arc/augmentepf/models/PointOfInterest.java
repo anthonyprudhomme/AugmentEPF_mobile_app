@@ -33,10 +33,11 @@ public class PointOfInterest extends Place {
     public static final String POS_X = "posX";
     public static final String POS_Y = "posY";
     private static final String INFORMATION = "information";
-    public static final String OK = "ok";
-    public static final String PROBLEM = "problem";
     public static final String MESSAGE = "message";
     public static final String URL = "getPOI.php";
+    private static final String VALIDATE = "validate";
+    private static final String YES = "y";
+    private static final String NO = "n";
     private static ArrayList<PointOfInterest> pointOfInterests;
     private String information;
     private static ArrayList<Place> surroundingPoi = new ArrayList<>();
@@ -169,9 +170,10 @@ public class PointOfInterest extends Place {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
+            String validate = jsonObject.getString(VALIDATE);
             String message = jsonObject.getString(MESSAGE);
-            switch (message) {
-                case OK:
+            switch (validate) {
+                case YES:
                     JSONArray poiJsonArray = jsonObject.getJSONArray(POINT_OF_INTEREST);
                     if (pointOfInterests == null) {
                         pointOfInterests = new ArrayList<>();
@@ -184,7 +186,7 @@ public class PointOfInterest extends Place {
                     PointOfInterest.savePoiToFile();
                     break;
 
-                case PROBLEM:
+                case NO:
 
                     break;
             }

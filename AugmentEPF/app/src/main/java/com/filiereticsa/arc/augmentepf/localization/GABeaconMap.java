@@ -58,8 +58,9 @@ public class GABeaconMap {
     private static final String IMAGE_ID = "imageId";
     private static final String MAP_ITEMS = "maptItems";
     private static final String FLOOR_ACCESSES = "floorAccesses";
-    private static final String OK = "ok";
-    private static final String PROBLEM = "problem";
+    private static final String VALIDATE = "validate";
+    private static final String YES = "y";
+    private static final String NO = "n";
     private static final String MESSAGE = "message";
 
     private static final String ITEM_ID = "item_id";
@@ -464,9 +465,10 @@ public class GABeaconMap {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
+            String validate = jsonObject.getString(VALIDATE);
             String message = jsonObject.getString(MESSAGE);
-            switch (message) {
-                case OK:
+            switch (validate) {
+                case YES:
                     JSONArray mapsJsonArray = jsonObject.getJSONArray(MAP);
                     if (mapsArrayList == null) {
                         mapsArrayList = new ArrayList<>();
@@ -484,7 +486,7 @@ public class GABeaconMap {
                     GABeaconMap.saveMapsToFile();
                     break;
 
-                case PROBLEM:
+                case NO:
 
                     break;
             }

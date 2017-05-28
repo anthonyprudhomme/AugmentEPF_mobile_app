@@ -30,13 +30,14 @@ public class ClassRoom extends Place {
     public static final String POS_Y = "posY";
     public static final String CURRENT_TIME = "currentTime";
     public static final String AVAILABLE = "available";
-    public static final String OK = "ok";
-    public static final String PROBLEM = "problem";
     public static final String MESSAGE = "message";
     public static final String CLASSROOMS_JSON = "classrooms.json";
     public static final String CLASS_ROOMS = "classRooms";
     public static final String GET_AVAILABLE_CLASS_ROOMS_PHP = "getAvailableClassRooms.php";
     public static final String GET_CLASS_ROOMS_PHP = "getClassRooms.php";
+    private static final String VALIDATE = "validate";
+    private static final String YES = "y";
+    private static final String NO = "n";
 
     private static ArrayList<ClassRoom> classRooms;
 
@@ -251,9 +252,10 @@ public class ClassRoom extends Place {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
+            String validate = jsonObject.getString(VALIDATE);
             String message = jsonObject.getString(MESSAGE);
-            switch (message) {
-                case OK:
+            switch (validate) {
+                case YES:
                     JSONArray availableClassJsonArray = jsonObject.getJSONArray(AVAILABLE);
                     if (availableClassroomList == null) {
                         availableClassroomList = new ArrayList<>();
@@ -266,7 +268,7 @@ public class ClassRoom extends Place {
                     break;
 
 
-                case PROBLEM:
+                case NO:
 
                     break;
             }
@@ -279,9 +281,10 @@ public class ClassRoom extends Place {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
+            String validate = jsonObject.getString(VALIDATE);
             String message = jsonObject.getString(MESSAGE);
-            switch (message) {
-                case OK:
+            switch (validate) {
+                case YES:
                     JSONArray classRoomsJsonArray = jsonObject.getJSONArray(CLASS_ROOMS);
                     if (classRooms == null) {
                         classRooms = new ArrayList<>();
@@ -295,7 +298,7 @@ public class ClassRoom extends Place {
                     break;
 
 
-                case PROBLEM:
+                case NO:
 
                     break;
             }

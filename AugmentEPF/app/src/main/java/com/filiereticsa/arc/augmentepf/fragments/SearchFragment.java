@@ -28,7 +28,9 @@ import java.util.ArrayList;
 public class SearchFragment extends Fragment implements HTTPRequestInterface {
 
     private static final String TAG = "Ici";
-    public static final String SUCCESS = "success";
+    private static final String VALIDATE = "validate";
+    private static final String YES = "y";
+    public static final String ERROR = "Error";
     private ListView listViewClassRoom;
     private ListView listViewPoi;
     private ArrayList<Place> availableClassroomList = new ArrayList<>();
@@ -136,13 +138,13 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
                 break;
 
             case HTTPRequestManager.CLASSROOMS:
-                if(result.equals("Error")){
+                if(result.equals(ERROR)){
                     ClassRoom.loadClassRoomsFromFile();
                 }else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(SUCCESS);
-                        if (success.equals("success")) {
+                        String success = jsonObject.getString(VALIDATE);
+                        if (success.equals(YES)) {
                             ClassRoom.onClassRoomsRequestDone(result);
                         } else {
                             ClassRoom.loadClassRoomsFromFile();
@@ -154,13 +156,13 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
                 break;
 
             case HTTPRequestManager.POI:
-                if(result.equals("Error")){
+                if(result.equals(ERROR)){
                     PointOfInterest.loadPOIFromFile();
                 }else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(SUCCESS);
-                        if (success.equals("success")) {
+                        String success = jsonObject.getString(VALIDATE);
+                        if (success.equals(YES)) {
                             PointOfInterest.onPoiRequestDone(result);
                         } else {
                             PointOfInterest.loadPOIFromFile();
