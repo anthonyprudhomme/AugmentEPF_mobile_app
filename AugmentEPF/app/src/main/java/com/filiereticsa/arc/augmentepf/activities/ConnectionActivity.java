@@ -18,7 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.CREDENTIALS_JSON;
-import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.NAME;
 
 public class ConnectionActivity extends AppCompatActivity implements HTTPRequestInterface {
 
@@ -40,7 +39,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
         login = (EditText) findViewById(R.id.login);
         password = (EditText) findViewById(R.id.password);
         JSONObject credentials = loadCredentials();
-        if (credentials != null){
+        if (credentials != null) {
             try {
                 login.setText(credentials.getString(NAME));
                 password.setText(credentials.getString(PASSWORD));
@@ -50,7 +49,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
         }
     }
 
-    private JSONObject loadCredentials(){
+    private JSONObject loadCredentials() {
         FileManager fileManager = new FileManager(null, CREDENTIALS_JSON);
         JSONObject jsonDataRead = null;
         try {
@@ -121,14 +120,16 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                     // Show in the log the message given by the result : it will give error or success information
                     Log.d(TAG, "onRequestDone: " + jsonObject.getString(MESSAGE));
                     String success = jsonObject.getString(VALIDATE);
-                    if (success.equals(YES)){
+                    if (success.equals(YES)) {
                         Toast.makeText(this, R.string.connected, Toast.LENGTH_SHORT).show();
+                        HomePageActivity.isUserConnected = true;
                         Intent intent = new Intent(this, com.filiereticsa.arc.augmentepf.activities.HomePageActivity.class);
                         startActivity(intent);
-                    }else{
+                    } else {
                         // If request failed, shows the message from the server
                         String message = jsonObject.getString(MESSAGE);
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        HomePageActivity.isUserConnected = false;
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

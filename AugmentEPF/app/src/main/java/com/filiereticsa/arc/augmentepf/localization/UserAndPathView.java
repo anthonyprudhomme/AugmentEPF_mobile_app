@@ -1,13 +1,20 @@
 package com.filiereticsa.arc.augmentepf.localization;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
+
+import com.filiereticsa.arc.augmentepf.R;
 
 import java.util.ArrayList;
 
@@ -35,8 +42,8 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
     private String direction;
     private FloorAccess.FloorAccessType currentFloorAccesType;
 
-
-    //private int radius = 30;
+    private Bitmap elevatorBitmap;
+    private Bitmap stairBitmap;
 
     public UserAndPathView(Context context, int height, int width) {
         super(context);
@@ -82,10 +89,52 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
             if (i < currentPath.size() - 1) {
                 path.lineTo(pathCoordinates.second, pathCoordinates.first);
             } else {
-                canvas.drawCircle(pathCoordinates.second, pathCoordinates.first, (int) (radius / 1.5), paint);
+                if (currentFloorAccesType == null) {
+                    canvas.drawCircle(pathCoordinates.second, pathCoordinates.first, (int) (radius / 1.5), paint);
+                } else {
+                    if (currentFloorAccesType == FloorAccess.FloorAccessType.ELEVATOR) {
+                        drawIcon(paint,R.drawable.elevator_icon,pathCoordinates,radius,canvas);
+                    } else {
+                        if (currentFloorAccesType == FloorAccess.FloorAccessType.STAIRS) {
+                            drawIcon(paint,R.drawable.stair_icon,pathCoordinates,radius,canvas);
+                        }
+                    }
+                }
+
             }
         }
         canvas.drawPath(path, paint);
+    }
+
+    private void drawIcon(Paint paint, int imageResId, Pair<Integer, Integer> pathCoordinates, int radius,Canvas canvas) {
+        Bitmap iconBitmap = null;
+        switch (imageResId){
+            case R.drawable.stair_icon:
+                if (stairBitmap == null){
+                    stairBitmap = BitmapFactory.decodeResource(getResources(), imageResId);
+                }
+                iconBitmap = stairBitmap;
+                break;
+
+            case R.drawable.elevator_icon:
+                if (elevatorBitmap == null){
+                    elevatorBitmap = BitmapFactory.decodeResource(getResources(), imageResId);
+                }
+                iconBitmap = elevatorBitmap;
+                break;
+        }
+
+        ColorFilter filter;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            filter = new PorterDuffColorFilter(getContext().getColor(R.color.blue), PorterDuff.Mode.SRC_IN);
+        } else {
+            filter = new PorterDuffColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_IN);
+        }
+        paint.setColorFilter(filter);
+        RectF rectF = new RectF(pathCoordinates.second - radius, pathCoordinates.first - radius,
+                pathCoordinates.second + radius, pathCoordinates.first + radius);
+        canvas.drawBitmap(iconBitmap, null, rectF, paint);
+        paint.setColorFilter(null);
     }
 
     public void drawUserPosition(Canvas canvas, int radius) {

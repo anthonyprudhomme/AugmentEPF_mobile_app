@@ -44,7 +44,7 @@
 
     <string name="title_activity_main">MainActivity</string>
 
-    <string name="connect">Connect</string>
+    <string name="connect">Login</string>
     <string name="planned_trajectory">Planned itinerary</string>
     <string name="plan_trajectory">Plan an itinerary</string>
     <string name="trajectory_history">Itinerary history</string>
@@ -77,9 +77,10 @@
     </string-array>
     <!-- The value of the choice above -->
     <string-array name="user_type_values_array">
-        <item>V</item>
         <item>S</item>
+        <item>V</item>
         <item>P</item>
+        <item>C</item>
         <item>A</item>
     </string-array>
     <!--.........................................................................................-->
@@ -157,6 +158,9 @@
     <string name="error_server">Something went wrong with the server</string>
     <string name="need_internet_account">You need internet connection to create an account</string>
     <string name="connected">Authentification successful</string>
+    <string name="logout">Logout</string>
+    <string name="fail_epf_wifi">Please use EPF Wi-Fi to use this app</string>
+    <string name="success_epf_wifi">Successfully connected to EPF Wi-Fi</string>
 
 
 </resources>

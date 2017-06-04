@@ -43,13 +43,6 @@
         <item>Intervenant</item>
         <item>Admin</item>
     </string-array>
-    <!-- The value of the choice above -->
-    <string-array name="user_type_values_array">
-        <item>V</item>
-        <item>S</item>
-        <item>P</item>
-        <item>A</item>
-    </string-array>
     <!--.........................................................................................-->
     <!-- Specific attribute -->
     <!-- Different specific attribute -->
@@ -58,13 +51,6 @@
         <item>Guidage vocal</item>
         <item>Ascenceur</item>
         <item>Les deux</item>
-    </string-array>
-    <!-- The value of the choice above -->
-    <string-array name="specific_attribute_values_array">
-        <item>0</item>
-        <item>V</item>
-        <item>A</item>
-        <item>VA</item>
     </string-array>
     <!--____________________________________________________________________________________________
                                          Navigation parameters
@@ -127,6 +113,10 @@
     <string name="enter_login">Veuillez saisir un nom d\'utilisateur</string>
     <string name="enter_password">Veuillez saisir un mot de passe</string>
     <string name="enter_password_confirmation">Veuillez saisir la confirmation du mot de passe</string>
+    <string name="connected">Succès de l\'authentification</string>
+    <string name="logout">Se déconnecter</string>
+    <string name="fail_epf_wifi">Veuillez utiliser le Wi-Fi de l\'EPF pour utiliser cette application</string>
+    <string name="success_epf_wifi">Connecté au Wi-Fi de l\'EPF</string>
 
 
 </resources>
