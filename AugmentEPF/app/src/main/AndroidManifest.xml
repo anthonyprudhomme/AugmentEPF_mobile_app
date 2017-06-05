@@ -29,7 +29,8 @@
         <activity android:name="com.filiereticsa.arc.augmentepf.activities.PathConsultationActivity" />
         <activity android:name="com.filiereticsa.arc.augmentepf.activities.ConnectionActivity" />
         <activity android:name="com.filiereticsa.arc.augmentepf.activities.SettingsActivity" />
-        <activity android:name="com.filiereticsa.arc.augmentepf.activities.AdminActivity" />
+        <activity android:name="com.filiereticsa.arc.augmentepf.activities.AdminActivity"
+                  android:label="Admin."/>
         <activity
             android:name=".activities.CreateAccountActivity"/>
     </application>

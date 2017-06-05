@@ -6,6 +6,34 @@
     android:layout_height="match_parent"
     tools:context="com.filiereticsa.arc.augmentepf.activities.AdminActivity">
 
-
+<TableLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TableRow android:layout_weight="1">
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/floor2_admin"/>
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/floor1_admin"/>
+    </TableRow>
+    <TableRow android:layout_weight="1"
+        android:layout_height="match_parent">
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/floor_admin"/>
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/floor_admin"/>
+    </TableRow>
+</TableLayout>
 
 </LinearLayout>
