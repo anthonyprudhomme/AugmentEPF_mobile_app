@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="2nd Floor"
+        android:id="@+id/action_second_floor"/>
+    <item android:title="1st Floor"
+        android:id="@+id/action_first_floor"/>
+    <item android:title="Ground Floor"
+        android:id="@+id/action_ground_floor"/>
+    <item android:title="Lower Floor"
+        android:id="@+id/action_lower_floor"/>
+
+</menu>

@@ -7,51 +7,90 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.R;
 
 public class AdminActivity extends AppCompatActivity {
-
+    private boolean editBeacon;
+    private int current_floor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        editBeacon=true;
+        current_floor=0;
         setContentView(R.layout.activity_admin);
+        ImageView iv = (ImageView) findViewById(R.id.admin_imageView);
+        iv.setImageResource(R.drawable.floor_admin);
+        RadioButton rb = (RadioButton) findViewById(R.id.beaconEdit);
+        rb.setChecked(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.admin_activity_title);
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.admin_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()==android.R.id.home){
+        ImageView iv = (ImageView) findViewById(R.id.admin_imageView);
+        switch(item.getItemId()){
+            case android.R.id.home :
                 finish();
-                return true;
+                break;
+            case R.id.action_second_floor:
+                iv.setImageResource(R.drawable.floor2_admin);
+                current_floor = 2;
+                break;
+            case R.id.action_first_floor:
+                iv.setImageResource(R.drawable.floor1_admin);
+                current_floor = 1;
+                break;
+            case R.id.action_ground_floor:
+                iv.setImageResource(R.drawable.floor_admin);
+                current_floor = 0;
+                break;
+            case R.id.action_lower_floor:
+                iv.setImageResource(R.drawable.floor_admin);
+                current_floor = -1;
+                break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-
-    public void onFloor1Click(View view) {
-        Intent intent = new Intent(this, AdminEditActivity.class);
-        intent.putExtra("floor",1);
-        startActivity(intent);
+    public void onBeaconClick(View view) {
+        editBeacon=true;
     }
 
-    public void onFloor2Click(View view) {
-        Intent intent = new Intent(this, AdminEditActivity.class);
-        intent.putExtra("floor",2);
-        startActivity(intent);
+    public void onPOIClick(View view) {
+        editBeacon=false;
     }
 
-    public void onFloor3Click(View view) {
-        Intent intent = new Intent(this, AdminEditActivity.class);
-        intent.putExtra("floor",3);
-        startActivity(intent);
+    public void onGPSClick(View view) {
+        EditText xcoord = (EditText) findViewById(R.id.xCoordText);
+        EditText ycoord = (EditText) findViewById(R.id.yCoordText);
+        xcoord.setText("0.0");
+        ycoord.setText("0.0");
     }
 
-    public void onFloor4Click(View view) {
-        Intent intent = new Intent(this, AdminEditActivity.class);
-        intent.putExtra("floor",4);
-        startActivity(intent);
+    public void onSaveClick(View view) {
+        if (editBeacon){
+            Toast.makeText(this, "Beacon saved", Toast.LENGTH_SHORT).show();
+        }else Toast.makeText(this, "Point of Interest saved", Toast.LENGTH_SHORT).show();
+
+    }
+
+    public void onRemoveClick(View view) {
+        if (editBeacon){
+            Toast.makeText(this, "Beacon removed", Toast.LENGTH_SHORT).show();
+        }else Toast.makeText(this, "Point of Interest removed", Toast.LENGTH_SHORT).show();
     }
 }

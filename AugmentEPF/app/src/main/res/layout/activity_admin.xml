@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout
+<LinearLayout
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,34 +8,82 @@
     android:layout_height="match_parent"
     tools:context="com.filiereticsa.arc.augmentepf.activities.AdminActivity">
 
-    <TableRow android:layout_weight="1">
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:background="@drawable/floor2_admin"
-            android:onClick="onFloor1Click"/>
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:background="@drawable/floor1_admin"
-            android:onClick="onFloor2Click"/>
-    </TableRow>
-    <TableRow android:layout_weight="1"
-        android:layout_height="match_parent">
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:background="@drawable/floor_admin"
-            android:onClick="onFloor3Click"/>
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:background="@drawable/floor_admin"
-            android:onClick="onFloor4Click"/>
-    </TableRow>
+    <RadioGroup android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
 
-</TableLayout>
+        <RadioButton
+            android:id="@+id/beaconEdit"
+            android:layout_gravity="fill_vertical"
+            android:layout_weight="1"
+            android:text="Edit Beacons"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:onClick="onBeaconClick"/>
+
+        <RadioButton
+            android:id="@+id/PoIEdit"
+            android:layout_gravity="fill_vertical"
+            android:layout_weight="1"
+            android:text="Edit Points of Interests"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:onClick="onPOIClick"/>
+    </RadioGroup>
+
+    <LinearLayout android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <TextView android:layout_marginLeft="5dp"
+            android:text="X Coordinate :"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <EditText
+            android:inputType="numberDecimal"
+            android:id="@+id/xCoordText"
+            android:layout_height="wrap_content"
+            android:layout_width="100dp"/>
+
+        <TextView android:text="Y Coordinate :"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <EditText
+            android:inputType="numberDecimal"
+            android:id="@+id/yCoordText"
+            android:layout_height="wrap_content"
+            android:layout_width="100dp"/>
+    </LinearLayout>
+
+    <ImageView android:id="@+id/admin_imageView"
+        android:layout_weight="1"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:background="@color/lightGrey"/>
+
+    <LinearLayout android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:text="Current Position"
+            android:onClick="onGPSClick"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Remove closest"
+            android:onClick="onRemoveClick"/>
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:text="Save"
+            android:onClick="onSaveClick"/>
+    </LinearLayout>
+
+</LinearLayout>
