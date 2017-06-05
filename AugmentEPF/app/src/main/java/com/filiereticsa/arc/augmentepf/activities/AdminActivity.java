@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.R;
@@ -67,30 +68,51 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     public void onBeaconClick(View view) {
+        TextView close = (TextView) findViewById(R.id.closestText);
+        close.setText("");
         editBeacon=true;
     }
 
     public void onPOIClick(View view) {
+        TextView close = (TextView) findViewById(R.id.closestText);
+        close.setText("");
         editBeacon=false;
     }
 
     public void onGPSClick(View view) {
         EditText xcoord = (EditText) findViewById(R.id.xCoordText);
         EditText ycoord = (EditText) findViewById(R.id.yCoordText);
+        TextView close = (TextView) findViewById(R.id.closestText);
         xcoord.setText("0.0");
         ycoord.setText("0.0");
+        if (editBeacon){
+            close.setText("B-747");
+        }else
+            close.setText("Cantina");
     }
 
     public void onSaveClick(View view) {
+        EditText name = (EditText) findViewById(R.id.item_name_Text);
+
+        if (name.getText().toString().matches("")){
+            Toast.makeText(this,"Name required", Toast.LENGTH_SHORT).show();
+        }else
+
         if (editBeacon){
-            Toast.makeText(this, "Beacon saved", Toast.LENGTH_SHORT).show();
-        }else Toast.makeText(this, "Point of Interest saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,name.getText() + " saved", Toast.LENGTH_SHORT).show();
+        }else Toast.makeText(this,name.getText() + " saved", Toast.LENGTH_SHORT).show();
 
     }
 
     public void onRemoveClick(View view) {
+        TextView close = (TextView) findViewById(R.id.closestText);
+
+        if (close.getText().toString().matches("")){
+            Toast.makeText(this,"None selected", Toast.LENGTH_SHORT).show();
+        }else
+
         if (editBeacon){
-            Toast.makeText(this, "Beacon removed", Toast.LENGTH_SHORT).show();
-        }else Toast.makeText(this, "Point of Interest removed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,close.getText() + " removed", Toast.LENGTH_SHORT).show();
+        }else Toast.makeText(this,close.getText() + " removed", Toast.LENGTH_SHORT).show();
     }
 }
