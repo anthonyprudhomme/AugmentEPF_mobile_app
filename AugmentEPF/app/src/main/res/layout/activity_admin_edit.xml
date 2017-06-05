@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.filiereticsa.arc.augmentepf.activities.AdminEditActivity">
+
+    <RadioGroup android:orientation="horizontal">
+        <RadioButton android:layout_gravity="fill_vertical"
+            android:layout_weight="1"
+            android:text="Edit Beacons"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:onClick="onBeaconClick"/>
+
+        <RadioButton android:layout_gravity="fill_vertical"
+            android:layout_weight="1"
+            android:text="Edit Points of Interests"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:onClick="onPOIClick"/>
+    </RadioGroup>
+
+    <TableRow android:layout_weight="1"
+        android:layout_height="match_parent">
+        <TextView android:layout_gravity="center_vertical"
+            android:text="X Coordinate :" />
+
+        <EditText android:layout_gravity="center_vertical"/>
+    </TableRow>
+
+    <TableRow android:layout_weight="1"
+        android:layout_height="match_parent">
+        <TextView android:layout_gravity="center_vertical"
+            android:text="Y Coordinate :" />
+
+        <EditText android:layout_gravity="center_vertical"/>
+    </TableRow>
+
+    <TableRow android:layout_weight="1"
+        android:layout_height="match_parent">
+        <Button android:layout_gravity="center"
+            android:text="Use Current Position"/>
+
+        <Button android:layout_gravity="center"
+            android:text="Save Location"/>
+    </TableRow>
+
+</TableLayout>

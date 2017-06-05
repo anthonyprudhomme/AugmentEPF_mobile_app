@@ -1,39 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.filiereticsa.arc.augmentepf.activities.AdminActivity">
 
-<TableLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
     <TableRow android:layout_weight="1">
-        <ImageButton
+        <Button
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:background="@drawable/floor2_admin"/>
-        <ImageButton
+            android:background="@drawable/floor2_admin"
+            android:onClick="onFloor1Click"/>
+        <Button
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:background="@drawable/floor1_admin"/>
+            android:background="@drawable/floor1_admin"
+            android:onClick="onFloor2Click"/>
     </TableRow>
     <TableRow android:layout_weight="1"
         android:layout_height="match_parent">
-        <ImageButton
+        <Button
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:background="@drawable/floor_admin"/>
-        <ImageButton
+            android:background="@drawable/floor_admin"
+            android:onClick="onFloor3Click"/>
+        <Button
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:background="@drawable/floor_admin"/>
+            android:background="@drawable/floor_admin"
+            android:onClick="onFloor4Click"/>
     </TableRow>
-</TableLayout>
 
-</LinearLayout>
+</TableLayout>

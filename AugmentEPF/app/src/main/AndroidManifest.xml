@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.filiereticsa.arc.augmentepf.activities.HomePageActivity"
+        <activity
+            android:name=".activities.HomePageActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
@@ -25,14 +26,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.filiereticsa.arc.augmentepf.activities.PathPlanningActivity" />
-        <activity android:name="com.filiereticsa.arc.augmentepf.activities.PathConsultationActivity" />
-        <activity android:name="com.filiereticsa.arc.augmentepf.activities.ConnectionActivity" />
-        <activity android:name="com.filiereticsa.arc.augmentepf.activities.SettingsActivity" />
-        <activity android:name="com.filiereticsa.arc.augmentepf.activities.AdminActivity"
-                  android:label="Admin."/>
-        <activity
-            android:name=".activities.CreateAccountActivity"/>
+        <activity android:name=".activities.PathPlanningActivity" />
+        <activity android:name=".activities.PathConsultationActivity" />
+        <activity android:name=".activities.ConnectionActivity" />
+        <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activities.AdminActivity" />
+        <activity android:name=".activities.CreateAccountActivity" />
+        <activity android:name=".activities.AdminEditActivity"></activity>
     </application>
 
 </manifest>
