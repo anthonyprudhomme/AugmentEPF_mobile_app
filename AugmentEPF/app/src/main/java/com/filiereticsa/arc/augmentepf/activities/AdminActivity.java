@@ -1,7 +1,9 @@
 package com.filiereticsa.arc.augmentepf.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -105,14 +107,37 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     public void onRemoveClick(View view) {
-        TextView close = (TextView) findViewById(R.id.closestText);
+        final TextView close = (TextView) findViewById(R.id.closestText);
 
         if (close.getText().toString().matches("")){
             Toast.makeText(this,"None selected", Toast.LENGTH_SHORT).show();
-        }else
+        }else {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            remove(close);
+                            break;
 
-        if (editBeacon){
-            Toast.makeText(this,close.getText() + " removed", Toast.LENGTH_SHORT).show();
-        }else Toast.makeText(this,close.getText() + " removed", Toast.LENGTH_SHORT).show();
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("Cancel", dialogClickListener).show();
+
+        }
     }
+
+    private void remove (TextView close){
+        if (editBeacon){
+            Toast.makeText(this, close.getText() + " removed", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this,close.getText() + " removed", Toast.LENGTH_SHORT).show();
+    }
+
 }
