@@ -20,7 +20,7 @@
             android:layout_gravity="fill_vertical"
             android:layout_weight="1"
             android:onClick="onBeaconClick"
-            android:text="Edit Beacons" />
+            android:text="@string/admin_edit_beacons" />
 
         <RadioButton
             android:id="@+id/PoIEdit"
@@ -29,7 +29,7 @@
             android:layout_gravity="fill_vertical"
             android:layout_weight="1"
             android:onClick="onPOIClick"
-            android:text="Edit Points of Interests" />
+            android:text="@string/admin_edit_poi" />
     </RadioGroup>
 
     <LinearLayout
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="X Coordinate :" />
+            android:text="@string/admin_xcoord" />
 
         <EditText
             android:id="@+id/xCoordText"
@@ -52,7 +52,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Y Coordinate :" />
+            android:text="@string/admin_ycoord" />
 
         <EditText
             android:id="@+id/yCoordText"
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:text="Name :" />
+                android:text="@string/admin_name" />
 
             <EditText
                 android:id="@+id/item_name_Text"
@@ -98,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="Closest :" />
+                android:text="@string/admin_target" />
 
             <TextView
                 android:id="@+id/closestText"
@@ -128,21 +128,21 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:onClick="onGPSClick"
-            android:text="Current Position" />
+            android:text="@string/admin_locate" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:onClick="onRemoveClick"
-            android:text="Remove closest" />
+            android:text="@string/admin_remove" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:onClick="onSaveClick"
-            android:text="Add" />
+            android:text="@string/admin_save" />
     </LinearLayout>
 
 </LinearLayout>

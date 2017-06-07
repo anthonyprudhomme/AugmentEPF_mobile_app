@@ -135,12 +135,12 @@
     <string name="select_specific_attribute">Select specific attribute</string>
     <string name="ical_link">iCal link</string>
     <string name="ical_summary">Permit to edit the link of the account</string>
-    <string name="format_ical">Must be like this: http://edt.epf.fr/pegasus/ical.php?v1=…</string>
+    <string name="format_ical">Must look like: http://edt.epf.fr/pegasus/ical.php?v1=…</string>
     <string name="nav_mode">Navigation mode</string>
     <string name="select_nav_mode">Select the guidance mode</string>
     <string name="nav_parameters">Navigation parameters</string>
     <string name="action_settings">Settings</string>
-    <string name="fullscreen">FullScreen</string>
+    <string name="fullscreen">Fullscreen</string>
     <string name="admin_activity_title">Administrative Tools</string>
     <string name="nearby_points_of_interest">Nearby points of interest</string>
     <string name="available_classrooms">Available classrooms</string>
@@ -162,4 +162,22 @@
     <string name="logout">Logout</string>
     <string name="fail_epf_wifi">Please use EPF Wi-Fi to use this app</string>
     <string name="success_epf_wifi">Successfully connected to EPF Wi-Fi</string>
+    <string name="admin_name_missing">Name required</string>
+    <string name="admin_target_missing">None selected</string>
+    <string name="confirm">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="admin_edit_beacons">Edit beacons</string>
+    <string name="admin_edit_poi">Edit points of interests</string>
+    <string name="admin_xcoord">X Coordinate:</string>
+    <string name="admin_ycoord">Y Coordinate:</string>
+    <string name="admin_name">Name:</string>
+    <string name="admin_target">Closest:</string>
+    <string name="admin_locate">Current Position</string>
+    <string name="admin_remove">Remove closest</string>
+    <string name="admin_save">Add</string>
+    <string name="admin_2nf_floor">2nd Floor</string>
+    <string name="admin_1st_floor">1st Floor</string>
+    <string name="admin_ground_floor">Ground Floor</string>
+    <string name="admin_lower_floor">Lower Floor</string>
 </resources>

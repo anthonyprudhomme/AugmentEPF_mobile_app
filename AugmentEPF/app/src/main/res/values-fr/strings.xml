@@ -118,6 +118,24 @@
     <string name="fail_epf_wifi">Veuillez utiliser le Wi-Fi de l\'EPF pour utiliser cette application</string>
     <string name="success_epf_wifi">Connecté au Wi-Fi de l\'EPF</string>
     <string name="admin_activity_title">Outils Administratifs</string>
+    <string name="admin_edit_beacons">Éditer balises</string>
+    <string name="admin_edit_poi">Éditer points d\'intérêts</string>
+    <string name="admin_locate">Pos. actuelle</string>
+    <string name="admin_name">Nom :</string>
+    <string name="admin_name_missing">Nom requis</string>
+    <string name="admin_remove">Suppr. le plus proche</string>
+    <string name="admin_save">Ajouter</string>
+    <string name="admin_target">Le plus proche :</string>
+    <string name="admin_target_missing">Aucun sélectionné(e)</string>
+    <string name="admin_xcoord">Coordonnée X :</string>
+    <string name="admin_ycoord">Coordonnée Y :</string>
+    <string name="cancel">Annuler</string>
+    <string name="confirm">Êtes-vous sûr ?</string>
+    <string name="yes">Oui</string>
+    <string name="admin_1st_floor">1er étage</string>
+    <string name="admin_2nf_floor">2ème étage</string>
+    <string name="admin_ground_floor">Rez-de-chaussée</string>
+    <string name="admin_lower_floor">Étage inférieur</string>
 
 
 </resources>

@@ -112,13 +112,13 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
 
     public void onSaveClick(View view) {
         if (name.getText().toString().matches("")) {
-            Toast.makeText(this, "Name required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.admin_name_missing, Toast.LENGTH_SHORT).show();
         } else save();
     }
 
     public void onRemoveClick(View view) {
         if (closest.getText().toString().matches("")) {
-            Toast.makeText(this, "None selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.admin_target_missing, Toast.LENGTH_SHORT).show();
         } else {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
@@ -136,8 +136,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             };
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("Cancel", dialogClickListener).show();
+            builder.setMessage(R.string.confirm).setPositiveButton(R.string.yes, dialogClickListener)
+                    .setNegativeButton(R.string.cancel, dialogClickListener).show();
         }
     }
 
@@ -157,7 +157,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                 e.printStackTrace();
             }
             HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
-            //Toast.makeText(this, name.getText() + " saved", Toast.LENGTH_SHORT).show();
         } else
             try {
                 jsonObject.put(CONTENT_TYPE, "poi");
@@ -169,7 +168,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                 e.printStackTrace();
             }
         HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
-        //Toast.makeText(this, name.getText() + " saved", Toast.LENGTH_SHORT).show();
     }
 
     private void remove() {
@@ -187,7 +185,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                 e.printStackTrace();
             }
             HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
-            //Toast.makeText(this, closest.getText() + " removed", Toast.LENGTH_SHORT).show();
         } else
             try {
                 jsonObject.put(CONTENT_TYPE, "poi");
@@ -199,7 +196,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                 e.printStackTrace();
             }
         HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
-        //Toast.makeText(this, closest.getText() + " removed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
