@@ -117,6 +117,7 @@
     <string name="logout">Se déconnecter</string>
     <string name="fail_epf_wifi">Veuillez utiliser le Wi-Fi de l\'EPF pour utiliser cette application</string>
     <string name="success_epf_wifi">Connecté au Wi-Fi de l\'EPF</string>
+    <string name="admin_activity_title">Outils Administratifs</string>
 
 
 </resources>

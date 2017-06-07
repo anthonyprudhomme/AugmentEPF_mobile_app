@@ -18,27 +18,7 @@
     <!-- Text on buttons corresponding at the date, hour and other -->
     <string name="text_dateButton">Choose the date</string>
     <string name="text_hourButton">Choose the hour</string>
-    <!--____________________________________________________________________________________________
-    |                                        Classroom                                             |
-    _____________________________________________________________________________________________-->
-    <!-- Title of the section -->
-    <string name="text_classroom">Choose a classroom</string>
 
-    <!-- The DB with all classrooms -->
-    <string-array name="classrooms">
-        <item>1L</item>
-        <item>2L</item>
-        <item>3L</item>
-        <item>4L</item>
-        <item>5L</item>
-        <item>6L</item>
-        <item>i1</item>
-        <item>i2</item>
-        <item>i3</item>
-        <item>i4</item>
-        <item>i5</item>
-        <item>i6</item>
-    </string-array>
     <!--____________________________________________________________________________________________
     |                                          Warning                                             |
     _____________________________________________________________________________________________-->
@@ -64,13 +44,15 @@
 
     <string name="title_activity_main">MainActivity</string>
 
-    <string name="connect">Connect</string>
+    <string name="connect">Login</string>
     <string name="planned_trajectory">Planned itinerary</string>
+    <string name="plan_trajectory">Plan an itinerary</string>
     <string name="trajectory_history">Itinerary history</string>
     <string name="contact">Contact us</string>
     <string name="go">Go!</string>
-    <string name="login">Login:</string>
-    <string name="password">Password:</string>
+    <string name="login">Login</string>
+    <string name="mail">Mail</string>
+    <string name="password">Password</string>
     <string name="validate">Validate</string>
     <string name="no_account">No account yet?</string>
     <string name="create">Create</string>
@@ -87,16 +69,18 @@
 
     <!-- Different specific attribute -->
     <string-array name="user_type_array">
-        <item>Visitor</item>
         <item>Student</item>
+        <item>Visitor</item>
         <item>Professor</item>
-        <item>Administration</item>
+        <item>Contributor</item>
+        <item>Admin</item>
     </string-array>
     <!-- The value of the choice above -->
     <string-array name="user_type_values_array">
-        <item>V</item>
         <item>S</item>
+        <item>V</item>
         <item>P</item>
+        <item>C</item>
         <item>A</item>
     </string-array>
     <!--.........................................................................................-->
@@ -122,9 +106,7 @@
     _____________________________________________________________________________________________-->
 
     <!-- Navigation's mode -->
-    =======
-    <!-- Navigation's mode -->
-    >>>>>>> Views
+
     <!-- Different mode of navigation -->
     <string-array name="navigation_array">
         <item>Plan</item>
@@ -160,4 +142,24 @@
     <string name="action_settings">Settings</string>
     <string name="fullscreen">FullScreen</string>
     <string name="admin_activity_title">Administrative Tools</string>
+    <string name="nearby_points_of_interest">Nearby points of interest</string>
+    <string name="available_classrooms">Available classrooms</string>
+    <string name="not_localized">You haven\'t been localized yet</string>
+    <string name="man_restroom">Man restroom</string>
+    <string name="info_restroom_man">Restroom for men.</string>
+    <string name="woman_restroom">Woman restroom</string>
+    <string name="info_restroom_woman">Restroom for women.</string>
+    <string name="password_password_confirmation_no_match">Your password confirmation doesn\'t match your password</string>
+    <string name="text_classroom">Pick a classroom</string>
+    <string name="admin_code">Admin code</string>
+    <string name="enter_login">Please enter a login</string>
+    <string name="enter_email">Please enter an e-mail</string>
+    <string name="enter_password">Pleaser enter a password</string>
+    <string name="enter_password_confirmation">Please enter a password confirmation</string>
+    <string name="error_server">Something went wrong with the server</string>
+    <string name="need_internet_account">You need internet connection to create an account</string>
+    <string name="connected">Authentification successful</string>
+    <string name="logout">Logout</string>
+    <string name="fail_epf_wifi">Please use EPF Wi-Fi to use this app</string>
+    <string name="success_epf_wifi">Successfully connected to EPF Wi-Fi</string>
 </resources>

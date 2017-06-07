@@ -17,19 +17,27 @@ import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AdminActivity extends AppCompatActivity implements HTTPRequestInterface{
-    public static final String BEACONNAME = "beaconname";
-    public static final String BEACONXCOORD = "beaconxcoord";
-    public static final String BEACONYCOORD = "beaconycoord";
+public class AdminActivity extends AppCompatActivity implements HTTPRequestInterface {
+    public static final String CONTENT_TYPE = "contentType";
+    public static final String CHANGE_TYPE = "changeType";
+    public static final String CONTENT_INFORMATION = "contentInformation";
+    public static final String ADMIN_MODIFICATION_PHP = "administrationChanges.php";
+    public static final String ERROR = "Error";
+    public static final String STATE = "state";
+    public static final String TRUE = "true";
+    public static final String MESSAGE = "message";
     private boolean editBeacon;
     private int current_floor;
     private ImageView iv;
     private TextView closest;
     private EditText xcoord, ycoord, name;
-    final private String ADMIN_MODIFICATION_PHP = "administrationChanges.php";
+    private String itemName, itemXCoord, itemYCoord;
+    JSONObject jsonObject = new JSONObject();
+    JSONArray jsonArray = new JSONArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         iv = (ImageView) findViewById(R.id.currentMap);
         RadioButton rb = (RadioButton) findViewById(R.id.beaconEdit);
         closest = (TextView) findViewById(R.id.closestText);
+        name = (EditText) findViewById(R.id.item_name_Text);
         xcoord = (EditText) findViewById(R.id.xCoordText);
         ycoord = (EditText) findViewById(R.id.yCoordText);
         iv.setImageResource(R.drawable.floor_admin);
@@ -104,10 +113,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     public void onSaveClick(View view) {
         if (name.getText().toString().matches("")) {
             Toast.makeText(this, "Name required", Toast.LENGTH_SHORT).show();
-        } else
-
-            save();
-
+        } else save();
     }
 
     public void onRemoveClick(View view) {
@@ -136,39 +142,104 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     }
 
     private void save() {
-        JSONObject jsonObject = new JSONObject();
-        String itemName = name.getText().toString();
-        String itemXCoord = xcoord.getText().toString();
-        String itemYCoord = ycoord.getText().toString();
+        itemName = name.getText().toString();
+        itemXCoord = xcoord.getText().toString();
+        itemYCoord = ycoord.getText().toString();
 
         if (editBeacon) {
             try {
-                jsonObject.put(BEACONNAME, itemName);
-                jsonObject.put(BEACONXCOORD, itemXCoord);
-                jsonObject.put(BEACONYCOORD, itemYCoord);
+                jsonObject.put(CONTENT_TYPE, "beacon");
+                jsonObject.put(CHANGE_TYPE, "add");
+                jsonArray.put(itemXCoord + "/" + itemYCoord + "/" + current_floor);
+                jsonArray.put(itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonArray);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(),
-                    this, HTTPRequestManager.BEACONS);
-
-            Toast.makeText(this, name.getText() + " saved", Toast.LENGTH_SHORT).show();
+            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
+            //Toast.makeText(this, name.getText() + " saved", Toast.LENGTH_SHORT).show();
         } else
-            Toast.makeText(this, name.getText() + " saved", Toast.LENGTH_SHORT).show();
+            try {
+                jsonObject.put(CONTENT_TYPE, "poi");
+                jsonObject.put(CHANGE_TYPE, "add");
+                jsonArray.put(itemXCoord + "/" + itemYCoord + "/" + current_floor);
+                jsonArray.put(itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
+        //Toast.makeText(this, name.getText() + " saved", Toast.LENGTH_SHORT).show();
     }
 
     private void remove() {
+        itemName = closest.getText().toString();
+        itemXCoord = xcoord.getText().toString();
+        itemYCoord = ycoord.getText().toString();
         if (editBeacon) {
-
-            Toast.makeText(this, closest.getText() + " removed", Toast.LENGTH_SHORT).show();
+            try {
+                jsonObject.put(CONTENT_TYPE, "beacon");
+                jsonObject.put(CHANGE_TYPE, "remove");
+                jsonArray.put("");
+                jsonArray.put(itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
+            //Toast.makeText(this, closest.getText() + " removed", Toast.LENGTH_SHORT).show();
         } else
-            Toast.makeText(this, closest.getText() + " removed", Toast.LENGTH_SHORT).show();
+            try {
+                jsonObject.put(CONTENT_TYPE, "poi");
+                jsonObject.put(CHANGE_TYPE, "remove");
+                jsonArray.put("");
+                jsonArray.put(itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
+        //Toast.makeText(this, closest.getText() + " removed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onRequestDone(String result) {
-
+    public void onRequestDone(String result, int requestId) {
+        if (result.equals(ERROR)) {
+            Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
+        }else
+        switch (requestId) {
+            case HTTPRequestManager.BEACONS:
+                try {
+                    // Put the result in a JSONObject to use it.
+                    JSONObject jsonObject = new JSONObject(result);
+                    String success = jsonObject.getString(STATE);
+                    String message = jsonObject.getString(MESSAGE);
+                    if (success.equals(TRUE)) {
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                    } else {
+                        // If request failed, shows the message from the server
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case HTTPRequestManager.POI:
+                try {
+                    // Put the result in a JSONObject to use it.
+                    JSONObject jsonObject = new JSONObject(result);
+                    String success = jsonObject.getString(STATE);
+                    String message = jsonObject.getString(MESSAGE);
+                    if (success.equals(TRUE)) {
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                    } else {
+                        // If request failed, shows the message from the server
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
     }
-
-
 }
