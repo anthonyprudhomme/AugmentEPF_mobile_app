@@ -33,7 +33,6 @@ public class HTTPRequestManager {
     public static final int PATH_HISTORY = 7;
     public static final int WIFI_CHECK = 8;
     public static final int SETTINGS = 9;
-    public static final int ELEMENT = 11;
 
     /*
                 HOW TO DO AN HTTP REQUEST
