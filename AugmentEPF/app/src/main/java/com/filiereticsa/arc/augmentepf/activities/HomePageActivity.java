@@ -47,6 +47,8 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     private static final String VALIDATE = "validate";
     private static final String YES = "y";
     public static final String ERROR = "Error";
+    public static final String STATE = "state";
+    public static final String TRUE = "true";
     public static HTTPRequestInterface httpRequestInterface;
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
     private SlidingDrawer leftSlidingDrawer;
@@ -246,7 +248,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
             public void onDrawerClosed() {
                 canMapBeMoved = true;
                 leftSlidingDrawer.setVisibility(View.VISIBLE);
-                if (touchedEditText == true) {
+                if (touchedEditText) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 }
@@ -274,7 +276,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     @Override
     protected void onResume() {
         super.onResume();
-        if (isUserConnected == true) {
+        if (isUserConnected) {
 
         }
         BeaconDetector.sharedBeaconDetector().bindBeaconManager();
@@ -340,6 +342,8 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     }
 
     public void onCalendarClick(View view) {
+        Intent intent = new Intent(this, CalendarActivity.class);
+        startActivity(intent);
     }
 
     public void onSettingsClick(View view) {
@@ -385,8 +389,8 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                 } else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(VALIDATE);
-                        if (success.equals(YES)) {
+                        String success = jsonObject.getString(STATE);
+                        if (success.equals(TRUE)) {
                             GABeacon.onBeaconRequestDone(result);
                         } else {
                             GABeacon.loadBeaconsFromFile();

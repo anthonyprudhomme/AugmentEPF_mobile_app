@@ -31,8 +31,10 @@ public class CreateAccountActivity extends AppCompatActivity implements HTTPRequ
     public static final String PASSWORD = "password";
     public static final String TYPE = "type";
     public static final String NAME = "name";
+
     // TODO change this code
     private static final String ADMIN_CODE = "admin";
+
     public static final String SOUND_GUIDANCE = "soundGuidance";
     public static final String ELEVATOR = "elevator";
     private static final String TAG = "Ici";
@@ -41,6 +43,7 @@ public class CreateAccountActivity extends AppCompatActivity implements HTTPRequ
     private static final String YES = "y";
     public static final String ERROR = "Error";
     public static final String CREDENTIALS_JSON = "credentials.json";
+    public static final String NONE = "none";
     private EditText login;
     private EditText email;
     private EditText password;
@@ -126,13 +129,35 @@ public class CreateAccountActivity extends AppCompatActivity implements HTTPRequ
                 try {
 
                     jsonObject.put(NAME, loginValue);
-                    jsonObject.put(TYPE, userType.getSelectedItem().toString());
+                    switch (userType.getSelectedItemPosition()) {
+                        case 0:
+                            jsonObject.put(TYPE, "Student");
+                            break;
+
+                        case 1:
+                            jsonObject.put(TYPE, "Visitor");
+                            break;
+
+                        case 2:
+                            jsonObject.put(TYPE, "Teacher");
+                            break;
+
+                        case 3:
+                            jsonObject.put(TYPE, "Contributor");
+                            break;
+
+                        case 4:
+                            jsonObject.put(TYPE, "Administrator");
+                            break;
+                    }
+
                     jsonObject.put(PASSWORD, passwordValue);
                     jsonObject.put(EMAIL, emailValue);
 
                     JSONArray jsonArray = new JSONArray();
                     switch (specificAttribute.getSelectedItemPosition()) {
                         case 0:
+                            jsonArray.put(NONE);
                             break;
 
                         case 1:
@@ -208,7 +233,7 @@ public class CreateAccountActivity extends AppCompatActivity implements HTTPRequ
                                 break;
 
                             case 2:
-                                userTypeValue = "P";
+                                userTypeValue = "T";
                                 break;
 
                             case 3:

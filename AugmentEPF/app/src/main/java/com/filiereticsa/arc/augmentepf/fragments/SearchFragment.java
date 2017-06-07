@@ -31,6 +31,8 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
     private static final String VALIDATE = "validate";
     private static final String YES = "y";
     public static final String ERROR = "Error";
+    public static final String STATE = "state";
+    public static final String TRUE = "true";
     private ListView listViewClassRoom;
     private ListView listViewPoi;
     private ArrayList<Place> availableClassroomList = new ArrayList<>();
@@ -143,8 +145,8 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
                 }else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(VALIDATE);
-                        if (success.equals(YES)) {
+                        String success = jsonObject.getString(STATE);
+                        if (success.equals(TRUE)) {
                             ClassRoom.onClassRoomsRequestDone(result);
                         } else {
                             ClassRoom.loadClassRoomsFromFile();
@@ -161,8 +163,8 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
                 }else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(VALIDATE);
-                        if (success.equals(YES)) {
+                        String success = jsonObject.getString(STATE);
+                        if (success.equals(TRUE)) {
                             PointOfInterest.onPoiRequestDone(result);
                         } else {
                             PointOfInterest.loadPOIFromFile();

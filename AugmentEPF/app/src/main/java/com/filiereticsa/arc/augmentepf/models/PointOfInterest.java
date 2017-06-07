@@ -33,11 +33,8 @@ public class PointOfInterest extends Place {
     public static final String POS_X = "posX";
     public static final String POS_Y = "posY";
     private static final String INFORMATION = "information";
-    public static final String MESSAGE = "message";
-    public static final String URL = "getPOI.php";
-    private static final String VALIDATE = "validate";
-    private static final String YES = "y";
-    private static final String NO = "n";
+    public static final String URL = "getElementAdministration.php";
+    public static final String CONTENT_TYPE = "contentType";
     private static ArrayList<PointOfInterest> pointOfInterests;
     private String information;
     private static ArrayList<Place> surroundingPoi = new ArrayList<>();
@@ -54,19 +51,19 @@ public class PointOfInterest extends Place {
 
     static {
         pointOfInterests = new ArrayList<>();
-        PointOfInterest poi1 = new PointOfInterest(AugmentEPFApplication.getAppContext().getString(R.string.man_restroom)+ " "+2,
+        PointOfInterest poi1 = new PointOfInterest(AugmentEPFApplication.getAppContext().getString(R.string.man_restroom) + " " + 2,
                 new Position(31, 6, 2),
                 AugmentEPFApplication.getAppContext().getString(R.string.info_restroom_man));
         pointOfInterests.add(poi1);
-        PointOfInterest poi2 = new PointOfInterest(AugmentEPFApplication.getAppContext().getString(R.string.woman_restroom)+ " "+2,
+        PointOfInterest poi2 = new PointOfInterest(AugmentEPFApplication.getAppContext().getString(R.string.woman_restroom) + " " + 2,
                 new Position(19, 6, 2),
                 AugmentEPFApplication.getAppContext().getString(R.string.info_restroom_woman));
         pointOfInterests.add(poi2);
-        PointOfInterest poi3 = new PointOfInterest(AugmentEPFApplication.getAppContext().getString(R.string.man_restroom)+" "+1,
+        PointOfInterest poi3 = new PointOfInterest(AugmentEPFApplication.getAppContext().getString(R.string.man_restroom) + " " + 1,
                 new Position(30, 6, 1),
                 AugmentEPFApplication.getAppContext().getString(R.string.info_restroom_man));
         pointOfInterests.add(poi3);
-        PointOfInterest poi4 = new PointOfInterest(AugmentEPFApplication.getAppContext().getString(R.string.woman_restroom)+" "+1,
+        PointOfInterest poi4 = new PointOfInterest(AugmentEPFApplication.getAppContext().getString(R.string.woman_restroom) + " " + 1,
                 new Position(19, 6, 1),
                 AugmentEPFApplication.getAppContext().getString(R.string.info_restroom_woman));
         pointOfInterests.add(poi4);
@@ -82,7 +79,7 @@ public class PointOfInterest extends Place {
             surroundingPoi.add(pointOfInterests.get(i));
         }
         ArrayList<Pair<Place, Integer>> poiWithDistances = new ArrayList<>();
-        if(GAFrameworkUserTracker.sharedTracker() != null
+        if (GAFrameworkUserTracker.sharedTracker() != null
                 && GAFrameworkUserTracker.sharedTracker().getCurrentUserLocation() != null) {
             Pair<Integer, Integer> currentPosition = GAFrameworkUserTracker.sharedTracker().getCurrentUserLocation().indexPath;
 
@@ -151,7 +148,7 @@ public class PointOfInterest extends Place {
                 currentPoiJson.put(FLOOR, currentPoi.getPosition().getFloor());
                 currentPoiJson.put(POS_X, currentPoi.getPosition().getPositionX());
                 currentPoiJson.put(POS_Y, currentPoi.getPosition().getPositionY());
-                currentPoiJson.put(INFORMATION,currentPoi.getInformation());
+                currentPoiJson.put(INFORMATION, currentPoi.getInformation());
 
                 poiAsJsonArray.put(currentPoiJson);
             } catch (JSONException e) {
@@ -170,26 +167,22 @@ public class PointOfInterest extends Place {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
-            String validate = jsonObject.getString(VALIDATE);
-            String message = jsonObject.getString(MESSAGE);
-            switch (validate) {
-                case YES:
-                    JSONArray poiJsonArray = jsonObject.getJSONArray(POINT_OF_INTEREST);
-                    if (pointOfInterests == null) {
-                        pointOfInterests = new ArrayList<>();
-                    }
-                    pointOfInterests.clear();
-                    for (int i = 0; i < poiJsonArray.length(); i++) {
-                        pointOfInterests.add(
-                                new PointOfInterest(poiJsonArray.getJSONObject(i)));
-                    }
-                    PointOfInterest.savePoiToFile();
-                    break;
-
-                case NO:
-
-                    break;
+            JSONArray poiJsonArray = jsonObject.getJSONArray(POINT_OF_INTEREST);
+            if (pointOfInterests == null) {
+                pointOfInterests = new ArrayList<>();
             }
+            pointOfInterests.clear();
+            for (int i = 0; i < poiJsonArray.length(); i++) {
+                JSONObject currentPoi = poiJsonArray.getJSONObject(i);
+                String name = currentPoi.getString(NAME);
+                String information = currentPoi.getString(INFORMATION);
+                int posX = currentPoi.getInt(POS_X);
+                int posY = currentPoi.getInt(POS_Y);
+                int floor = currentPoi.getInt(FLOOR);
+                pointOfInterests.add(
+                        new PointOfInterest(name, new Position(posX,posY,floor),information));
+            }
+            PointOfInterest.savePoiToFile();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -197,7 +190,11 @@ public class PointOfInterest extends Place {
 
     public static void askForPointOfInterests() {
         JSONObject jsonObject = new JSONObject();
-        // TODO rename this according to Guilhem's name
+        try {
+            jsonObject.put(CONTENT_TYPE, "poi");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         HTTPRequestManager.doPostRequest(URL, jsonObject.toString(),
                 SearchFragment.httpRequestInterface, HTTPRequestManager.POI);
     }
@@ -232,7 +229,7 @@ public class PointOfInterest extends Place {
                 int positionX = currentPoiJsonObject.getInt(POS_X);
                 int positionY = currentPoiJsonObject.getInt(POS_Y);
                 String information = currentPoiJsonObject.getString(INFORMATION);
-                PointOfInterest pointOfInterest = new PointOfInterest(name, new Position(positionX, positionY, floor),information);
+                PointOfInterest pointOfInterest = new PointOfInterest(name, new Position(positionX, positionY, floor), information);
                 pointOfInterests.add(pointOfInterest);
             }
         } catch (JSONException e) {
