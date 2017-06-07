@@ -31,6 +31,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     public static final String TRUE = "true";
     public static final String MESSAGE = "message";
     public static final String GET_ELEMENT_PHP = "getElement.php";
+    public static final String RESULT = "result";
+
     private boolean editBeacon;
     private int current_floor;
     private ImageView iv;
@@ -39,6 +41,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     private String itemName, itemXCoord, itemYCoord;
     JSONObject jsonObject = new JSONObject();
     JSONArray jsonArray = new JSONArray();
+    JSONObject [] jsonObjects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +49,14 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         setContentView(R.layout.activity_admin);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.admin_activity_title);
+
         iv = (ImageView) findViewById(R.id.currentMap);
         RadioButton rb = (RadioButton) findViewById(R.id.beaconEdit);
         closest = (TextView) findViewById(R.id.closestText);
         name = (EditText) findViewById(R.id.item_name_Text);
         xcoord = (EditText) findViewById(R.id.xCoordText);
         ycoord = (EditText) findViewById(R.id.yCoordText);
+
         iv.setImageResource(R.drawable.floor_admin);
         rb.setChecked(true);
         editBeacon = true;
@@ -223,36 +228,10 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         } else
             switch (requestId) {
                 case HTTPRequestManager.BEACONS:
-                    try {
-                        // Put the result in a JSONObject to use it.
-                        JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(STATE);
-                        String message = jsonObject.getString(MESSAGE);
-                        if (success.equals(TRUE)) {
-                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-                        } else {
-                            // If request failed, shows the message from the server
-                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    getResult(result);
                     break;
                 case HTTPRequestManager.POI:
-                    try {
-                        // Put the result in a JSONObject to use it.
-                        JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(STATE);
-                        String message = jsonObject.getString(MESSAGE);
-                        if (success.equals(TRUE)) {
-                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-                        } else {
-                            // If request failed, shows the message from the server
-                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    getResult(result);
                     break;
                 case HTTPRequestManager.ELEMENT:
                     try {
@@ -271,5 +250,39 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     }
                     break;
             }
+
+    }
+
+    private void getResult (String result){
+        JSONArray resultArray;
+        try {
+            // Put the result in a JSONObject to use it.
+            JSONObject jsonObject = new JSONObject(result);
+            String success = jsonObject.getString(STATE);
+            String message = jsonObject.getString(MESSAGE);
+            if (success.equals(TRUE)) {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
+                resultArray = jsonObject.getJSONArray(RESULT);
+                jsonObjects = new JSONObject[resultArray.length()];
+                boolean existing = false;
+
+                int i = 0;
+                while (i<resultArray.length() || !existing){
+                    jsonObjects[i]=resultArray.getJSONObject(i);
+                    if (jsonObjects[i].getString("name").equalsIgnoreCase(name.getText().toString())){
+                        //update();
+                        existing = true;
+                    }
+                    i++;
+                }
+                if (!existing) save();
+            } else {
+                // If request failed, shows the message from the server
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

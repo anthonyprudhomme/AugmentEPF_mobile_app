@@ -45,7 +45,8 @@
 
         <EditText
             android:id="@+id/xCoordText"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal" />
 
@@ -56,7 +57,8 @@
 
         <EditText
             android:id="@+id/yCoordText"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal" />
     </LinearLayout>
@@ -64,7 +66,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -125,6 +128,7 @@
 
         <Button
             android:layout_width="wrap_content"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:onClick="onGPSClick"
@@ -132,6 +136,7 @@
 
         <Button
             android:layout_width="wrap_content"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:onClick="onRemoveClick"
@@ -139,6 +144,7 @@
 
         <Button
             android:layout_width="wrap_content"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:onClick="onSaveClick"
