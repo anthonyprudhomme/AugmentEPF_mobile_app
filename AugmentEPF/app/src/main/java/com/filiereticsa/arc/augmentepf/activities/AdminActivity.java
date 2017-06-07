@@ -20,13 +20,15 @@ import com.filiereticsa.arc.augmentepf.R;
 public class AdminActivity extends AppCompatActivity {
     private boolean editBeacon;
     private int current_floor;
+    private ImageView iv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         editBeacon=true;
         current_floor=0;
         setContentView(R.layout.activity_admin);
-        ImageView iv = (ImageView) findViewById(R.id.admin_imageView);
+        iv = (ImageView) findViewById(R.id.currentMap);
         iv.setImageResource(R.drawable.floor_admin);
         RadioButton rb = (RadioButton) findViewById(R.id.beaconEdit);
         rb.setChecked(true);
@@ -42,7 +44,7 @@ public class AdminActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        ImageView iv = (ImageView) findViewById(R.id.admin_imageView);
+        //ImageView iv = (ImageView) findViewById(R.id.admin_imageView);
         switch(item.getItemId()){
             case android.R.id.home :
                 finish();
