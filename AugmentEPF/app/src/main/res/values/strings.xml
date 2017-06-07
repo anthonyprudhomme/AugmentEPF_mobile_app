@@ -71,7 +71,7 @@
     <string-array name="user_type_array">
         <item>Student</item>
         <item>Visitor</item>
-        <item>Professor</item>
+        <item>Teacher</item>
         <item>Contributor</item>
         <item>Admin</item>
     </string-array>
@@ -79,7 +79,7 @@
     <string-array name="user_type_values_array">
         <item>S</item>
         <item>V</item>
-        <item>P</item>
+        <item>T</item>
         <item>C</item>
         <item>A</item>
     </string-array>
@@ -158,7 +158,7 @@
     <string name="enter_password_confirmation">Please enter a password confirmation</string>
     <string name="error_server">Something went wrong with the server</string>
     <string name="need_internet_account">You need internet connection to create an account</string>
-    <string name="connected">Authentification successful</string>
+    <string name="connected">Authentication successful</string>
     <string name="logout">Logout</string>
     <string name="fail_epf_wifi">Please use EPF Wi-Fi to use this app</string>
     <string name="success_epf_wifi">Successfully connected to EPF Wi-Fi</string>

@@ -297,6 +297,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         if (userAndPathView != null) {
             userAndPathView.setCurrentPath(path, floorAccessType);
         }
+
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.filiereticsa.arc.augmentepf.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
@@ -14,6 +16,7 @@ import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,16 +24,32 @@ import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.C
 
 public class ConnectionActivity extends AppCompatActivity implements HTTPRequestInterface {
 
-    public static final String CONNECTION_PHP = "connection.php";
+    public static final String CONNECTION = "connection.php";
+    public static final String SETTINGS = "getSettings.php";
     private static final String NAME = "name";
     private static final String PASSWORD = "password";
     private static final String TAG = "Ici";
     private static final String ERROR = "Error";
     private static final String MESSAGE = "message";
-    private static final String VALIDATE = "validate";
-    private static final String YES = "y";
+    public static final String SUCCESS = "Success";
+    public static final String ID_USER = "idUser";
+    public static final String TOKEN = "token";
+    public static final String ID = "id";
+    public static final String GET_ATTRIBUTE = "getAttribute";
+    public static final String GET_EMAIL = "getEmail";
+    public static final String GET_TYPE = "getType";
+    public static final String GET_ICAL = "getIcal";
+    public static final String TRUE = "true";
+    public static final String STATE = "state";
+    public static final String ATTRIBUTE = "attribute";
+    public static final String TYPE = "type";
+    public static final String ICAL = "ical";
+    public static final String TYPE_USER = "type_user";
     private EditText login;
     private EditText password;
+
+    public static int idUser;
+    public static String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +117,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
             e.printStackTrace();
         }
         Log.d(TAG, "sendAccountCreationToServer: " + jsonObject.toString());
-        HTTPRequestManager.doPostRequest(CONNECTION_PHP, jsonObject.toString(),
+        HTTPRequestManager.doPostRequest(CONNECTION, jsonObject.toString(),
                 this, HTTPRequestManager.CONNECTION);
     }
 
@@ -109,6 +128,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
 
     @Override
     public void onRequestDone(String result, int requestId) {
+        Log.d(TAG, "onConnectionRequestDone: "+result);
         switch (requestId) {
             case HTTPRequestManager.CONNECTION:
                 if (result.equals(ERROR)) {
@@ -119,10 +139,13 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                     JSONObject jsonObject = new JSONObject(result);
                     // Show in the log the message given by the result : it will give error or success information
                     Log.d(TAG, "onRequestDone: " + jsonObject.getString(MESSAGE));
-                    String success = jsonObject.getString(VALIDATE);
-                    if (success.equals(YES)) {
+                    String success = jsonObject.getString(MESSAGE);
+                    if (success.equals(SUCCESS)) {
                         Toast.makeText(this, R.string.connected, Toast.LENGTH_SHORT).show();
                         HomePageActivity.isUserConnected = true;
+                        idUser = jsonObject.getInt(ID_USER);
+                        token = jsonObject.getString(TOKEN);
+                        checkForNewAccountSettings();
                         Intent intent = new Intent(this, com.filiereticsa.arc.augmentepf.activities.HomePageActivity.class);
                         startActivity(intent);
                     } else {
@@ -135,6 +158,108 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                     e.printStackTrace();
                 }
                 break;
+
+            case HTTPRequestManager.SETTINGS:
+                if (result.equals(ERROR)) {
+                    Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
+                }
+                try {
+                    // Put the result in a JSONObject to use it.
+                    JSONObject jsonObject = new JSONObject(result);
+                    // Show in the log the message given by the result : it will give error or success information
+                    String success = jsonObject.getString(STATE);
+                    if (success.equals(TRUE)) {
+
+                        // Get sharedPreferences
+                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                        SharedPreferences.Editor prefEditor = sharedPreferences.edit();
+
+                        // Update user specific attributes in SharedPreferences
+                        String attribute = jsonObject.getString(ATTRIBUTE);
+                        String[] attributes = attribute.split("/");
+                        boolean elevator = false;
+                        boolean soundGuidance = false;
+                        for (int i = 0; i < attributes.length; i++) {
+                            if(attributes[i].equals("soundGuidance")){
+                                soundGuidance = true;
+                            }
+                            if (attributes[i].equals("elevator")){
+                                elevator = true;
+                            }
+                        }
+                        String specificAttributValue = "0";
+                        if (elevator && soundGuidance){
+                            specificAttributValue = "VA";
+                        }else if (elevator){
+                            specificAttributValue = "A";
+                        }else if (soundGuidance){
+                            specificAttributValue = "V";
+                        }
+
+                        prefEditor.putString("specific_attribute_user",specificAttributValue);
+
+
+                        // Update user type in SharedPreferences
+                        String userType = jsonObject.getString(TYPE);
+                        String userTypeValue = "S";
+                        switch (userType){
+
+                            case "Student":
+                                userTypeValue = "S";
+                                break;
+
+                            case "Teacher":
+                                userTypeValue = "T";
+                                break;
+
+                            case "Contributor":
+                                userTypeValue = "C";
+                                break;
+
+                            case "Visitor":
+                                userTypeValue = "V";
+                                break;
+
+                            case "Administrator":
+                                userTypeValue = "A";
+                                break;
+                        }
+
+                        prefEditor.putString(TYPE_USER,userTypeValue);
+
+                        // Update user ical link
+                        String icalLink = jsonObject.getString(ICAL);
+                        prefEditor.putString(ICAL,icalLink);
+
+                        prefEditor.apply();
+
+                    } else {
+                        // If request failed, shows the message from the server
+                        String message = jsonObject.getString(MESSAGE);
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
         }
+    }
+
+    private void checkForNewAccountSettings() {
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(ID, idUser);
+            jsonObject.put(TOKEN, token);
+            jsonObject.put(GET_ATTRIBUTE, TRUE);
+            jsonObject.put(GET_EMAIL, TRUE);
+            jsonObject.put(GET_TYPE, TRUE);
+            jsonObject.put(GET_ICAL, TRUE);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        HTTPRequestManager.doPostRequest(SETTINGS, jsonObject.toString(),
+                this, HTTPRequestManager.SETTINGS);
     }
 }

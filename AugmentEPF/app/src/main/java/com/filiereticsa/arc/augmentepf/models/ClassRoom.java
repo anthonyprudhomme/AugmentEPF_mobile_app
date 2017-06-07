@@ -26,18 +26,20 @@ public class ClassRoom extends Place {
     private static final String TAG = "Ici";
     public static final String NAME = "name";
     public static final String FLOOR = "floor";
-    public static final String POS_X = "posX";
-    public static final String POS_Y = "posY";
+    public static final String POS_X = "x";
+    public static final String POS_Y = "y";
     public static final String CURRENT_TIME = "currentTime";
     public static final String AVAILABLE = "available";
     public static final String MESSAGE = "message";
     public static final String CLASSROOMS_JSON = "classrooms.json";
     public static final String CLASS_ROOMS = "classRooms";
     public static final String GET_AVAILABLE_CLASS_ROOMS_PHP = "getAvailableClassRooms.php";
-    public static final String GET_CLASS_ROOMS_PHP = "getClassRooms.php";
+    public static final String GET_CLASS_ROOMS_PHP = "getElementAdministration.php";
     private static final String VALIDATE = "validate";
     private static final String YES = "y";
     private static final String NO = "n";
+    public static final String CONTENT_TYPE = "contentType";
+    public static final String RESULT = "result";
 
     private static ArrayList<ClassRoom> classRooms;
 
@@ -243,7 +245,11 @@ public class ClassRoom extends Place {
 
     public static void askForClassRooms() {
         JSONObject jsonObject = new JSONObject();
-        // TODO rename this according to Guilhem's name
+        try {
+            jsonObject.put(CONTENT_TYPE, "room");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         HTTPRequestManager.doPostRequest(GET_CLASS_ROOMS_PHP, jsonObject.toString(),
                 SearchFragment.httpRequestInterface, HTTPRequestManager.CLASSROOMS);
     }
@@ -252,25 +258,19 @@ public class ClassRoom extends Place {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
-            String validate = jsonObject.getString(VALIDATE);
-            String message = jsonObject.getString(MESSAGE);
-            switch (validate) {
-                case YES:
-                    JSONArray availableClassJsonArray = jsonObject.getJSONArray(AVAILABLE);
-                    if (availableClassroomList == null) {
-                        availableClassroomList = new ArrayList<>();
-                    }
-                    availableClassroomList.clear();
-                    for (int i = 0; i < availableClassJsonArray.length(); i++) {
-                        availableClassroomList.add(
-                                new ClassRoom(availableClassJsonArray.getJSONObject(i)));
-                    }
-                    break;
-
-
-                case NO:
-
-                    break;
+            JSONArray availableClassJsonArray = jsonObject.getJSONArray(AVAILABLE);
+            if (availableClassroomList == null) {
+                availableClassroomList = new ArrayList<>();
+            }
+            availableClassroomList.clear();
+            for (int i = 0; i < availableClassJsonArray.length(); i++) {
+                JSONObject currentAvailableClassroom = availableClassJsonArray.getJSONObject(i);
+                String name = currentAvailableClassroom.getString(NAME);
+                int posX = currentAvailableClassroom.getInt(POS_X);
+                int posY = currentAvailableClassroom.getInt(POS_Y);
+                int floor = currentAvailableClassroom.getInt(FLOOR);
+                availableClassroomList.add(
+                        new ClassRoom(name,new Position(posX,posY,floor),true));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -281,27 +281,21 @@ public class ClassRoom extends Place {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
-            String validate = jsonObject.getString(VALIDATE);
-            String message = jsonObject.getString(MESSAGE);
-            switch (validate) {
-                case YES:
-                    JSONArray classRoomsJsonArray = jsonObject.getJSONArray(CLASS_ROOMS);
-                    if (classRooms == null) {
-                        classRooms = new ArrayList<>();
-                    }
-                    classRooms.clear();
-                    for (int i = 0; i < classRoomsJsonArray.length(); i++) {
-                        classRooms.add(
-                                new ClassRoom(classRoomsJsonArray.getJSONObject(i)));
-                    }
-                    ClassRoom.saveClassRoomsToFile();
-                    break;
-
-
-                case NO:
-
-                    break;
+            JSONArray classRoomsJsonArray = jsonObject.getJSONArray(RESULT);
+            if (classRooms == null) {
+                classRooms = new ArrayList<>();
             }
+            classRooms.clear();
+            for (int i = 0; i < classRoomsJsonArray.length(); i++) {
+                JSONObject currentClassroom = classRoomsJsonArray.getJSONObject(i);
+                String name = currentClassroom.getString(NAME);
+                int posX = currentClassroom.getInt(POS_X);
+                int posY = currentClassroom.getInt(POS_Y);
+                int floor = currentClassroom.getInt(FLOOR);
+                classRooms.add(
+                        new ClassRoom(name, new Position(posX, posY, floor), false));
+            }
+            ClassRoom.saveClassRoomsToFile();
         } catch (JSONException e) {
             e.printStackTrace();
         }
