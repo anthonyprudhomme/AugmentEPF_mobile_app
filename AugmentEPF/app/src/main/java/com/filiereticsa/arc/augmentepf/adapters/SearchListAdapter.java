@@ -6,26 +6,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.filiereticsa.arc.augmentepf.R;
-import com.filiereticsa.arc.augmentepf.models.ClassRoom;
+import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
+import com.filiereticsa.arc.augmentepf.localization.LocalizationFragment;
 import com.filiereticsa.arc.augmentepf.models.Place;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
- * Created by Cécile on 21/05/2017.
+ * Created by ARC© Team for AugmentEPF project on 21/05/2017.
  */
 
 public class SearchListAdapter extends ArrayAdapter<Place> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public SearchListAdapter(Context context, ArrayList<Place> list) {
-        super(context, 0,list);
-
+        super(context, 0, list);
     }
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         notifyDataSetChanged();
@@ -38,9 +39,20 @@ public class SearchListAdapter extends ArrayAdapter<Place> implements SharedPref
             view = inflater.inflate(R.layout.item_search_list, parent, false);
         }
 
-        Place place = getItem(position);
+        final Place place = getItem(position);
         TextView name = (TextView) view.findViewById(R.id.room_name);
-        name.setText(place.getName());
+        if (place != null) {
+            name.setText(place.getName());
+            Button button = (Button) view.findViewById(R.id.place_button);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomePageActivity.destinationSelectedInterface.onDestinationSelected(place);
+                    LocalizationFragment.destinationSelectedInterface.onDestinationSelected(place);
+                }
+            });
+        }
+
 
         return view;
     }

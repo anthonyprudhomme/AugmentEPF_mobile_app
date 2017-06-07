@@ -1,5 +1,6 @@
 package com.filiereticsa.arc.augmentepf.localization;
 
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class GABeaconMapHelper {
     }
 
     // Returns the distance and the path () from the provided index path to the provided target
-    protected Pair<ArrayList<Pair<Integer, Integer>>, Integer> pathFrom(Pair<Integer, Integer> originIndexPath, Pair<Integer, Integer> targetIndexPath) {
+    public Pair<ArrayList<Pair<Integer, Integer>>, Integer> pathFrom(Pair<Integer, Integer> originIndexPath, Pair<Integer, Integer> targetIndexPath) {
         this.reinitPathFinding();
         if (this.vertices.get(originIndexPath) == null) {
             return null;
@@ -369,5 +370,9 @@ public class GABeaconMapHelper {
             this.indexPath = indexPath;
         }
 
+    }
+
+    public int getMapFloor(){
+        return this.map.getFloor();
     }
 }

@@ -11,7 +11,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.activities.AugmentEPFApplication;
-import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -207,7 +206,6 @@ public class BeaconDetector implements BeaconConsumer {
                 distance = beacon.getDistance();
             } else {
                 distance = 10;
-                Log.d(TAG, "myDidRangeBeaconsInRegion: lost a beacon");
                 if (consecutiveUnknownMap.get(beacon) == GABeacon.getProximityHistorySize()) {
                     wholeBeaconList.remove(beacon);
                 }
@@ -217,12 +215,12 @@ public class BeaconDetector implements BeaconConsumer {
                 beaconsFound.add(currentBeacon);
             }
         }
-        GAFrameworkUserTracker.sharedTracker().rangedBeacons(beaconsFound);
-
+        if(GAFrameworkUserTracker.sharedTracker()!=null) {
+            GAFrameworkUserTracker.sharedTracker().rangedBeacons(beaconsFound);
+        }
     }
 
     private void myDidExitRegion(Region region) {
-        Log.d(TAG, "Exited region");
         // Stop ranging the beacons
         try {
             beaconManager.stopRangingBeaconsInRegion(region);
@@ -232,7 +230,6 @@ public class BeaconDetector implements BeaconConsumer {
     }
 
     private void myDidEnterRegion(Region region) {
-        Log.d(TAG, "Entered region");
         // Start ranging the beacons
         try {
             beaconManager.startRangingBeaconsInRegion(region);

@@ -30,7 +30,6 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
                 android:layout_marginLeft="10dp"
-                android:textStyle="bold"
                 android:textSize="16dp"
                 tools:text="Room name" />
 
@@ -42,22 +41,22 @@
                 android:layout_alignLeft="@+id/room_name"
                 android:layout_below="@+id/room_name"
                 android:layout_marginLeft="10dp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/colorPrimaryDark"
                 tools:text="Distance" />
 
         </LinearLayout>
 
         <Button
-            android:id="@+id/button"
-            style="@android:style/Widget.Button.Small"
+            android:id="@+id/place_button"
+            style="@style/Button"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:background="@drawable/red_button"
-            android:textColor="@color/white"
-            android:text="Go"
             android:padding="10dp"
-            android:textSize="16dp"/>
+            android:text="@string/go"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
 
     </LinearLayout>
 

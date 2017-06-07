@@ -2,6 +2,7 @@ package com.filiereticsa.arc.augmentepf.localization;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
  */
 public class MapItem {
 
+    private static final String TAG = "Ici";
     MapItemType type = MapItemType.Free;
     String name;
     String imageUrl;
@@ -28,6 +30,11 @@ public class MapItem {
     private int id = 0;
     // Returns view for item
     private ImageView view;
+
+    private static final String ITEM_ID = "item_id";
+    private static final String ITEM_TYPE = "type";
+    private static final String POS_X = "posX";
+    private static final String POS_Y = "pos_y";
 
     public MapItem(int id, MapItemType type, Pair<Integer, Integer> coordinates) {
         this.id = id;
@@ -40,33 +47,28 @@ public class MapItem {
             return;
         }
         try {
-            this.id = jsonObject.getInt("id");
+            this.id = jsonObject.getInt(ITEM_ID);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String typeString = null;
+        String typeString;
         try {
-            typeString = jsonObject.getString("map_item_type");
-            this.type = MapItemType.getTypeFromString(typeString);
+            typeString = jsonObject.getString(ITEM_TYPE);
+            this.type = MapItemType.valueOf(typeString);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        try {
-            String name = jsonObject.getString("name");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         // Coordinates
-        int row = 0;
-        int column = 0;
+        int posX = 0;
+        int posY = 0;
         try {
-            row = jsonObject.getInt("row");
-            column = jsonObject.getInt("column");
+            posX = jsonObject.getInt(POS_X);
+            posY = jsonObject.getInt(POS_Y);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        this.coordinates = new Pair<>(row, column);
+        Log.d(TAG, "MapItem: "+posX+" "+posY);
+        this.coordinates = new Pair<>(posX, posY);
     }
 
     public Integer getId() {

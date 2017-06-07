@@ -20,6 +20,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.R;
+import com.filiereticsa.arc.augmentepf.models.ClassRoom;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -79,8 +80,8 @@ public class PathPlanningActivity extends AppCompatActivity
         /*==========================================================================================
         |                              Autcompletion for classrooms                                |
         ==========================================================================================*/
-        // Get the string array created in file string.xml
-        String[] allClassrooms = getResources().getStringArray(R.array.classrooms);
+        // Get the string array from the classroom list
+        String[] allClassrooms = ClassRoom.getClassroomsAsStrings();
 
         // Get the AutoCompleteTextView created in file main.xml
         searchClassroom =
@@ -91,7 +92,7 @@ public class PathPlanningActivity extends AppCompatActivity
 
         // Create an autocompletion list with string array entryUser
         // "simple_dropdown_item_1line" is a display stlye
-        ArrayAdapter adapter = new ArrayAdapter(this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line, allClassrooms);
 
         // Put the autocompletion list in our object of autocompletion

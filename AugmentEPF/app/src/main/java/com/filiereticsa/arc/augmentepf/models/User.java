@@ -3,7 +3,7 @@ package com.filiereticsa.arc.augmentepf.models;
 import java.util.ArrayList;
 
 /**
- * Created by anthony on 07/05/2017.
+ * Created by ARC© Team for AugmentEPF project on 07/05/2017.
  */
 
 public class User {
