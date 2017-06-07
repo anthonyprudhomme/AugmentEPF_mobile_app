@@ -1,145 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.filiereticsa.arc.augmentepf.activities.AdminActivity">
 
-    <RadioGroup android:orientation="horizontal"
+    <RadioGroup
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/beaconEdit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="fill_vertical"
             android:layout_weight="1"
-            android:text="Edit Beacons"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:onClick="onBeaconClick"/>
+            android:onClick="onBeaconClick"
+            android:text="Edit Beacons" />
 
         <RadioButton
             android:id="@+id/PoIEdit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="fill_vertical"
             android:layout_weight="1"
-            android:text="Edit Points of Interests"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:onClick="onPOIClick"/>
+            android:onClick="onPOIClick"
+            android:text="Edit Points of Interests" />
     </RadioGroup>
 
-    <LinearLayout android:orientation="horizontal"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:orientation="horizontal">
 
-        <TextView android:layout_marginLeft="5dp"
-            android:text="X Coordinate :"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content" />
+            android:layout_marginLeft="5dp"
+            android:text="X Coordinate :" />
 
         <EditText
-            android:inputType="numberDecimal"
             android:id="@+id/xCoordText"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_width="100dp"/>
+            android:inputType="numberDecimal" />
 
-        <TextView android:text="Y Coordinate :"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content" />
+            android:text="Y Coordinate :" />
 
         <EditText
-            android:inputType="numberDecimal"
             android:id="@+id/yCoordText"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_width="100dp"/>
+            android:inputType="numberDecimal" />
     </LinearLayout>
 
-    <LinearLayout android:orientation="horizontal"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_weight="1"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-            <TextView android:layout_marginLeft="5dp"
-                android:text="Name :"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
+                android:layout_marginLeft="5dp"
+                android:text="Name :" />
 
             <EditText
                 android:id="@+id/item_name_Text"
-                android:layout_height="wrap_content"
                 android:layout_width="140dp"
-                android:maxLines="1"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
                 android:inputType="text"
-                android:imeOptions="actionDone"/>
+                android:maxLines="1" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView android:text="Closest :"
-                android:layout_gravity="center_vertical"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_gravity="center_vertical"
-                android:id="@+id/closestText"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_width="100dp"/>
+                android:layout_gravity="center_vertical"
+                android:text="Closest :" />
+
+            <TextView
+                android:id="@+id/closestText"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical" />
 
         </LinearLayout>
 
     </LinearLayout>
 
     <fragment
-        android:name="com.filiereticsa.arc.augmentepf.localization.LocalizationFragment"
         android:id="@+id/localization_fragment"
+        android:name="com.filiereticsa.arc.augmentepf.localization.LocalizationFragment"
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="0dp"
-        />
+        android:layout_weight="1" />
 
-    <!--<ImageView android:id="@+id/admin_imageView"
-        android:layout_weight="1"
-        android:layout_height="0dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:background="@color/lightGrey"/>-->
-
-    <LinearLayout android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
 
         <Button
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Current Position"
-            android:onClick="onGPSClick"/>
+            android:onClick="onGPSClick"
+            android:text="Current Position" />
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Remove closest"
-            android:onClick="onRemoveClick"/>
+            android:onClick="onRemoveClick"
+            android:text="Remove closest" />
+
         <Button
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Add"
-            android:onClick="onSaveClick"/>
+            android:onClick="onSaveClick"
+            android:text="Add" />
     </LinearLayout>
 
 </LinearLayout>
