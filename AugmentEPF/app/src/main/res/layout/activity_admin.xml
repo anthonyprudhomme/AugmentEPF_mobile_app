@@ -106,8 +106,7 @@
     <ImageView android:id="@+id/admin_imageView"
         android:layout_weight="1"
         android:layout_height="0dp"
-        android:layout_width="match_parent"
-        android:background="@color/lightGrey"/>
+        android:layout_width="match_parent"/>
 
     <LinearLayout android:gravity="center_horizontal"
         android:orientation="horizontal"
