@@ -30,6 +30,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     public static final String STATE = "state";
     public static final String TRUE = "true";
     public static final String MESSAGE = "message";
+    public static final String GET_ELEMENT_PHP = "getElement.php";
     private boolean editBeacon;
     private int current_floor;
     private ImageView iv;
@@ -113,7 +114,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     public void onSaveClick(View view) {
         if (name.getText().toString().matches("")) {
             Toast.makeText(this, R.string.admin_name_missing, Toast.LENGTH_SHORT).show();
-        } else save();
+        } else checkForUpdate();
     }
 
     public void onRemoveClick(View view) {
@@ -139,6 +140,23 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             builder.setMessage(R.string.confirm).setPositiveButton(R.string.yes, dialogClickListener)
                     .setNegativeButton(R.string.cancel, dialogClickListener).show();
         }
+    }
+
+    private void checkForUpdate(){
+        if (editBeacon) {
+            try {
+                jsonObject.put(CONTENT_TYPE, "beacon");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            HTTPRequestManager.doPostRequest(GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
+        } else
+            try {
+                jsonObject.put(CONTENT_TYPE, "poi");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        HTTPRequestManager.doPostRequest(GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
     }
 
     private void save() {
@@ -202,40 +220,56 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     public void onRequestDone(String result, int requestId) {
         if (result.equals(ERROR)) {
             Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
-        }else
-        switch (requestId) {
-            case HTTPRequestManager.BEACONS:
-                try {
-                    // Put the result in a JSONObject to use it.
-                    JSONObject jsonObject = new JSONObject(result);
-                    String success = jsonObject.getString(STATE);
-                    String message = jsonObject.getString(MESSAGE);
-                    if (success.equals(TRUE)) {
-                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-                    } else {
-                        // If request failed, shows the message from the server
-                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        } else
+            switch (requestId) {
+                case HTTPRequestManager.BEACONS:
+                    try {
+                        // Put the result in a JSONObject to use it.
+                        JSONObject jsonObject = new JSONObject(result);
+                        String success = jsonObject.getString(STATE);
+                        String message = jsonObject.getString(MESSAGE);
+                        if (success.equals(TRUE)) {
+                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        } else {
+                            // If request failed, shows the message from the server
+                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case HTTPRequestManager.POI:
-                try {
-                    // Put the result in a JSONObject to use it.
-                    JSONObject jsonObject = new JSONObject(result);
-                    String success = jsonObject.getString(STATE);
-                    String message = jsonObject.getString(MESSAGE);
-                    if (success.equals(TRUE)) {
-                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-                    } else {
-                        // If request failed, shows the message from the server
-                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                    break;
+                case HTTPRequestManager.POI:
+                    try {
+                        // Put the result in a JSONObject to use it.
+                        JSONObject jsonObject = new JSONObject(result);
+                        String success = jsonObject.getString(STATE);
+                        String message = jsonObject.getString(MESSAGE);
+                        if (success.equals(TRUE)) {
+                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        } else {
+                            // If request failed, shows the message from the server
+                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                break;
-        }
+                    break;
+                case HTTPRequestManager.ELEMENT:
+                    try {
+                        // Put the result in a JSONObject to use it.
+                        JSONObject jsonObject = new JSONObject(result);
+                        String success = jsonObject.getString(STATE);
+                        String message = jsonObject.getString(MESSAGE);
+                        if (success.equals(TRUE)) {
+                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        } else {
+                            // If request failed, shows the message from the server
+                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
     }
 }
