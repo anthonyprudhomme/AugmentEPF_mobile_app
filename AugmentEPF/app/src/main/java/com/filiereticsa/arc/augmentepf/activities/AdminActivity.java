@@ -164,6 +164,35 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         HTTPRequestManager.doPostRequest(GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
     }
 
+    private void update() {
+        itemName = name.getText().toString();
+        itemXCoord = xcoord.getText().toString();
+        itemYCoord = ycoord.getText().toString();
+
+        if (editBeacon) {
+            try {
+                jsonObject.put(CONTENT_TYPE, "beacon");
+                jsonObject.put(CHANGE_TYPE, "update");
+                jsonArray.put(itemXCoord + "/" + itemYCoord + "/" + current_floor);
+                jsonArray.put(itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
+        } else
+            try {
+                jsonObject.put(CONTENT_TYPE, "poi");
+                jsonObject.put(CHANGE_TYPE, "update");
+                jsonArray.put(itemXCoord + "/" + itemYCoord + "/" + current_floor);
+                jsonArray.put(itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
+    }
+
     private void save() {
         itemName = name.getText().toString();
         itemXCoord = xcoord.getText().toString();
@@ -228,12 +257,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         } else
             switch (requestId) {
                 case HTTPRequestManager.BEACONS:
-                    getResult(result);
-                    break;
-                case HTTPRequestManager.POI:
-                    getResult(result);
-                    break;
-                case HTTPRequestManager.ELEMENT:
                     try {
                         // Put the result in a JSONObject to use it.
                         JSONObject jsonObject = new JSONObject(result);
@@ -249,6 +272,25 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                         e.printStackTrace();
                     }
                     break;
+                case HTTPRequestManager.POI:
+                    try {
+                        // Put the result in a JSONObject to use it.
+                        JSONObject jsonObject = new JSONObject(result);
+                        String success = jsonObject.getString(STATE);
+                        String message = jsonObject.getString(MESSAGE);
+                        if (success.equals(TRUE)) {
+                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        } else {
+                            // If request failed, shows the message from the server
+                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case HTTPRequestManager.ELEMENT:
+                    getResult(result);
+                    break;
             }
 
     }
@@ -261,8 +303,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             String success = jsonObject.getString(STATE);
             String message = jsonObject.getString(MESSAGE);
             if (success.equals(TRUE)) {
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-
                 resultArray = jsonObject.getJSONArray(RESULT);
                 jsonObjects = new JSONObject[resultArray.length()];
                 boolean existing = false;
@@ -271,7 +311,24 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                 while (i<resultArray.length() || !existing){
                     jsonObjects[i]=resultArray.getJSONObject(i);
                     if (jsonObjects[i].getString("name").equalsIgnoreCase(name.getText().toString())){
-                        //update();
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        update();
+                                        break;
+
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        //No button clicked
+                                        break;
+                                }
+                            }
+                        };
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setMessage(R.string.admin_update).setPositiveButton(R.string.yes, dialogClickListener)
+                                .setNegativeButton(R.string.cancel, dialogClickListener).show();
                         existing = true;
                     }
                     i++;
