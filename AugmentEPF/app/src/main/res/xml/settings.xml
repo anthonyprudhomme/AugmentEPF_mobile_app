@@ -48,7 +48,7 @@
 
         <!-- Lien iCal -->
         <EditTextPreference
-            android:key="edit"
+            android:key="ical"
             android:title="@string/ical_link"
             android:summary="@string/ical_summary"
             android:dialogTitle="@string/ical_link"

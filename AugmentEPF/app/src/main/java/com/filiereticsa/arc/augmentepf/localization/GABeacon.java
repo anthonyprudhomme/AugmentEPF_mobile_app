@@ -1,6 +1,5 @@
 package com.filiereticsa.arc.augmentepf.localization;
 
-import android.util.Log;
 import android.util.Pair;
 
 import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
@@ -24,48 +23,54 @@ public class GABeacon {
     private final static double LIMIT_UNKNOWN_IMMEDIATE = 0;
     private final static double LIMIT_IMMEDIATE_NEAR = 0.5;
     private final static double LIMIT_NEAR_FAR = 3;
+    public static final String ID_USER = "idUser";
+    public static final String TOKEN = "token";
+    public static final String CONTENT_TYPE = "contentType";
+    public static final String RESULT = "result";
     public static ArrayList<GABeacon> allBeacons;
     private static int proximityHistorySize = 3;
 
-    public static final String URL = "getBeacons.php";
+    public static final String URL = "getElementAdministration.php";
     private static final String BEACON_JSON = "beacons.json";
     private static final String BEACON = "beacon";
     private static final String UUID = "uuid";
     private static final String MAJOR = "major";
     private static final String MINOR = "minor";
     private static final String FLOOR = "floor";
-    private static final String POS_X = "posX";
-    private static final String POS_Y = "posY";
+    private static final String POS_X = "x";
+    private static final String POS_Y = "y";
     private static final String MESSAGE = "message";
     private static final String VALIDATE = "validate";
     private static final String YES = "y";
     private static final String NO = "n";
 
+    public static final String EMBCUUID = "699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012";
+
     static {
         allBeacons = new ArrayList<>();
 
         //Lakanal Floor 2 i1 to i6
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 42194, 8, 10, 2));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43216, 12, 10, 2));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43364, 19, 6, 2));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 40935, 25, 3, 2));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43348, 31, 6, 2));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 44067, 31, 10, 2));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 1, 39757, 39, 10, 2));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 42742, 13, 6, 2));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43184, 37, 4, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 42194, 8, 10, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43216, 12, 10, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43364, 19, 6, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 1, 40935, 25, 3, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43348, 31, 6, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 44067, 31, 10, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 1, 39757, 39, 10, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 42742, 13, 6, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43184, 37, 4, 2));
 
         //Lakanal Floor 1 1L to 6L
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43232, 12, 10, 1));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43989, 18, 10, 1));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43060, 19, 7, 1));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43032, 25, 5, 1));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43104, 30, 7, 1));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43277, 30, 10, 1));
-        allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 43045, 37, 10, 1));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43232, 12, 10, 1));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43989, 18, 10, 1));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43060, 19, 7, 1));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43032, 25, 5, 1));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43104, 30, 7, 1));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43277, 30, 10, 1));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43045, 37, 10, 1));
 
         //Out of battery
-        //allBeacons.add(new GABeacon("699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012", 3, 44020, "BeaconName6", "White", 10, 31, 3, 2));
+        //allBeacons.add(new GABeacon(UUID, 3, 44020, "BeaconName6", "White", 10, 31, 3, 2));
     }
 
     public int xCoord;
@@ -268,34 +273,36 @@ public class GABeacon {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
-            String validate = jsonObject.getString(VALIDATE);
-            String message = jsonObject.getString(MESSAGE);
-            switch (validate) {
-                case YES:
-                    JSONArray beaconJsonArray = jsonObject.getJSONArray(BEACON);
-                    if (allBeacons == null) {
-                        allBeacons = new ArrayList<>();
-                    }
-                    allBeacons.clear();
-                    for (int i = 0; i < beaconJsonArray.length(); i++) {
-                        allBeacons.add(
-                                new GABeacon(beaconJsonArray.getJSONObject(i)));
-                    }
-                    GABeacon.saveBeaconsToFile();
-                    break;
-
-                case NO:
-
-                    break;
+            JSONArray beaconJsonArray = jsonObject.getJSONArray(RESULT);
+            if (allBeacons == null) {
+                allBeacons = new ArrayList<>();
             }
+            allBeacons.clear();
+            for (int i = 0; i < beaconJsonArray.length(); i++) {
+                JSONObject currentBeaconJson = beaconJsonArray.getJSONObject(i);
+                int major = currentBeaconJson.getInt(MAJOR);
+                int minor = currentBeaconJson.getInt(MINOR);
+                int posX = currentBeaconJson.getInt(POS_X);
+                int posY = currentBeaconJson.getInt(POS_Y);
+                int floor = currentBeaconJson.getInt(FLOOR);
+                allBeacons.add(
+                        new GABeacon(EMBCUUID,major,minor,posX,posY,floor));
+            }
+            GABeacon.saveBeaconsToFile();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
 
     public static void askForBeacons() {
         JSONObject jsonObject = new JSONObject();
-        // TODO rename this according to Guilhem's name
+        try {
+            jsonObject.put(CONTENT_TYPE, "beacon");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         HTTPRequestManager.doPostRequest(URL, jsonObject.toString(),
                 HomePageActivity.httpRequestInterface, HTTPRequestManager.BEACONS);
     }

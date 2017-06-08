@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 
 import com.filiereticsa.arc.augmentepf.R;
+import com.filiereticsa.arc.augmentepf.fragments.OptionsFragment;
 import com.filiereticsa.arc.augmentepf.fragments.SearchFragment;
 import com.filiereticsa.arc.augmentepf.interfaces.DestinationSelectedInterface;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
@@ -32,9 +34,7 @@ import com.filiereticsa.arc.augmentepf.localization.GABeaconMap;
 import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
 import com.filiereticsa.arc.augmentepf.localization.LocalizationFragment;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
-import com.filiereticsa.arc.augmentepf.models.ClassRoom;
 import com.filiereticsa.arc.augmentepf.models.Place;
-import com.filiereticsa.arc.augmentepf.models.PointOfInterest;
 
 import org.altbeacon.beacon.BeaconManager;
 import org.json.JSONArray;
@@ -47,6 +47,8 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     private static final String VALIDATE = "validate";
     private static final String YES = "y";
     public static final String ERROR = "Error";
+    public static final String STATE = "state";
+    public static final String TRUE = "true";
     public static HTTPRequestInterface httpRequestInterface;
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
     private SlidingDrawer leftSlidingDrawer;
@@ -57,7 +59,11 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     public static DestinationSelectedInterface destinationSelectedInterface;
     private ImageButton drawerHandle;
     private SearchFragment searchFragment;
+    private OptionsFragment optionsFragment;
     private LocalizationFragment localizationFragment;
+
+    public static boolean isUserConnected = false;
+    private View rootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +71,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         setContentView(R.layout.activity_home_page);
         destinationSelectedInterface = this;
         httpRequestInterface = this;
+        rootView = findViewById(R.id.rootview);
         loadBeaconsAndMaps();
         initFragments();
         askForPermission();
@@ -86,6 +93,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
 
     private void initFragments() {
         searchFragment = (SearchFragment) getSupportFragmentManager().findFragmentById(R.id.search_fragment);
+        optionsFragment = (OptionsFragment) getSupportFragmentManager().findFragmentById(R.id.options_fragment);
         localizationFragment = (LocalizationFragment) getSupportFragmentManager().findFragmentById(R.id.localization_fragment);
     }
 
@@ -93,10 +101,10 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         // Create the JSONObject that will be sent in the request
         JSONObject jsonObject = new JSONObject();
         try {
-    // Add the different element in the JSONObject with the method put
-    // The first parameter is the key and the second one is the value
-    // The first parameter has to be a constant in order to change it easily
-    // The second parameter shouldn't be hardcoded in most cases
+            // Add the different element in the JSONObject with the method put
+            // The first parameter is the key and the second one is the value
+            // The first parameter has to be a constant in order to change it easily
+            // The second parameter shouldn't be hardcoded in most cases
             jsonObject.put("name", "Anthony");
             jsonObject.put("type", "Student");
             jsonObject.put("password", "Lol1234");
@@ -109,14 +117,14 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    // Start the post request method that takes 4 parameters :
-    // - The name of the method in the server (given by Guilhem)
-    // - The data of the request : the JSONObject you've just created as a string
-    // - A reference to the listener : see the implementation in the class declaration above
-    // - An id for the request used to retrieve your request, use the constant for this parameter
-    //   There is an HTTPRequestInterface that contains a method called onRequestDone
-    //   This method will be executed when the request is done and will give the result as a String
-    //   You have to put the result in a JSONObject to use it. See the example below (onRequestDone)
+        // Start the post request method that takes 4 parameters :
+        // - The name of the method in the server (given by Guilhem)
+        // - The data of the request : the JSONObject you've just created as a string
+        // - A reference to the listener : see the implementation in the class declaration above
+        // - An id for the request used to retrieve your request, use the constant for this parameter
+        //   There is an HTTPRequestInterface that contains a method called onRequestDone
+        //   This method will be executed when the request is done and will give the result as a String
+        //   You have to put the result in a JSONObject to use it. See the example below (onRequestDone)
         HTTPRequestManager.doPostRequest("accountCreation.php", jsonObject.toString(),
                 this, HTTPRequestManager.ACCOUNT_CREATION);
     }
@@ -240,7 +248,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
             public void onDrawerClosed() {
                 canMapBeMoved = true;
                 leftSlidingDrawer.setVisibility(View.VISIBLE);
-                if (touchedEditText == true) {
+                if (touchedEditText) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 }
@@ -268,6 +276,9 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     @Override
     protected void onResume() {
         super.onResume();
+        if (isUserConnected) {
+
+        }
         BeaconDetector.sharedBeaconDetector().bindBeaconManager();
         BeaconDetector.sharedBeaconDetector().setActivity(this);
         if (beaconManager.isBound(BeaconDetector.sharedBeaconDetector().getBeaconConsumer()))
@@ -311,8 +322,13 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     }
 
     public void onConnectClick(View view) {
-        Intent intent = new Intent(this, ConnectionActivity.class);
-        startActivity(intent);
+        if (!isUserConnected) {
+            Intent intent = new Intent(this, ConnectionActivity.class);
+            startActivity(intent);
+        } else {
+            isUserConnected = false;
+            optionsFragment.changeLoginButtonText();
+        }
     }
 
     public void onPlannedClick(View view) {
@@ -326,6 +342,8 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     }
 
     public void onCalendarClick(View view) {
+        Intent intent = new Intent(this, CalendarActivity.class);
+        startActivity(intent);
     }
 
     public void onSettingsClick(View view) {
@@ -350,10 +368,10 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     }
 
     @Override
-    public void onRequestDone(String result,int requestId) {
+    public void onRequestDone(String result, int requestId) {
         // Do the action corresponding to the request you did
         // You can retrieve your request thanks to the requestId
-        switch (requestId){
+        switch (requestId) {
             case HTTPRequestManager.ACCOUNT_CREATION:
                 try {
                     // Put the result in a JSONObject to use it.
@@ -366,13 +384,13 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                 break;
 
             case HTTPRequestManager.BEACONS:
-                if(result.equals(ERROR)){
+                if (result.equals(ERROR)) {
                     GABeacon.loadBeaconsFromFile();
-                }else {
+                } else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(VALIDATE);
-                        if (success.equals(YES)) {
+                        String success = jsonObject.getString(STATE);
+                        if (success.equals(TRUE)) {
                             GABeacon.onBeaconRequestDone(result);
                         } else {
                             GABeacon.loadBeaconsFromFile();
@@ -384,9 +402,9 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                 break;
 
             case HTTPRequestManager.MAPS:
-                if(result.equals(ERROR)){
+                if (result.equals(ERROR)) {
                     GABeaconMap.loadMapsFromFile();
-                }else {
+                } else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
                         String success = jsonObject.getString(VALIDATE);
@@ -399,6 +417,18 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                         e.printStackTrace();
                     }
                 }
+                break;
+
+            case HTTPRequestManager.WIFI_CHECK:
+                Log.d(TAG, "onRequestDone: " + result);
+                if (result.equals("false")) {
+                    Snackbar.make(rootView, R.string.fail_epf_wifi, Snackbar.LENGTH_LONG)
+                            .show();
+                } else {
+                    Snackbar.make(rootView, R.string.success_epf_wifi, Snackbar.LENGTH_LONG)
+                            .show();
+                }
+
                 break;
         }
     }
@@ -415,6 +445,15 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) AugmentEPFApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        HTTPRequestManager.checkEPFWiFi(httpRequestInterface, HTTPRequestManager.WIFI_CHECK);
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
+
+//    public static boolean isNetworkAvailable() {
+//        ConnectivityManager connectivityManager
+//                = (ConnectivityManager) AugmentEPFApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+//        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+//    }
+

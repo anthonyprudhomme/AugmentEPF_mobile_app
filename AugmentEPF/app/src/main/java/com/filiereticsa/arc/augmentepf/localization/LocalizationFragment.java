@@ -319,7 +319,6 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                 Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
             }
         }
-
     }
 
     @Override

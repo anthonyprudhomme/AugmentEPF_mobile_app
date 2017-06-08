@@ -691,8 +691,8 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     }
 
     private ArrayList<Pair<Integer, Integer>> directionsForHeading(double heading) {
-        //Log.d(TAG, "directionsForHeading: " + heading);
         ArrayList<Pair<Integer, Integer>> sortedDirections = new ArrayList<>();
+        // North
         if (315 < heading || heading < 45) {
             sortedDirections.add(new Pair<>(0, -1));
             if (heading > 0 && heading < 315) {
@@ -702,6 +702,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             }
             direction = "North";
         }
+        // East
         if (45 < heading && heading < 135) {
             sortedDirections.add(new Pair<>(1, 0));
             if (heading > 90) {
@@ -711,6 +712,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             }
             direction = "East";
         }
+        // South
         if (135 < heading && heading < 225) {
             sortedDirections.add(new Pair<>(0, 1));
             if (heading > 180) {
@@ -720,6 +722,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             }
             direction = "South";
         }
+        // West
         if (225 < heading && heading < 315) {
             sortedDirections.add(new Pair<>(-1, 0));
             if (heading > 270) {
@@ -889,9 +892,11 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
         return fastestPath;
     }
 
+    // Method called when the user pick a target
     public void setTarget(Pair<Integer, Integer> target, int floor) {
         this.target = target;
         this.floorTarget = floor;
+
     }
 
     @Override

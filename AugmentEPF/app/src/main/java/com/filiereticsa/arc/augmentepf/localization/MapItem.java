@@ -67,7 +67,7 @@ public class MapItem {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "MapItem: "+posX+" "+posY);
+        //Log.d(TAG, "MapItem: "+posX+" "+posY);
         this.coordinates = new Pair<>(posX, posY);
     }
 

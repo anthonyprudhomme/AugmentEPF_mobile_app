@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -32,8 +33,10 @@ public class HTTPRequestManager {
     public static final int POI = 4;
     public static final int BEACONS = 5;
     public static final int MAPS = 6;
-    public static final int PATH_HISTORY = 6;
-    //==============================================================================================
+    public static final int PATH_HISTORY = 7;
+    public static final int WIFI_CHECK = 8;
+    public static final int SETTINGS = 9;
+    /*============================================================================================*/
 
 
     /*==============================================================================================
@@ -76,6 +79,14 @@ public class HTTPRequestManager {
     public static void doGetRequest(String url,
                                     HTTPRequestInterface observer, int requestId) {
         RequestParameter requestParameter = new RequestParameter(serverUrl + url, RequestType.GET,
+                observer, requestId);
+        HttpAsyncTask asyncTask = new HttpAsyncTask();
+        asyncTask.execute(requestParameter);
+    }
+
+    // Call this method to check that user is connected to EPF Wi-Fi
+    public static void checkEPFWiFi(HTTPRequestInterface observer, int requestId) {
+        RequestParameter requestParameter = new RequestParameter(serverUrl, RequestType.CHECK,
                 observer, requestId);
         HttpAsyncTask asyncTask = new HttpAsyncTask();
         asyncTask.execute(requestParameter);
@@ -145,6 +156,9 @@ public class HTTPRequestManager {
                     }
                     return valueReturned;
 
+                case CHECK:
+                    return String.valueOf(checkConnectionToEPFServer());
+
                 default:
                     return null;
             }
@@ -190,6 +204,16 @@ public class HTTPRequestManager {
 
     public enum RequestType {
         POST,
-        GET
+        GET,
+        CHECK
+    }
+
+    public static boolean checkConnectionToEPFServer() {
+        try {
+            return InetAddress.getByName(serverUrl).isReachable(2000);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
