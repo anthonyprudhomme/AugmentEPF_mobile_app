@@ -118,14 +118,15 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                 try {
                     // Put the result in a JSONObject to use it.
                     JSONObject jsonObject = new JSONObject(result);
-                    // Show in the log the message given by the result : it will give error or success information
+                    // Show in the log the message given by the result:
+                    // it will give error or success information
                     Log.d(TAG, "onRequestDone: " + jsonObject.getString(MESSAGE));
                     String success = jsonObject.getString(VALIDATE);
                     if (success.equals(YES)){
                         Toast.makeText(this, R.string.connected, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(this, com.filiereticsa.arc.augmentepf.activities.HomePageActivity.class);
                         startActivity(intent);
-                    }else{
+                    } else {
                         // If request failed, shows the message from the server
                         String message = jsonObject.getString(MESSAGE);
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();

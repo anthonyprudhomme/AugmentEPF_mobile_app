@@ -106,7 +106,7 @@ public class GABeaconMap {
         }
 
         //Escaliers droite
-        for (int i = 30; i <= 37; i++) {
+        for (int i = 31; i <= 37; i++) {
             mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 4)));
         }
         for (int i = 5; i <= 7; i++) {

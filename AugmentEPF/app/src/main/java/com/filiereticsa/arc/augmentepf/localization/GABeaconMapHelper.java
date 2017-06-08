@@ -313,19 +313,21 @@ public class GABeaconMapHelper {
 
     private void buildGraph() { // O(11n^3 + 19n^2)
         ArrayList<Pair<Integer, Integer>> mapItemsIndexPathsToVisit = new ArrayList<>();
-        ArrayList<MapItem> mapItems = this.map.getMapItems(); // O(n)
-        for (int i = 0; i < mapItems.size(); i++) { // O(n^2)
-            mapItemsIndexPathsToVisit.add(mapItems.get(i).coordinates);
-        }
-        if (mapItemsIndexPathsToVisit.size() != 0) {
-            graph = new ArrayList<>();
-            vertices = new HashMap<>();
-            while (mapItemsIndexPathsToVisit.size() > 0) { // O(n x (11n^2 + 18n))
-                this.buildGraphFromIndexPath(mapItemsIndexPathsToVisit.remove(0)); // O( 11n^2 + 18n)
+        if (this.map!=null) {
+            ArrayList<MapItem> mapItems = this.map.getMapItems(); // O(n)
+            for (int i = 0; i < mapItems.size(); i++) { // O(n^2)
+                mapItemsIndexPathsToVisit.add(mapItems.get(i).coordinates);
             }
-        } else {
-            graph = null;
-            vertices = null;
+            if (mapItemsIndexPathsToVisit.size() != 0) {
+                graph = new ArrayList<>();
+                vertices = new HashMap<>();
+                while (mapItemsIndexPathsToVisit.size() > 0) { // O(n x (11n^2 + 18n))
+                    this.buildGraphFromIndexPath(mapItemsIndexPathsToVisit.remove(0)); // O( 11n^2 + 18n)
+                }
+            } else {
+                graph = null;
+                vertices = null;
+            }
         }
     }
 

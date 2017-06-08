@@ -88,7 +88,7 @@ public class PathPlanningActivity extends AppCompatActivity
                 (AutoCompleteTextView) findViewById(R.id.search_classroom);
 
         // Get the button to validate created in file main.xml
-        Button boutonRecherche = (Button) findViewById(R.id.button_send);
+        Button searchButton = (Button) findViewById(R.id.button_send);
 
         // Create an autocompletion list with string array entryUser
         // "simple_dropdown_item_1line" is a display stlye
@@ -99,7 +99,7 @@ public class PathPlanningActivity extends AppCompatActivity
         searchClassroom.setAdapter(adapter);
 
         // Put a listener on the button to validate to display a Toast with the text in the field
-        boutonRecherche.setOnClickListener(new View.OnClickListener() {
+        searchButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 Toast.makeText(PathPlanningActivity.this, searchClassroom.getText(),

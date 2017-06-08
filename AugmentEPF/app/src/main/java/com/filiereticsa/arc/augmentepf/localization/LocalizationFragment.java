@@ -26,6 +26,8 @@ import android.widget.Toast;
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.interfaces.DestinationSelectedInterface;
 import com.filiereticsa.arc.augmentepf.interfaces.HomePageInterface;
+import com.filiereticsa.arc.augmentepf.localization.guidage.Guidance;
+import com.filiereticsa.arc.augmentepf.localization.guidage.TrajectorySegment;
 import com.filiereticsa.arc.augmentepf.models.Place;
 
 import java.util.ArrayList;
@@ -63,6 +65,8 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     private boolean fullScreenModeEnabled = false;
     private boolean gestureEnabled = false;
     private Bitmap mapBitmap;
+    private Guidance guidance;
+    private int index;
 
     public boolean isGestureEnabled() {
         return gestureEnabled;
@@ -155,7 +159,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             // TODO Uncomment this and give the real path to the map
             //BitmapManager bitmapManager = new BitmapManager();
             //final Bitmap mapBitmap = bitmapManager.loadBitmapFromFile("PATH_TO_MAP");
-            if (mapBitmap!=null){
+            if (mapBitmap != null) {
                 mapBitmap.recycle();
             }
             mapBitmap = BitmapFactory.decodeResource(getContext().getResources(),
@@ -223,7 +227,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                         if (userAndPathView.getParent() != null) {
                             ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
                         }
-                        if(userAndPathView.getParent()!=null){
+                        if (userAndPathView.getParent() != null) {
                             ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
                         }
                         mapContainer.addView(userAndPathView);
@@ -297,6 +301,25 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         if (userAndPathView != null) {
             userAndPathView.setCurrentPath(path, floorAccessType);
         }
+
+        if (guidance == null && path != null) {
+            guidance = new Guidance(path.first);
+        }
+
+        if (guidance != null) {
+            ArrayList<TrajectorySegment> trajectory = guidance.getTrajectory();
+            // TODO do something about that
+            index = guidance.getCurrentSegment(oldUserPosition, index);
+            if (index == -1) {
+                index = 0;
+                if (path != null) {
+                    guidance.setPath(path.first);
+                }
+            } else {
+                Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
+            }
+        }
+
     }
 
     @Override

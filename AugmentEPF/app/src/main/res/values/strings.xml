@@ -6,6 +6,26 @@
     <string name="app_need_location_message">Please grant location access so this app can detect
         beacons in the background.</string>
 
+
+    <string name="text_classroom">Pick a classroom</string>
+
+    <!--============================================================================================
+                                           Guidance
+    =============================================================================================-->
+    <!--____________________________________________________________________________________________
+                                        Direction Instruction
+    _____________________________________________________________________________________________-->
+    <string name="guidanceTurnLeft">Turn left</string>
+    <string name="guidanceTurnRight">Turn right</string>
+    <string name="guidanceStraightAhead">Straight ahead</string>
+    <string name="guidanceProblem">Problem with this direction</string>
+    <!--.........................................................................................-->
+    <string name="guidanceFor"> for </string>
+    <string name="guidanceMeters"> meters</string>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+
     <!--============================================================================================
                                            Path planning
     =============================================================================================-->
@@ -36,38 +56,37 @@
     <!--____________________________________________________________________________________________
     |                                        Validate                                               |
     _____________________________________________________________________________________________-->
-
     <string name="text_validate">Save the path</string>
-
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
-    <string name="title_activity_main">MainActivity</string>
-
-    <string name="connect">Connect</string>
-    <string name="planned_trajectory">Planned itinerary</string>
-    <string name="plan_trajectory">Plan an itinerary</string>
-    <string name="trajectory_history">Itinerary history</string>
-    <string name="contact">Contact us</string>
-    <string name="go">Go!</string>
-    <string name="login">Login</string>
-    <string name="mail">Mail</string>
-    <string name="password">Password</string>
-    <string name="validate">Validate</string>
-    <string name="no_account">No account yet?</string>
-    <string name="create">Create</string>
-    <string name="confirm_password">Confirm password:</string>
-    <string name="account_created">Account created</string>
 
     <!--============================================================================================
                                            Settings menu
     =============================================================================================-->
+    <string name="action_settings">Settings</string>
+    <!--____________________________________________________________________________________________
+                                             General
+    _____________________________________________________________________________________________-->
+    <string name="general">General</string>
+
+    <!-- Notifications -->
+    <string name="notification">Notification</string>
+    <string name="notif_user_summary">Enable/disable notifications</string>
+
+    <!-- Localisation -->
+    <string name="localisation">Localisation</string>
+    <string name="loc_user_summary">Enable/disable the localisation of the device</string>
     <!--____________________________________________________________________________________________
                                          User parameters
     _____________________________________________________________________________________________-->
-    <!-- User type -->
+    <string name="user_parameters">User parameters</string>
 
-    <!-- Different specific attribute -->
+    <!-- User type -->
+    <string name="type">Type</string>
+    <string name="select_user_type">Select user type</string>
+
+    <!-- Different user type -->
     <string-array name="user_type_array">
         <item>Student</item>
         <item>Visitor</item>
@@ -82,9 +101,12 @@
         <item>P</item>
         <item>A</item>
     </string-array>
+
     <!--.........................................................................................-->
 
     <!-- Specific attribute -->
+    <string name="specific_attribute">Specific Attribute</string>
+    <string name="select_specific_attribute">Select specific attribute</string>
 
     <!-- Different specific attribute -->
     <string-array name="specific_attribute_array">
@@ -100,11 +122,62 @@
         <item>A</item>
         <item>VA</item>
     </string-array>
+
+    <!--.........................................................................................-->
+
+    <!-- iCal link -->
+    <string name="ical_link">iCal link</string>
+    <string name="ical_summary">Permit to edit the link of the account</string>
+    <string name="format_ical">Must be like this: http://edt.epf.fr/pegasus/ical.php?v1=…</string>
+
+    <!--.........................................................................................-->
+
+    <!--Email-->
+    <string name="changeEmailButton">changeEmailButton</string>
+    <string name="summaryChangeEmail">If you want to change your actual email</string>
+
+    <string name="titleMailButton">Reset your email</string>
+    <string name="oldChangeMailButton">Enter the old email</string>
+    <string name="newChangeMailButton">Enter the new email</string>
+    <string name="confirmChangeMailButton">Confirm the new email</string>
+    <string name="pwForMail">Enter the password to change</string>
+    <string name="emailToastCancelled">Email change cancelled</string>
+
+    <!--.........................................................................................-->
+
+    <!-- Password -->
+    <string name="resetPwButton">resetPwButton</string>
+    <string name="summaryChangePw">If you want to change your actual paswword</string>
+
+    <string name="titleResetPwButton">Reset your password</string>
+    <string name="oldResetPwButton">Enter the old password</string>
+    <string name="newResetPwButton">Enter the new password</string>
+    <string name="confirmNewResetPwButton">Confirm the new password</string>
+    <string name="pwToastCancelled">Paswword change cancelled</string>
+
+    <!--.........................................................................................-->
+
+    <!-- Texts for toasts -->
+        <!-- Passwords -->
+    <string name="pwChangeOk">Password changed!</string>
+    <string name="pwChangeProblemOld">Problem with the old password</string>
+    <string name="pwChangeProblemNew">New passwords aren\'t identical</string>
+        <!-- Email addresses -->
+    <string name="emailChangeOk">Email address changed!</string>
+    <string name="emailChangeProblemEmail">Email addresses aren\'t good</string>
+    <string name="emailChangeProblemPw">This isn\'t the good password</string>
+
+    <!-- OK/Cancel -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
     <!--____________________________________________________________________________________________
                                          Navigation parameters
     _____________________________________________________________________________________________-->
 
     <!-- Navigation's mode -->
+    <string name="nav_mode">Navigation mode</string>
+    <string name="select_nav_mode">Select the guidance mode</string>
+    <string name="nav_parameters">Navigation parameters</string>
 
     <!-- Different mode of navigation -->
     <string-array name="navigation_array">
@@ -121,24 +194,21 @@
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
-    <!--TODO put this at the right place-->
-    <string name="loc_user_summary">Enable/disable the localisation of the device</string>
-    <string name="localisation">Localisation</string>
-    <string name="notif_user_summary">Enable/disable notifications</string>
-    <string name="notification">Notification</string>
-    <string name="general">General</string>
-    <string name="user_parameters">User parameters</string>
-    <string name="type">Type</string>
-    <string name="select_user_type">Select user type</string>
-    <string name="specific_attribute">Specific Attribute</string>
-    <string name="select_specific_attribute">Select specific attribute</string>
-    <string name="ical_link">iCal link</string>
-    <string name="ical_summary">Permit to edit the link of the account</string>
-    <string name="format_ical">Must be like this: http://edt.epf.fr/pegasus/ical.php?v1=…</string>
-    <string name="nav_mode">Navigation mode</string>
-    <string name="select_nav_mode">Select the guidance mode</string>
-    <string name="nav_parameters">Navigation parameters</string>
-    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="connect">Connect</string>
+    <string name="planned_trajectory">Planned itinerary</string>
+    <string name="plan_trajectory">Plan an itinerary</string>
+    <string name="trajectory_history">Itinerary history</string>
+    <string name="contact">Contact us</string>
+    <string name="go">Go!</string>
+    <string name="login">Login</string>
+    <string name="mail">Mail</string>
+    <string name="password">Password</string>
+    <string name="validate">Validate</string>
+    <string name="no_account">No account yet?</string>
+    <string name="create">Create</string>
+    <string name="confirm_password">Confirm password:</string>
+    <string name="account_created">Account created</string>
     <string name="fullscreen">FullScreen</string>
     <string name="nearby_points_of_interest">Nearby points of interest</string>
     <string name="available_classrooms">Available classrooms</string>
@@ -148,7 +218,6 @@
     <string name="woman_restroom">Woman restroom</string>
     <string name="info_restroom_woman">Restroom for women.</string>
     <string name="password_password_confirmation_no_match">Your password confirmation doesn\'t match your password</string>
-    <string name="text_classroom">Pick a classroom</string>
     <string name="admin_code">Admin code</string>
     <string name="enter_login">Please enter a login</string>
     <string name="enter_email">Please enter an e-mail</string>
@@ -157,6 +226,5 @@
     <string name="error_server">Something went wrong with the server</string>
     <string name="need_internet_account">You need internet connection to create an account</string>
     <string name="connected">Authentification successful</string>
-
 
 </resources>
