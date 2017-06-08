@@ -23,6 +23,9 @@ public class HTTPRequestManager {
     private static OkHttpClient client = new OkHttpClient();
     private static final String serverUrl = "http://192.168.206.106/AugmentEPF/php/";
 
+    /*==============================================================================================
+    |                                      ALL CONSTANT                                            |
+    ==============================================================================================*/
     public static final int AVAILABLE_CLASSROOMS = 0;
     public static final int CLASSROOMS = 1;
     public static final int CONNECTION = 2;
@@ -37,31 +40,33 @@ public class HTTPRequestManager {
 
     public static final int ICAL = 12;
 
-    /*
-                HOW TO DO AN HTTP REQUEST
+
+    /*==============================================================================================
+    |                              HOW TO DO AN HTTP REQUEST                                       |
+    ================================================================================================
     First of all, there is an example in the HomePageActivity.java file
     See the method postRequestExample(). It's all commented and working.
 
     What you need to do :
-    - Implement HTTPRequestInterface in the class you wanna do the request
-    - Implement the method from this interface
-    - Call HTTPRequestManager.doPostRequest or HTTPRequestManager.doGetRequest to do your request
-        ° For HTTPRequestManager.doPostRequest there is 4 parameters:
+    1. Implement HTTPRequestInterface in the class you wanna do the request
+    2. Implement the method from this interface
+    3. Call HTTPRequestManager.doPostRequest or HTTPRequestManager.doGetRequest to do your request
+        * For HTTPRequestManager.doPostRequest there is 4 parameters:
             - Give the name of the method in the server (given by Guilhem)
             - Give the parameters of the POST request as a JSONObject (see the example)
-            - Add a reference to the interface (this)
-            - Give a requestId (see the constants) to retrieve your request
-        ° For HTTPRequestManager.doGetRequest:
+            - Add a reference to the interface (this) [Hugo: did you mean the context?]
+            - Give a requestId (see the constants above) to retrieve your request
+        * For HTTPRequestManager.doGetRequest:
             - Give the name of the method in the server (given by Guilhem)
             - Add a reference to the interface (this)
-            - Give a requestId (see the constants) to retrieve your request
-    - These methods don't return anything but you are probably willing to get the answer for the server
-    - The result of the request will be given in the method "onRequestDone" implemented by the interface
-    - The result is a String you must put in a JSONObject in order to use it
+            - Give a requestId (see the constants above) to retrieve your request
+    4. These methods don't return anything but you are probably willing to get the answer for the server
+    5. The result of the request will be given in the method "onRequestDone" implemented by the interface
+    6. The result is a String you must put in a JSONObject in order to use it
 
     Note that you won't be able to do HTTPRequest if your phone is not connected to EPF's network
     For any problem contact Anthony
-     */
+    ==============================================================================================*/
 
     // Call this method to do a post request
     public static void doPostRequest(String url, String parameter,

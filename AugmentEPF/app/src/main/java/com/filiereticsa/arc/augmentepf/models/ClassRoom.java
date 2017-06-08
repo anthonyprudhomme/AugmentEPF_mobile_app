@@ -130,17 +130,17 @@ public class ClassRoom extends Place {
         classRooms.add(room7L);
 
         // Floor 2
-        ClassRoom roomi1 = new ClassRoom("i1", new Position(45, 10, 2), true);
+        ClassRoom roomi1 = new ClassRoom("I1", new Position(45, 10, 2), true);
         classRooms.add(roomi1);
-        ClassRoom roomi2 = new ClassRoom("i2", new Position(43, 10, 2), true);
+        ClassRoom roomi2 = new ClassRoom("I2", new Position(43, 10, 2), true);
         classRooms.add(roomi2);
-        ClassRoom roomi3 = new ClassRoom("i3", new Position(32, 10, 2), true);
+        ClassRoom roomi3 = new ClassRoom("I3", new Position(32, 10, 2), true);
         classRooms.add(roomi3);
-        ClassRoom roomi4 = new ClassRoom("i4", new Position(12, 10, 2), true);
+        ClassRoom roomi4 = new ClassRoom("I4", new Position(12, 10, 2), true);
         classRooms.add(roomi4);
-        ClassRoom roomi5 = new ClassRoom("i5", new Position(8, 10, 2), true);
+        ClassRoom roomi5 = new ClassRoom("I5", new Position(8, 10, 2), true);
         classRooms.add(roomi5);
-        ClassRoom roomi6 = new ClassRoom("i6", new Position(5, 10, 2), true);
+        ClassRoom roomi6 = new ClassRoom("I6", new Position(5, 10, 2), true);
         classRooms.add(roomi6);
     }
 

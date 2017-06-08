@@ -137,7 +137,8 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                 try {
                     // Put the result in a JSONObject to use it.
                     JSONObject jsonObject = new JSONObject(result);
-                    // Show in the log the message given by the result : it will give error or success information
+                    // Show in the log the message given by the result:
+                    // it will give error or success information
                     Log.d(TAG, "onRequestDone: " + jsonObject.getString(MESSAGE));
                     String success = jsonObject.getString(MESSAGE);
                     if (success.equals(SUCCESS)) {
@@ -188,16 +189,16 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                                 elevator = true;
                             }
                         }
-                        String specificAttributValue = "0";
+                        String specificAttributeValue = "0";
                         if (elevator && soundGuidance){
-                            specificAttributValue = "VA";
+                            specificAttributeValue = "VA";
                         }else if (elevator){
-                            specificAttributValue = "A";
+                            specificAttributeValue = "A";
                         }else if (soundGuidance){
-                            specificAttributValue = "V";
+                            specificAttributeValue = "V";
                         }
 
-                        prefEditor.putString("specific_attribute_user",specificAttributValue);
+                        prefEditor.putString("specific_attribute_user",specificAttributeValue);
 
 
                         // Update user type in SharedPreferences

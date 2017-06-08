@@ -56,6 +56,20 @@
             android:inputType="text"
             android:singleLine="true">
         </EditTextPreference>
+
+        <!-- Button to change the email -->
+        <Preference
+            android:title="Change your mail"
+            android:key="@string/changeEmailButton"
+            android:summary="@string/summaryChangeEmail">
+        </Preference>
+
+        <!-- Button to reset the password -->
+        <Preference
+            android:title="Reset password"
+            android:key="@string/resetPwButton"
+            android:summary="@string/summaryChangePw">
+        </Preference>
     </PreferenceCategory>
 
     <!-- Navigation parameters -->

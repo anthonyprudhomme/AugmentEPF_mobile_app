@@ -50,22 +50,22 @@ public class GABeacon {
         allBeacons = new ArrayList<>();
 
         //Lakanal Floor 2 i1 to i6
-        allBeacons.add(new GABeacon(EMBCUUID, 3, 42194, 8, 10, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 42194, 8 , 10, 2));
         allBeacons.add(new GABeacon(EMBCUUID, 3, 43216, 12, 10, 2));
-        allBeacons.add(new GABeacon(EMBCUUID, 3, 43364, 19, 6, 2));
-        allBeacons.add(new GABeacon(EMBCUUID, 1, 40935, 25, 3, 2));
-        allBeacons.add(new GABeacon(EMBCUUID, 3, 43348, 31, 6, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43364, 19, 6 , 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 1, 40935, 25, 3 , 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43348, 31, 6 , 2));
         allBeacons.add(new GABeacon(EMBCUUID, 3, 44067, 31, 10, 2));
         allBeacons.add(new GABeacon(EMBCUUID, 1, 39757, 39, 10, 2));
-        allBeacons.add(new GABeacon(EMBCUUID, 3, 42742, 13, 6, 2));
-        allBeacons.add(new GABeacon(EMBCUUID, 3, 43184, 37, 4, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 42742, 13, 6 , 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43184, 37, 4 , 2));
 
         //Lakanal Floor 1 1L to 6L
         allBeacons.add(new GABeacon(EMBCUUID, 3, 43232, 12, 10, 1));
         allBeacons.add(new GABeacon(EMBCUUID, 3, 43989, 18, 10, 1));
-        allBeacons.add(new GABeacon(EMBCUUID, 3, 43060, 19, 7, 1));
-        allBeacons.add(new GABeacon(EMBCUUID, 3, 43032, 25, 5, 1));
-        allBeacons.add(new GABeacon(EMBCUUID, 3, 43104, 30, 7, 1));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43060, 19, 7 , 1));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43032, 25, 5 , 1));
+        allBeacons.add(new GABeacon(EMBCUUID, 3, 43104, 30, 7 , 1));
         allBeacons.add(new GABeacon(EMBCUUID, 3, 43277, 30, 10, 1));
         allBeacons.add(new GABeacon(EMBCUUID, 3, 43045, 37, 10, 1));
 

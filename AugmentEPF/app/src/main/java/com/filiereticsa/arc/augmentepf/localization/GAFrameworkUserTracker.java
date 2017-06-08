@@ -517,8 +517,10 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             GABeacon nearestBeacon = closestBeacons.get(0);
             if (nearestBeacon != null) {
 //                Log.e("nearest beacon: " + nearestBeacon.getMajor() + " " + nearestBeacon.getMinor());
+                //TODO uncomment this next line
                 this.updateCandidatesWithNearBeacon(nearestBeacon);
                 //this.updateBestCandidatesWithClosestBeacon(nearestBeacon);
+                //TODO uncomment this next line
                 this.updateCandidatesWithRealDistanceAndClosestBeacon(nearestBeacon);
             }
 //            this.updateCandidatesWith2ClosestBeacons(closestBeacons);

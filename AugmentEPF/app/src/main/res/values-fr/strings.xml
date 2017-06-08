@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AugmentEPF</string>
-    <string name="text_classroom">Choisir une salle</string>
-    <string name="text_dateButton">Choisir la date</string>
-    <string name="text_hourButton">Choisir l\'heure</string>
-    <string name="text_validate">Enregistrer le trajet</string>
-    <string name="text_warning">Voulez-vous être prévenu(e) à l\'avance ?</string>
-    <string name="text_warning_alerts">Choisissez la manière dont vous serez prévenu(e)</string>
-    <string name="text_when">Quand ?</string>
     <string name="hello_blank_fragment" />
     <string name="app_need_location">L\'application a besoin d\'accéder à votre localisation</string>
     <string name="app_need_location_message">Donnez accès à la localisation pour que l\'application puisse détecter les beacons en arrière plan</string>
@@ -29,13 +22,68 @@
     <string name="account_created">Compte créé</string>
 
     <!--============================================================================================
-                                           Settings menu
+                                           Trajet planifié
     =============================================================================================-->
     <!--____________________________________________________________________________________________
-                                         User parameters
+    |                                  Date et heure de départ                                     |
     _____________________________________________________________________________________________-->
-    <!-- User type -->
-    <!-- Different specific attribute -->
+    <string name="text_when">Quand ?</string>
+
+    <!-- Textes sur les boutons qui correspondent à la date et l'heure -->
+    <string name="text_dateButton">Choisir la date</string>
+    <string name="text_hourButton">Choisir l\'heure</string>
+
+    <!-- Choix de la destination -->
+    <string name="text_classroom">Choisir une salle</string>
+    <!--____________________________________________________________________________________________
+    |                                          Alerte                                              |
+    _____________________________________________________________________________________________-->
+    <string name="text_warning">Voulez-vous être prévenu(e) à l\'avance ?</string>
+
+    <!-- Manière d'être alerté -->
+    <string name="text_warning_alerts">Choisissez la manière dont vous serez prévenu(e)</string>
+    <!-- Différentes alertes -->
+    <string-array name="alerts">
+        <item>Aucune</item>
+        <item>Notification</item>
+        <item>Vibration</item>
+        <item>Sonnerie</item>
+        <item>E-mail</item>
+    </string-array>
+    <!--____________________________________________________________________________________________
+    |                                        Validé                                               |
+    _____________________________________________________________________________________________-->
+    <string name="text_validate">Enregistrer le trajet</string>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+
+    <!--============================================================================================
+                                            Règlages
+    =============================================================================================-->
+    <string name="action_settings">Options</string>
+    <!--____________________________________________________________________________________________
+                                             Général
+    _____________________________________________________________________________________________-->
+    <string name="general">Général</string>
+
+    <!-- Notifications -->
+    <string name="notification">Notification</string>
+    <string name="notif_user_summary">Activer/Désactiver les notifications</string>
+
+    <!-- Localisation -->
+    <string name="localisation">Localisation</string>
+    <string name="loc_user_summary">Activer/Désactiver la localisation de l\'appareil</string>
+    <!--____________________________________________________________________________________________
+                                     Paramètres utilisateur
+    _____________________________________________________________________________________________-->
+    <string name="user_parameters">Paramètres utilisateur</string>
+
+    <!-- Tpye d'utilisateur -->
+    <string name="type">Type</string>
+    <string name="select_user_type">Sélectionner le type d\'utilisateur</string>
+
+    <!-- Les différents types d'utilisateur -->
     <string-array name="user_type_array">
         <item>Étudiant</item>
         <item>Visiteur</item>
@@ -44,25 +92,80 @@
         <item>Admin</item>
     </string-array>
     <!--.........................................................................................-->
-    <!-- Specific attribute -->
-    <!-- Different specific attribute -->
+
+    <!-- Attribut spécifique -->
+    <string name="specific_attribute">Attributs spécifiques</string>
+    <string name="select_specific_attribute">Sélectionner les attributs spécifiques</string>
+
+    <!-- Différents attributs spécifiques -->
     <string-array name="specific_attribute_array">
         <item>Aucun</item>
         <item>Guidage vocal</item>
         <item>Ascenceur</item>
         <item>Les deux</item>
     </string-array>
+
+    <!--.........................................................................................-->
+
+    <!-- Lien iCal -->
+    <string name="ical_link">Lien iCal</string>
+    <string name="ical_summary">Permet l\'edition du lien du compte</string>
+    <string name="format_ical">Doit ressembler à : http://edt.epf.fr/pegasus/ical.php?v1=…</string>
+
+    <!--.........................................................................................-->
+    <!--Email-->
+    <string name="changeEmailButton">changeEmailButton</string>
+    <string name="summaryChangeEmail">Si vous voulez changer l\'adresse email actuelle</string>
+
+    <string name="titleMailButton">Changer votre email</string>
+    <string name="oldChangeMailButton">Entrez l\'ancienne adresse email</string>
+    <string name="newChangeMailButton">Entrez la nouvelle adresse email</string>
+    <string name="confirmChangeMailButton">Confirmation de la nouvelle adresse email</string>
+    <string name="pwForMail">Entrez le mot de passe pour changer</string>
+    <string name="emailToastCancelled">Changement d\'email annulé</string>
+
+    <!--.........................................................................................-->
+    <!-- Mot de passe -->
+    <string name="resetPwButton">resetPwButton</string>
+    <string name="summaryChangePw">Si vous voulez changer le mot de passe actuel</string>
+
+    <string name="titleResetPwButton">Changer de mot de passe</string>
+    <string name="oldResetPwButton">Entrez l\'ancien mot de passe</string>
+    <string name="newResetPwButton">Entrez le nouveau mot de passe</string>
+    <string name="confirmNewResetPwButton">Confirmez le nouveau mot de passe</string>
+    <string name="pwToastCancelled">Changement de mot de passe annulé</string>
+
+    <!--.........................................................................................-->
+
+    <!-- Texts for toasts -->
+        <!-- Passwords -->
+    <string name="pwChangeOk">Mot de passe changé !</string>
+    <string name="pwChangeProblemOld">Problème avec l\'ancien mot de passe</string>
+    <string name="pwChangeProblemNew">Les nouveaux mots de passe ne sont pas identiques</string>
+        <!-- Email addresses -->
+    <string name="emailChangeOk">Adresse email changée !</string>
+    <string name="emailChangeProblemEmail">Les adresses email ne sont pas bonnes</string>
+    <string name="emailChangeProblemPw">Ce n\'est pas le bon mot de passe</string>
+
+    <!-- OK/Annuler -->
+    <string name="ok">OK</string>
+    <string name="cancel">Annuler</string>
     <!--____________________________________________________________________________________________
                                          Navigation parameters
     _____________________________________________________________________________________________-->
-    <!-- Navigation's mode -->
-    <!-- Different mode of navigation -->
+    <string name="nav_parameters">Paramètres de navigation</string>
+
+    <!-- Mode de navigation -->
+    <string name="nav_mode">Mode navigation</string>
+    <string name="select_nav_mode">Sélectionner le mode de navigation</string>
+
+    <!-- Différents modes de navigation -->
     <string-array name="navigation_array">
         <item>Plan</item>
         <item>Compas</item>
         <item>Trajectoire</item>
     </string-array>
-    <!-- The value of the choice above -->
+    <!-- Valeurs associées -->
     <string-array name="navigation_values_array">
         <item>P</item>
         <item>C</item>
@@ -71,35 +174,9 @@
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
-    <!--TODO put this at the right place-->
-    <string name="loc_user_summary">Activer/Désactiver la localisation de l\'appareil</string>
-    <string name="localisation">Localisation</string>
-    <string name="notif_user_summary">Activer/Désactiver les notifications</string>
-    <string name="notification">Notification</string>
-    <string name="general">Général</string>
-    <string name="type">Type</string>
-    <string name="select_user_type">Sélectionner le type d\'utilisateur</string>
-    <string name="specific_attribute">Attributs spécifiques</string>
-    <string name="select_specific_attribute">Sélectionner les attributs spécifiques</string>
-    <string name="ical_link">Lien iCal</string>
-    <string name="ical_summary">Permet l\'edition du lien du compte</string>
-    <string name="format_ical">Doit ressembler à : http://edt.epf.fr/pegasus/ical.php?v1=…</string>
-    <string name="nav_mode">Mode navigation</string>
-    <string name="select_nav_mode">Sélectionner le mode de navigation</string>
-    <string name="nav_parameters">Paramètres de navigation</string>
-    <string name="user_parameters">Paramètres utilisateur</string>
-    <string name="action_settings">Options</string>
     <string name="nearby_points_of_interest">Points d"'"interêt alentours</string>
     <string name="available_classrooms">Salles libres</string>
     <string name="fullscreen">Plein écran</string>
-
-    <string-array name="alerts">
-        <item>Aucune</item>
-        <item>Notification</item>
-        <item>Vibration</item>
-        <item>Sonnerie</item>
-        <item>E-mail</item>
-    </string-array>
     <string name="not_localized">Vous n\'avez pas encore été localisé</string>
     <string name="info_restroom_man">Toilettes pour hommes.</string>
     <string name="info_restroom_woman">Toilettes pour femmes.</string>
@@ -119,6 +196,4 @@
     <string name="success_epf_wifi">Connecté au Wi-Fi de l\'EPF</string>
     <string name="current">Actuel</string>
     <string name="failed_connect_calendar">Échec de chargement du calendrier. Vérifiez que vous êtes connecté au Wi-Fi de l\'EPF.</string>
-
-
 </resources>
