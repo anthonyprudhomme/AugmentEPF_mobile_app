@@ -300,4 +300,14 @@ public class ClassRoom extends Place {
             e.printStackTrace();
         }
     }
+
+    public static ClassRoom getClassRoomCalled(String classRoomName) {
+        for (int i = 0; i < classRooms.size(); i++) {
+            ClassRoom currentClassRoom = classRooms.get(i);
+            if (currentClassRoom.getName().equals(classRoomName)){
+                return currentClassRoom;
+            }
+        }
+        return null;
+    }
 }

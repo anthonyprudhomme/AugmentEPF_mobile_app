@@ -161,6 +161,10 @@
     <string name="logout">Logout</string>
     <string name="fail_epf_wifi">Please use EPF Wi-Fi to use this app</string>
     <string name="success_epf_wifi">Successfully connected to EPF Wi-Fi</string>
+    <string name="failed_connect_calendar">Failed to load calendar. Please make sure you are connected to EPF Wi-Fi.</string>
+    <string name="current">Today</string>
+    <string name="next"><![CDATA[>>]]></string>
+    <string name="previous"><![CDATA[<<]]></string>
 
 
 </resources>

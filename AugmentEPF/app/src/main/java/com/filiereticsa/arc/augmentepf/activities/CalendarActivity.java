@@ -1,24 +1,43 @@
 package com.filiereticsa.arc.augmentepf.activities;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.R;
+import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
+import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
+import com.filiereticsa.arc.augmentepf.models.Class;
+import com.filiereticsa.arc.augmentepf.models.ICalTimeTable;
 import com.filiereticsa.arc.augmentepf.views.CalendarClassView;
 
-import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class CalendarActivity extends AppCompatActivity {
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+
+import static com.filiereticsa.arc.augmentepf.activities.HomePageActivity.ERROR;
+import static com.filiereticsa.arc.augmentepf.activities.HomePageActivity.STATE;
+
+public class CalendarActivity extends AppCompatActivity implements HTTPRequestInterface {
 
     private static final String TAG = "Ici";
     public static final int HOUR_DELTA = 7;
+    public static final String TOKEN = "token";
+    public static final String ID = "id";
+    private static final String YES = "y";
     private HorizontalScrollView horizontalScrollView;
     private int columnWidth;
     private int rowHeight;
@@ -37,9 +56,17 @@ public class CalendarActivity extends AppCompatActivity {
         addOtherCells();
         horizontalScrollView = (HorizontalScrollView) findViewById(R.id.gridLayoutContainer);
         horizontalScrollView.addView(gridLayout);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(ID, ConnectionActivity.idUser);
+            jsonObject.put(TOKEN, ConnectionActivity.token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        HTTPRequestManager.doPostRequest("getCalendar.php", jsonObject.toString(), this, HTTPRequestManager.CALENDAR);
     }
 
-    private void addAClass(int dayNumber,double beginningHour, double beginningMinute, double endHour, double endMinute) {
+    private void addAClass(int dayNumber, double beginningHour, double beginningMinute, double endHour, double endMinute) {
         double delta = endHour - beginningHour;
         ArrayList<CalendarClassView> classViews = new ArrayList<>();
         if (delta == 0) {
@@ -61,10 +88,7 @@ public class CalendarActivity extends AppCompatActivity {
             }
         }
         for (int i = 0; i < classViews.size(); i++) {
-//            Button view;
-//            view = new Button(this);
             CalendarClassView view = classViews.get(i);
-            //view.setBackgroundColor(Color.GREEN);
             GridLayout.LayoutParams param = new GridLayout.LayoutParams();
             param.height = LinearLayout.LayoutParams.MATCH_PARENT;
             param.width = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -73,7 +97,7 @@ public class CalendarActivity extends AppCompatActivity {
             param.topMargin = 0;
             param.setGravity(Gravity.CENTER);
             param.columnSpec = GridLayout.spec(dayNumber);
-            param.rowSpec = GridLayout.spec((int)(beginningHour - HOUR_DELTA+i));
+            param.rowSpec = GridLayout.spec((int) (beginningHour - HOUR_DELTA + i));
             view.setLayoutParams(param);
             gridLayout.addView(view, index++);
         }
@@ -138,12 +162,86 @@ public class CalendarActivity extends AppCompatActivity {
             columnWidth = gridLayout.getWidth() / columnNumber;
             rowHeight = gridLayout.getHeight() / rowNumber;
             addDays();
-            addAClass(1,12,15,13,15);
-            addAClass(2,12,0,13,0);
-            addAClass(3,13,0,17,0);
-            addAClass(4,12,5,12,55);
-            addAClass(4,13,0,15,30);
+            addClasses();
 
+        }
+    }
+
+    private void addClasses() {
+        if (ICalTimeTable.iCalInstance != null) {
+            HashMap<String, ArrayList<Class>> classes = ICalTimeTable.iCalInstance.getClasses();
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int today = calendar.get(Calendar.DAY_OF_MONTH);
+
+            SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
+            String weekDay = dayFormat.format(calendar.getTime());
+            int daysAfterMonday = getDaysAfterMondayFor(weekDay);
+            int indexOfDay = 1;
+            for (int currentDay = today - daysAfterMonday; currentDay < today - daysAfterMonday + 7; currentDay++) {
+                String currentDayString = String.valueOf(year) + String.valueOf(currentDay) + String.valueOf(month);
+                ArrayList<Class> classesForCurrentDay = classes.get(currentDayString);
+                for (int i = 0; i < classesForCurrentDay.size(); i++) {
+                    Class currentClass = classesForCurrentDay.get(i);
+                    Calendar currentStartCalendar = toCalendar(currentClass.getStartDate());
+                    Calendar currentEndCalendar = toCalendar(currentClass.getEndDate());
+                    addAClass(indexOfDay,
+                            currentStartCalendar.get(Calendar.HOUR),
+                            currentStartCalendar.get(Calendar.MINUTE),
+                            currentEndCalendar.get(Calendar.HOUR),
+                            currentEndCalendar.get(Calendar.MINUTE));
+                }
+                indexOfDay++;
+            }
+        }
+    }
+
+    public static Calendar toCalendar(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal;
+    }
+
+    private int getDaysAfterMondayFor(String weekDay) {
+        switch (weekDay) {
+            case "monday":
+            case "Monday":
+            case "MONDAY":
+                return 0;
+
+            case "tuesday":
+            case "Tuesday":
+            case "TUESDAY":
+                return 1;
+
+            case "wednesday":
+            case "Wednesday":
+            case "WEDNESDAY":
+                return 2;
+
+            case "thursday":
+            case "Thursday":
+            case "THURSDAY":
+                return 3;
+
+            case "friday":
+            case "Friday":
+            case "FRIDAY":
+                return 4;
+
+            case "saturday":
+            case "Saturday":
+            case "SATURDAY":
+                return 5;
+
+            case "sunday":
+            case "Sunday":
+            case "SUNDAY":
+                return 6;
+
+            default:
+                return 0;
         }
     }
 
@@ -198,5 +296,45 @@ public class CalendarActivity extends AppCompatActivity {
             dayTextView.setGravity(Gravity.CENTER);
             gridLayout.addView(dayTextView, index++);
         }
+    }
+
+    @Override
+    public void onRequestDone(String result, int requestId) {
+        switch (requestId) {
+
+            case HTTPRequestManager.CALENDAR:
+                if (result.equals(ERROR)) {
+                    Toast.makeText(this, R.string.failed_connect_calendar, Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        JSONObject jsonObject = new JSONObject(result);
+                        String success = jsonObject.getString(STATE);
+                        if (success.equals(YES)) {
+                            new ICalTimeTable(jsonObject);
+                        } else {
+                            ICalTimeTable.loadTimeTableFromFile();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
+    }
+
+    public void onIcalClicked(View view) {
+
+    }
+
+    public void onPreviousClicked(View view) {
+
+    }
+
+    public void onCurrentClicked(View view) {
+
+    }
+
+    public void onNextClicked(View view) {
+
     }
 }

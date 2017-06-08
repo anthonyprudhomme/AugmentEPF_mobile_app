@@ -128,7 +128,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
 
     @Override
     public void onRequestDone(String result, int requestId) {
-        Log.d(TAG, "onConnectionRequestDone: "+result);
+        //Log.d(TAG, "onConnectionRequestDone: "+result);
         switch (requestId) {
             case HTTPRequestManager.CONNECTION:
                 if (result.equals(ERROR)) {
@@ -145,6 +145,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                         HomePageActivity.isUserConnected = true;
                         idUser = jsonObject.getInt(ID_USER);
                         token = jsonObject.getString(TOKEN);
+                        Log.d(TAG, "onRequestDone: "+idUser + " "+ token);
                         checkForNewAccountSettings();
                         Intent intent = new Intent(this, com.filiereticsa.arc.augmentepf.activities.HomePageActivity.class);
                         startActivity(intent);

@@ -78,7 +78,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         setUpSlidingDrawers();
         setUpEditText();
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
-        postRequestExample();
+        //postRequestExample();
     }
 
     private void loadBeaconsAndMaps() {
@@ -420,7 +420,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                 break;
 
             case HTTPRequestManager.WIFI_CHECK:
-                Log.d(TAG, "onRequestDone: " + result);
+                //Log.d(TAG, "onRequestDone: " + result);
                 if (result.equals("false")) {
                     Snackbar.make(rootView, R.string.fail_epf_wifi, Snackbar.LENGTH_LONG)
                             .show();
