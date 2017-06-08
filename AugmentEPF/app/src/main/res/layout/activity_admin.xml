@@ -70,6 +70,7 @@
         android:baselineAligned="false">
 
         <LinearLayout
+            android:id="@+id/name_receiver"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -80,14 +81,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:text="@string/admin_name" />
-
-            <EditText
-                android:id="@+id/item_name_Text"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:maxLines="1" />
 
         </LinearLayout>
 
@@ -105,7 +98,7 @@
 
             <TextView
                 android:id="@+id/closestText"
-                android:layout_width="100dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical" />
 

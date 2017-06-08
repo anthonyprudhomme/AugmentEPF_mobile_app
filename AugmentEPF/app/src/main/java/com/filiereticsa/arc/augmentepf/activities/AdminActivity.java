@@ -4,11 +4,15 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,9 +40,10 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     private boolean editBeacon;
     private int current_floor;
     private ImageView iv;
-    private TextView closest;
-    private EditText xcoord, ycoord, name;
+    private TextView closest, separator;
+    private EditText xcoord, ycoord, poi_name, beacon_major, beacon_minor;
     private String itemName, itemXCoord, itemYCoord;
+    private LinearLayout nameLayout;
     JSONObject jsonObject = new JSONObject();
     JSONArray jsonArray = new JSONArray();
     JSONObject [] jsonObjects;
@@ -53,10 +58,22 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         iv = (ImageView) findViewById(R.id.currentMap);
         RadioButton rb = (RadioButton) findViewById(R.id.beaconEdit);
         closest = (TextView) findViewById(R.id.closestText);
-        name = (EditText) findViewById(R.id.item_name_Text);
         xcoord = (EditText) findViewById(R.id.xCoordText);
         ycoord = (EditText) findViewById(R.id.yCoordText);
-
+        nameLayout = (LinearLayout) findViewById(R.id.name_receiver);
+        separator = new TextView(this);
+        poi_name = new EditText(this);
+        poi_name.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        poi_name.setSingleLine();
+        beacon_major = new EditText(this);
+        beacon_minor = new EditText(this);
+        poi_name.setSingleLine();
+        beacon_major.setSingleLine();
+        beacon_minor.setSingleLine();
+        separator.setText("/");
+        nameLayout.addView(beacon_major);
+        nameLayout.addView(separator);
+        nameLayout.addView(beacon_minor);
         iv.setImageResource(R.drawable.floor_admin);
         rb.setChecked(true);
         editBeacon = true;
@@ -99,11 +116,19 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
 
     public void onBeaconClick(View view) {
         closest.setText("");
+        nameLayout.removeView(poi_name);
+        nameLayout.addView(beacon_major);
+        nameLayout.addView(separator);
+        nameLayout.addView(beacon_minor);
         editBeacon = true;
     }
 
     public void onPOIClick(View view) {
         closest.setText("");
+        nameLayout.removeView(beacon_major);
+        nameLayout.removeView(separator);
+        nameLayout.removeView(beacon_minor);
+        nameLayout.addView(poi_name);
         editBeacon = false;
     }
 
@@ -117,7 +142,12 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     }
 
     public void onSaveClick(View view) {
-        if (name.getText().toString().matches("")) {
+        if (editBeacon){
+            if (beacon_major.getText().toString().matches("") || beacon_minor.getText().toString().matches("")) {
+                Toast.makeText(this, R.string.admin_name_missing, Toast.LENGTH_SHORT).show();
+            } else checkForUpdate();
+        }else
+        if (poi_name.getText().toString().matches("")) {
             Toast.makeText(this, R.string.admin_name_missing, Toast.LENGTH_SHORT).show();
         } else checkForUpdate();
     }
@@ -165,7 +195,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     }
 
     private void update() {
-        itemName = name.getText().toString();
+        if (editBeacon){
+            itemName = beacon_major.getText().toString()+"/"+beacon_minor.getText().toString();
+        }else {
+            itemName = poi_name.getText().toString();
+        }
         itemXCoord = xcoord.getText().toString();
         itemYCoord = ycoord.getText().toString();
 
@@ -194,7 +228,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     }
 
     private void save() {
-        itemName = name.getText().toString();
+        if (editBeacon){
+            itemName = beacon_major.getText().toString()+"/"+beacon_minor.getText().toString();
+        }else {
+            itemName = poi_name.getText().toString();
+        }
         itemXCoord = xcoord.getText().toString();
         itemYCoord = ycoord.getText().toString();
 
@@ -296,6 +334,12 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     }
 
     private void getResult (String result){
+        String targetName;
+        if (editBeacon){
+            targetName = beacon_major.getText().toString()+"/"+beacon_minor.getText().toString();
+        }else {
+            targetName = poi_name.getText().toString();
+        }
         JSONArray resultArray;
         try {
             // Put the result in a JSONObject to use it.
@@ -310,7 +354,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                 int i = 0;
                 while (i<resultArray.length() || !existing){
                     jsonObjects[i]=resultArray.getJSONObject(i);
-                    if (jsonObjects[i].getString("name").equalsIgnoreCase(name.getText().toString())){
+                    if (jsonObjects[i].getString("name").equalsIgnoreCase(targetName)){
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
