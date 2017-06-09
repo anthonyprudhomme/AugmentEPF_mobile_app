@@ -37,7 +37,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     public static final String GET_ELEMENT_PHP = "getElement.php";
     public static final String RESULT = "result";
 
-    private boolean editBeacon;
+    private boolean editBeacon, existing;
     private int current_floor;
     private ImageView iv;
     private TextView closest, separator;
@@ -46,7 +46,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     private LinearLayout nameLayout;
     JSONObject jsonObject = new JSONObject();
     JSONArray jsonArray = new JSONArray();
-    JSONObject [] jsonObjects;
+    JSONObject[] jsonObjects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,12 +142,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     }
 
     public void onSaveClick(View view) {
-        if (editBeacon){
+        if (editBeacon) {
             if (beacon_major.getText().toString().matches("") || beacon_minor.getText().toString().matches("")) {
                 Toast.makeText(this, R.string.admin_name_missing, Toast.LENGTH_SHORT).show();
             } else checkForUpdate();
-        }else
-        if (poi_name.getText().toString().matches("")) {
+        } else if (poi_name.getText().toString().matches("")) {
             Toast.makeText(this, R.string.admin_name_missing, Toast.LENGTH_SHORT).show();
         } else checkForUpdate();
     }
@@ -177,7 +176,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         }
     }
 
-    private void checkForUpdate(){
+    private void checkForUpdate() {
         if (editBeacon) {
             try {
                 jsonObject.put(CONTENT_TYPE, "beacon");
@@ -195,9 +194,9 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     }
 
     private void update() {
-        if (editBeacon){
-            itemName = beacon_major.getText().toString()+"/"+beacon_minor.getText().toString();
-        }else {
+        if (editBeacon) {
+            itemName = beacon_major.getText().toString() + "/" + beacon_minor.getText().toString();
+        } else {
             itemName = poi_name.getText().toString();
         }
         itemXCoord = xcoord.getText().toString();
@@ -228,9 +227,9 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     }
 
     private void save() {
-        if (editBeacon){
-            itemName = beacon_major.getText().toString()+"/"+beacon_minor.getText().toString();
-        }else {
+        if (editBeacon) {
+            itemName = beacon_major.getText().toString() + "/" + beacon_minor.getText().toString();
+        } else {
             itemName = poi_name.getText().toString();
         }
         itemXCoord = xcoord.getText().toString();
@@ -333,11 +332,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
 
     }
 
-    private void getResult (String result){
+    private void getResult(String result) {
         String targetName;
-        if (editBeacon){
-            targetName = beacon_major.getText().toString()+"/"+beacon_minor.getText().toString();
-        }else {
+        if (editBeacon) {
+            targetName = beacon_major.getText().toString() + "/" + beacon_minor.getText().toString();
+        } else {
             targetName = poi_name.getText().toString();
         }
         JSONArray resultArray;
@@ -349,35 +348,53 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             if (success.equals(TRUE)) {
                 resultArray = jsonObject.getJSONArray(RESULT);
                 jsonObjects = new JSONObject[resultArray.length()];
-                boolean existing = false;
-
+                existing = false;
                 int i = 0;
-                while (i<resultArray.length() || !existing){
-                    jsonObjects[i]=resultArray.getJSONObject(i);
-                    if (jsonObjects[i].getString("name").equalsIgnoreCase(targetName)){
-                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case DialogInterface.BUTTON_POSITIVE:
-                                        update();
-                                        break;
-
-                                    case DialogInterface.BUTTON_NEGATIVE:
-                                        //No button clicked
-                                        break;
-                                }
-                            }
-                        };
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setMessage(R.string.admin_update).setPositiveButton(R.string.yes, dialogClickListener)
-                                .setNegativeButton(R.string.cancel, dialogClickListener).show();
+                while (i < resultArray.length()) {
+                    jsonObjects[i] = resultArray.getJSONObject(i);
+                    if (jsonObjects[i].getString("name").equalsIgnoreCase(targetName)) {
                         existing = true;
+                        break;
                     }
                     i++;
                 }
-                if (!existing) save();
+                if (existing){
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    update();
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(R.string.admin_update).setPositiveButton(R.string.yes, dialogClickListener)
+                            .setNegativeButton(R.string.cancel, dialogClickListener).show();
+                }else {
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    save();
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(R.string.admin_save_new).setPositiveButton(R.string.yes, dialogClickListener)
+                            .setNegativeButton(R.string.cancel, dialogClickListener).show();
+                }
             } else {
                 // If request failed, shows the message from the server
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
