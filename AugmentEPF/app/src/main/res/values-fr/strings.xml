@@ -8,7 +8,7 @@
     <string name="text_warning">Voulez-vous être prévenu(e) à l\'avance ?</string>
     <string name="text_warning_alerts">Choisissez la manière dont vous serez prévenu(e)</string>
     <string name="text_when">Quand ?</string>
-    <string name="hello_blank_fragment" />
+    <string name="hello_blank_fragment" >Bonjour</string>
     <string name="app_need_location">L\'application a besoin d\'accéder à votre localisation</string>
     <string name="app_need_location_message">Donnez accès à la localisation pour que l\'application puisse détecter les beacons en arrière plan</string>
     <string name="title_activity_main">MainActivity</string>
@@ -120,10 +120,10 @@
     <string name="admin_activity_title">Outils Administratifs</string>
     <string name="admin_edit_beacons">Éditer balises</string>
     <string name="admin_edit_poi">Éditer points d\'intérêts</string>
-    <string name="admin_locate">Pos. actuelle</string>
+    <string name="admin_locate">Balise la plus proche</string>
     <string name="admin_name">Nom :</string>
     <string name="admin_name_missing">Nom requis</string>
-    <string name="admin_remove">Suppr. le plus proche</string>
+    <string name="admin_remove">Supprimer</string>
     <string name="admin_save">Ajouter</string>
     <string name="admin_target">Le plus proche :</string>
     <string name="admin_target_missing">Aucun sélectionné(e)</string>
@@ -136,6 +136,11 @@
     <string name="admin_2nf_floor">2ème étage</string>
     <string name="admin_ground_floor">Rez-de-chaussée</string>
     <string name="admin_lower_floor">Étage inférieur</string>
+    <string name="admin_detector_failed">Aucune détectée</string>
+    <string name="admin_edit_rooms">Éditer les salles</string>
+    <string name="admin_update">Mettre à jour ?</string>
+    <string name="admin_save_new">Enregistrer nouveau ?</string>
+    <string name="admin_map_error">Carte non disponible</string>
 
 
 </resources>

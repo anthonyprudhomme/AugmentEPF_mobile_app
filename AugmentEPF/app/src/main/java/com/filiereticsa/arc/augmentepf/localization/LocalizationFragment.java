@@ -150,54 +150,56 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     @Override
     public void userMovedToMap(final GABeaconMap map) {
         if (isAdded()) {
-            currentMap = map;
-            Log.d(TAG, "user moved to map");
-            // TODO Uncomment this and give the real path to the map
-            //BitmapManager bitmapManager = new BitmapManager();
-            //final Bitmap mapBitmap = bitmapManager.loadBitmapFromFile("PATH_TO_MAP");
-            if (mapBitmap!=null){
-                mapBitmap.recycle();
-            }
-            mapBitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                    map.getImageResId());
-            if (mapBitmap != null) {
-                int height = mapBitmap.getHeight();
-                int width = mapBitmap.getWidth();
-                double pictureRatio = ((float) height) / ((float) width);
-                WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-                Display display = wm.getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                screenWidth = size.x;
-                screenHeight = size.y;
-                final FrameLayout.LayoutParams imageParams = new FrameLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                float imageHeight;
-                float imageWidth;
-                float heightRatio = height / screenHeight;
-                float widthRatio = width / screenWidth;
-                if (heightRatio > widthRatio) {
-                    imageHeight = screenHeight;
-                    imageWidth = (float) (screenHeight / pictureRatio);
-                } else {
-                    imageHeight = (float) ((screenWidth * pictureRatio));
-                    imageWidth = (screenWidth);
+            if (currentMap != null && currentMap.getFloor() == map.getFloor()) {
+                currentMap = map;
+                Log.d(TAG, "user moved to map");
+                // TODO Uncomment this and give the real path to the map
+                //BitmapManager bitmapManager = new BitmapManager();
+                //final Bitmap mapBitmap = bitmapManager.loadBitmapFromFile("PATH_TO_MAP");
+                if (mapBitmap != null) {
+                    mapBitmap.recycle();
                 }
-                imageParams.height = (int) imageHeight;
-                imageParams.width = (int) imageWidth;
-                currentMapHeight = (int) imageHeight;
-                currentMapWidth = (int) imageWidth;
-                gridDimensions = currentMap.getMapDimensions();
-                if (isAdded()) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            currentMapImageView.setLayoutParams(imageParams);
-                            currentMapImageView.setImageBitmap(mapBitmap);
-                            gestureEnabled = true;
-                        }
-                    });
+                mapBitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                        map.getImageResId());
+                if (mapBitmap != null) {
+                    int height = mapBitmap.getHeight();
+                    int width = mapBitmap.getWidth();
+                    double pictureRatio = ((float) height) / ((float) width);
+                    WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                    Display display = wm.getDefaultDisplay();
+                    Point size = new Point();
+                    display.getSize(size);
+                    screenWidth = size.x;
+                    screenHeight = size.y;
+                    final FrameLayout.LayoutParams imageParams = new FrameLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    float imageHeight;
+                    float imageWidth;
+                    float heightRatio = height / screenHeight;
+                    float widthRatio = width / screenWidth;
+                    if (heightRatio > widthRatio) {
+                        imageHeight = screenHeight;
+                        imageWidth = (float) (screenHeight / pictureRatio);
+                    } else {
+                        imageHeight = (float) ((screenWidth * pictureRatio));
+                        imageWidth = (screenWidth);
+                    }
+                    imageParams.height = (int) imageHeight;
+                    imageParams.width = (int) imageWidth;
+                    currentMapHeight = (int) imageHeight;
+                    currentMapWidth = (int) imageWidth;
+                    gridDimensions = currentMap.getMapDimensions();
+                    if (isAdded()) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                currentMapImageView.setLayoutParams(imageParams);
+                                currentMapImageView.setImageBitmap(mapBitmap);
+                                gestureEnabled = true;
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -223,7 +225,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                         if (userAndPathView.getParent() != null) {
                             ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
                         }
-                        if(userAndPathView.getParent()!=null){
+                        if (userAndPathView.getParent() != null) {
                             ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
                         }
                         mapContainer.addView(userAndPathView);
@@ -274,9 +276,12 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     }
 
     public Pair<Integer, Integer> getCoordinatesFromIndexPath(Pair<Integer, Integer> gridDimension, Pair<Integer, Integer> position) {
-        int nbRow = gridDimension.first;
-        int nbCol = gridDimension.second;
-        return new Pair<>((int) ((position.second) * (currentMapHeight / nbRow)), (int) ((position.first) * (currentMapWidth / nbCol)));
+        if (gridDimension != null) {
+            int nbRow = gridDimension.first;
+            int nbCol = gridDimension.second;
+            return new Pair<>((int) ((position.second) * (currentMapHeight / nbRow)), (int) ((position.first) * (currentMapWidth / nbCol)));
+        }
+        return null;
     }
 
     @Override

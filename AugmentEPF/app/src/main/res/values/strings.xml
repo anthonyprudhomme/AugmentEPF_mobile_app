@@ -173,8 +173,8 @@
     <string name="admin_ycoord">Y Coordinate:</string>
     <string name="admin_name">Name:</string>
     <string name="admin_target">Closest:</string>
-    <string name="admin_locate">Current Position</string>
-    <string name="admin_remove">Remove closest</string>
+    <string name="admin_locate">Closest beacon</string>
+    <string name="admin_remove">Remove</string>
     <string name="admin_save">Add</string>
     <string name="admin_2nf_floor">2nd Floor</string>
     <string name="admin_1st_floor">1st Floor</string>
@@ -182,4 +182,8 @@
     <string name="admin_lower_floor">Lower Floor</string>
     <string name="admin_update">Update existing?</string>
     <string name="admin_save_new">Save as new?</string>
+    <string name="admin_edit_rooms">Edit rooms</string>
+    <string name="admin_detector_failed">None detected</string>
+    <string name="admin_map_error">Map not available</string>
+    <string name="hello_blank_fragment">Hello</string>
 </resources>

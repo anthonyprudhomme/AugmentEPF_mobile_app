@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,103 +7,101 @@
     android:orientation="vertical"
     tools:context="com.filiereticsa.arc.augmentepf.activities.AdminActivity">
 
-    <RadioGroup
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/beaconEdit"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="fill_vertical"
-            android:layout_weight="1"
-            android:onClick="onBeaconClick"
-            android:text="@string/admin_edit_beacons" />
-
-        <RadioButton
-            android:id="@+id/PoIEdit"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="fill_vertical"
-            android:layout_weight="1"
-            android:onClick="onPOIClick"
-            android:text="@string/admin_edit_poi" />
-    </RadioGroup>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
+        <RadioGroup
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="@string/admin_xcoord" />
-
-        <EditText
-            android:id="@+id/xCoordText"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/admin_ycoord" />
-
-        <EditText
-            android:id="@+id/yCoordText"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
-
-        <LinearLayout
-            android:id="@+id/name_receiver"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="@string/admin_name" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/admin_target" />
-
-            <TextView
-                android:id="@+id/closestText"
+            <RadioButton
+                android:id="@+id/beaconEdit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical" />
+                android:layout_height="match_parent"
+                android:layout_gravity="fill_vertical"
+                android:layout_weight="1"
+                android:onClick="onBeaconClick"
+                android:text="@string/admin_edit_beacons" />
+
+            <RadioButton
+                android:id="@+id/PoIEdit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="fill_vertical"
+                android:layout_weight="1"
+                android:onClick="onPOIClick"
+                android:text="@string/admin_edit_poi" />
+
+            <RadioButton
+                android:id="@+id/roomEdit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="fill_vertical"
+                android:layout_weight="1"
+                android:onClick="onRoomClick"
+                android:text="@string/admin_edit_rooms" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_marginLeft="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/admin_xcoord" />
+
+                <EditText
+                    android:id="@+id/xCoordText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/admin_ycoord" />
+
+                <EditText
+                    android:id="@+id/yCoordText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/name_receiver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/admin_name" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
+
 
     <fragment
         android:id="@+id/localization_fragment"
@@ -120,28 +117,46 @@
         android:orientation="horizontal">
 
         <Button
+            style="@android:style/Widget.Button"
             android:layout_width="wrap_content"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:onClick="onGPSClick"
-            android:text="@string/admin_locate" />
+            android:text="@string/admin_locate"
+            android:layout_margin="2dp"
+            android:background="@drawable/red_button"
+            android:padding="2dp"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
         <Button
+            style="@android:style/Widget.Button"
             android:layout_width="wrap_content"
-            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:onClick="onRemoveClick"
-            android:text="@string/admin_remove" />
-
-        <Button
-            android:layout_width="wrap_content"
             android:layout_weight="1"
+            android:onClick="onRemoveClick"
+            android:text="@string/admin_remove"
+            android:layout_margin="2dp"
+            android:background="@drawable/red_button"
+            android:padding="2dp"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <Button
+            style="@android:style/Widget.Button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:onClick="onSaveClick"
-            android:text="@string/admin_save" />
+            android:text="@string/admin_save"
+            android:layout_margin="2dp"
+            android:background="@drawable/red_button"
+            android:padding="2dp"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
     </LinearLayout>
 
 </LinearLayout>
