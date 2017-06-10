@@ -370,7 +370,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     x = gaBeacon.getxCoord() - 1;
                     y = gaBeacon.getyCoord() - 1;
                     names = new ArrayList<>();
-                    names.add(gaBeacon.getName());
+                    names.add(gaBeacon.getMajor()+"/"+gaBeacon.getMinor());
                     int currentCellHeight = cellHeight;
                     int currentCellWidth = cellWidth;
                     if (widthFixFrequency != 0 && x % widthFixFrequency == widthFixFrequency - 1) {
@@ -898,9 +898,17 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             ArrayList<String> targetNames = admindata.getNames();
             if (!targetNames.isEmpty()) {
                 if (targetNames.size() == 1) {
+                    if(editBeacon){
+                        String[] separated = targetNames.get(0).split("/");
+                        beaconMajor.setText(separated[0]);
+                        beaconMinor.setText(separated[1]);
+                    }else
                     poiName.setText(targetNames.get(0));
                 } else {
                     for (int i = 0; i < targetNames.size(); i++) {
+                        if(editBeacon){
+
+                        }else
                         poiName.setText("multiple targets"+i);
                     }
                 }
