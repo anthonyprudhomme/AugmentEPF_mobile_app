@@ -264,6 +264,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         param.rowSpec = GridLayout.spec(yPos);
         itemView.setLayoutParams(param);
         itemView.setOnClickListener(gridItemListener);
+
         gridLayout.addView(itemView);
     }
 
@@ -887,6 +888,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     private View.OnClickListener gridItemListener = new View.OnClickListener() {
         public void onClick(View v) {
             AdminItemView admindata = (AdminItemView) v;
+            admindata.paint();
             xCoord.setText(admindata.getxPos() + "");
             yCoord.setText(admindata.getyPos() + "");
             ArrayList<String> targetNames = admindata.getNames();
@@ -895,7 +897,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     poiName.setText(targetNames.get(0));
                 } else {
                     for (int i = 0; i < targetNames.size(); i++) {
-                        poiName.setText(targetNames.get(i));
+                        poiName.setText("multiple targets"+i);
                     }
                 }
             }

@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 
+import com.filiereticsa.arc.augmentepf.R;
+
 import java.util.ArrayList;
 
 /**
@@ -95,6 +97,10 @@ public class AdminItemView extends android.support.v7.widget.AppCompatImageView 
         ROOM,
         POI,
         FLOOR_ACCESS
+    }
+
+    public void paint(){
+       this.setImageResource(R.drawable.highlight);
     }
 
     public ArrayList<String> getNames() {
