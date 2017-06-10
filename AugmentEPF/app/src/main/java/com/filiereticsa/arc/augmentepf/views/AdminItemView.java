@@ -61,34 +61,34 @@ public class AdminItemView extends android.support.v7.widget.AppCompatImageView 
                     canvas.drawRect(borderRect, paint);
                     break;
                 case PATH:
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setColor(Color.BLACK);
-                    paint.setAlpha(255);
+                    paint.setStyle(Paint.Style.FILL);
+                    paint.setColor(Color.GREEN);
+                    paint.setAlpha(127);
                     canvas.drawRect(borderRect, paint);
                     break;
                 case BEACON:
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setColor(Color.BLACK);
-                    paint.setAlpha(100);
-                    canvas.drawCircle(cellWidth / 2, cellHeight / 2, RADIUS, paint);
+                    paint.setStyle(Paint.Style.FILL);
+                    paint.setColor(Color.RED);
+                    paint.setAlpha(127);
+                    canvas.drawRect(borderRect, paint);
                     break;
                 case ROOM:
                     paint.setStyle(Paint.Style.FILL);
-                    paint.setColor(Color.GREEN);
-                    paint.setAlpha(100);
-                    canvas.drawRect(innerRect, paint);
+                    paint.setColor(Color.RED);
+                    paint.setAlpha(127);
+                    canvas.drawRect(borderRect, paint);
                     break;
                 case POI:
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setColor(Color.GREEN);
-                    paint.setAlpha(255);
+                    paint.setStyle(Paint.Style.FILL);
+                    paint.setColor(Color.RED);
+                    paint.setAlpha(127);
                     canvas.drawRect(borderRect, paint);
                     break;
                 case FLOOR_ACCESS:
                     paint.setStyle(Paint.Style.FILL);
                     paint.setColor(Color.YELLOW);
-                    paint.setAlpha(100);
-                    canvas.drawRect(innerRect, paint);
+                    paint.setAlpha(127);
+                    canvas.drawRect(borderRect, paint);
                     break;
             }
         }

@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.text.InputFilter;
 import android.util.Pair;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -37,9 +36,11 @@ import com.filiereticsa.arc.augmentepf.localization.BeaconDetector;
 import com.filiereticsa.arc.augmentepf.localization.BeaconDetectorInterface;
 import com.filiereticsa.arc.augmentepf.localization.GABeacon;
 import com.filiereticsa.arc.augmentepf.localization.GABeaconMap;
+import com.filiereticsa.arc.augmentepf.localization.MapItem;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
+import com.filiereticsa.arc.augmentepf.models.ClassRoom;
+import com.filiereticsa.arc.augmentepf.models.PointOfInterest;
 import com.filiereticsa.arc.augmentepf.views.AdminItemView;
-import com.filiereticsa.arc.augmentepf.views.CalendarClassView;
 
 import org.altbeacon.beacon.BeaconManager;
 import org.json.JSONArray;
@@ -59,45 +60,37 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     public static final String MESSAGE = "message";
     public static final String GET_ELEMENT_PHP = "getElement.php";
     public static final String RESULT = "result";
+    private static final String TAG = "Here";
     public static final int SECOND_FLOOR = 2;
     public static final int FIRST_FLOOR = 1;
     public static final int GROUND_FLOOR = 0;
     public static final int LOWER_FLOOR = -1;
-    private static final String TAG = "Ici";
+    private static final int MAX_LENGTH = 5;
 
     private boolean editBeacon, existing, editRoom;
-    private int currentFloor;
-    private ImageView imageView;
-    private TextView separator;
-    private EditText xcoord, ycoord, poi_name, beaconMajor, beaconMinor;
-    private String itemName, itemXCoord, itemYCoord;
-    private LinearLayout nameLayout;
-    JSONObject jsonObject = new JSONObject();
-    JSONArray jsonArray = new JSONArray();
-    JSONObject[] jsonObjects;
-    public static BeaconDetectorInterface beaconDetectorInterface;
-    private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
     private boolean hasUserAskedForClosestBeacon = false;
-    private int screenWidth;
-    private int screenHeight;
-    private int currentMapHeight;
-    private int currentMapWidth;
     public boolean gestureEnabled;
-    private Bitmap mapBitmap;
-    private GABeaconMap gabeaconMap;
-    private Pair<Integer, Integer> gridDimensions;
-    private FrameLayout mapContainer;
-    private GestureDetector gestureDetector;
+    private int currentFloor, screenWidth, screenHeight, currentMapHeight, currentMapWidth, cellHeight, cellWidth, nbCol, nbRow;
     private int numberOfFingerTouchingTheScreen = 0;
     private float effectiveScale = 1f;
     private float scale = 1f;
+    public static BeaconDetectorInterface beaconDetectorInterface;
+    private ImageView imageView;
+    private TextView separator;
+    private EditText xCoord, yCoord, poiName, beaconMajor, beaconMinor;
+    private String itemName, itemXCoord, itemYCoord;
+    private LinearLayout nameLayout;
+    private JSONObject jsonObject = new JSONObject();
+    private JSONArray jsonArray = new JSONArray();
+    private JSONObject[] jsonObjects;
+    private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
+    private Bitmap mapBitmap;
+    private GABeaconMap gaBeaconMap;
+    private Pair<Integer, Integer> gridDimensions;
+    private FrameLayout mapContainer;
+    private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
     private GridLayout gridLayout;
-    private int index = 0;
-    private int cellHeight;
-    private int cellWidth;
-    private int nbCol;
-    private int nbRow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,23 +102,25 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         }
         RadioButton radioButton = (RadioButton) findViewById(R.id.beaconEdit);
 
-        xcoord = (EditText) findViewById(R.id.xCoordText);
-        ycoord = (EditText) findViewById(R.id.yCoordText);
+        xCoord = (EditText) findViewById(R.id.xCoordText);
+        yCoord = (EditText) findViewById(R.id.yCoordText);
 
         imageView = (ImageView) findViewById(R.id.currentMap);
 
         nameLayout = (LinearLayout) findViewById(R.id.name_receiver);
         separator = new TextView(this);
 
-        poi_name = new EditText(this);
-        poi_name.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        poi_name.setSingleLine();
-        poi_name.setSingleLine();
+        poiName = new EditText(this);
+        poiName.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        poiName.setSingleLine();
+        poiName.setSingleLine();
 
         beaconMajor = new EditText(this);
         beaconMinor = new EditText(this);
         beaconMajor.setSingleLine();
         beaconMinor.setSingleLine();
+        beaconMajor.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_LENGTH)});
+        beaconMinor.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_LENGTH)});
 
         separator.setText("/");
         nameLayout.addView(beaconMajor);
@@ -187,16 +182,17 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             }
         });
 
+        setUpNewMap(FIRST_FLOOR, R.drawable.plan_epf_etage1);
+
     }
 
     private void setGridLayout(int columnNumber, int rowNumber) {
         if (gridLayout != null) {
-            mapContainer.removeViewAt(1);
+            mapContainer.removeView(gridLayout);
         }
         gridLayout = new GridLayout(this);
         gridLayout.setAlignmentMode(GridLayout.ALIGN_BOUNDS);
-        gridLayout.setBackgroundColor(Color.BLUE);
-        mapContainer.addView(gridLayout,1);
+        mapContainer.addView(gridLayout);
         gridLayout.setColumnCount(columnNumber);
         gridLayout.setRowCount(rowNumber);
     }
@@ -267,18 +263,18 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         param.columnSpec = GridLayout.spec(xPos);
         param.rowSpec = GridLayout.spec(yPos);
         itemView.setLayoutParams(param);
-        gridLayout.addView(itemView, index++);
+        gridLayout.addView(itemView);
     }
 
     private void setUpNewMap(int mapFloor, int imageRes) {
         if (GABeaconMap.maps.containsKey(mapFloor)) {
             currentFloor = mapFloor;
-            gabeaconMap = GABeaconMap.maps.get(mapFloor);
+            gaBeaconMap = GABeaconMap.maps.get(mapFloor);
             mapBitmap = BitmapFactory.decodeResource(getResources(), imageRes);
             int height = mapBitmap.getHeight();
             int width = mapBitmap.getWidth();
-            nbCol = gabeaconMap.getNbCol();
-            nbRow = gabeaconMap.getNbRow();
+            nbCol = gaBeaconMap.getNbCol();
+            nbRow = gaBeaconMap.getNbRow();
             setGridLayout(nbCol, nbRow);
             double pictureRatio = ((float) height) / ((float) width);
             final FrameLayout.LayoutParams imageParams = new FrameLayout.LayoutParams(
@@ -318,9 +314,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     }
 
     private void drawGridAndItems() {
-        Log.d(TAG, "drawGridAndItems: " + nbRow + " " + nbCol);
-        ArrayList<AdminItemView.ItemType> itemTypes = new ArrayList<>();
-        itemTypes.add(AdminItemView.ItemType.EMPTY);
+        int x, y;
         int heightDelta = currentMapHeight - (cellHeight * nbRow);
         int widthDelta = currentMapWidth - (cellWidth * nbCol);
         int heightFixFrequency = 0;
@@ -331,6 +325,9 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         if (widthDelta != 0) {
             widthFixFrequency = nbCol / widthDelta;
         }
+
+        ArrayList<AdminItemView.ItemType> itemTypes = new ArrayList<>();
+        itemTypes.add(AdminItemView.ItemType.EMPTY);
         for (int i = 0; i < nbCol; i++) {
             for (int j = 0; j < nbRow; j++) {
                 int currentCellHeight = cellHeight;
@@ -344,16 +341,110 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                 addGridItem(i, j, itemTypes, currentCellHeight, currentCellWidth);
             }
         }
+
+        ArrayList<MapItem> mapItems = gaBeaconMap.getMapItems();
+        itemTypes = new ArrayList<>();
+        itemTypes.add(AdminItemView.ItemType.PATH);
+        for (int i = 0; i < mapItems.size(); i++) {
+            MapItem mapItem = mapItems.get(i);
+            x = mapItem.coordinates.first - 1;
+            y = mapItem.coordinates.second - 1;
+            int currentCellHeight = cellHeight;
+            int currentCellWidth = cellWidth;
+            if (widthFixFrequency != 0 && x % widthFixFrequency == widthFixFrequency - 1) {
+                currentCellWidth++;
+            }
+            if (heightFixFrequency != 0 && y % heightFixFrequency == heightFixFrequency - 1) {
+                currentCellHeight++;
+            }
+            addGridItem(x, y, itemTypes, currentCellHeight, currentCellWidth);
+        }
+
+        if (editBeacon) {
+            ArrayList<GABeacon> allBeacons = GABeacon.allBeacons;
+            itemTypes = new ArrayList<>();
+            itemTypes.add(AdminItemView.ItemType.BEACON);
+            for (int i = 0; i < allBeacons.size(); i++) {
+                GABeacon gaBeacon = allBeacons.get(i);
+                if (gaBeacon.getMapId() == currentFloor) {
+                    x = gaBeacon.xCoord - 1;
+                    y = gaBeacon.yCoord - 1;
+                    int currentCellHeight = cellHeight;
+                    int currentCellWidth = cellWidth;
+                    if (widthFixFrequency != 0 && x % widthFixFrequency == widthFixFrequency - 1) {
+                        currentCellWidth++;
+                    }
+                    if (heightFixFrequency != 0 && y % heightFixFrequency == heightFixFrequency - 1) {
+                        currentCellHeight++;
+                    }
+                    addGridItem(x, y, itemTypes, currentCellHeight, currentCellWidth);
+                }
+            }
+        } else if (editRoom) {
+            ArrayList<ClassRoom> classRooms = ClassRoom.getClassRooms();
+            itemTypes = new ArrayList<>();
+            itemTypes.add(AdminItemView.ItemType.ROOM);
+            for (int i = 0; i < classRooms.size(); i++) {
+                ClassRoom classRoom = classRooms.get(i);
+                if (classRoom.getPosition().getFloor() == currentFloor) {
+                    x = classRoom.getPosition().getPositionX() - 1;
+                    y = classRoom.getPosition().getPositionY() - 1;
+                    int currentCellHeight = cellHeight;
+                    int currentCellWidth = cellWidth;
+                    if (widthFixFrequency != 0 && x % widthFixFrequency == widthFixFrequency - 1) {
+                        currentCellWidth++;
+                    }
+                    if (heightFixFrequency != 0 && y % heightFixFrequency == heightFixFrequency - 1) {
+                        currentCellHeight++;
+                    }
+                    addGridItem(x, y, itemTypes, currentCellHeight, currentCellWidth);
+                }
+            }
+        } else {
+            ArrayList<PointOfInterest> pointOfInterests = PointOfInterest.getPointOfInterests();
+            itemTypes = new ArrayList<>();
+            itemTypes.add(AdminItemView.ItemType.POI);
+            for (int i = 0; i < pointOfInterests.size(); i++) {
+                PointOfInterest pointOfInterest = pointOfInterests.get(i);
+                if (pointOfInterest.getPosition().getFloor() == currentFloor) {
+                    x = pointOfInterest.getPosition().getPositionX() - 1;
+                    y = pointOfInterest.getPosition().getPositionY() - 1;
+                    int currentCellHeight = cellHeight;
+                    int currentCellWidth = cellWidth;
+                    if (widthFixFrequency != 0 && x % widthFixFrequency == widthFixFrequency - 1) {
+                        currentCellWidth++;
+                    }
+                    if (heightFixFrequency != 0 && y % heightFixFrequency == heightFixFrequency - 1) {
+                        currentCellHeight++;
+                    }
+                    addGridItem(x, y, itemTypes, currentCellHeight, currentCellWidth);
+                }
+            }
+        }
     }
 
     public void onBeaconClick(View view) {
-        poi_name.setText("");
-        nameLayout.removeView(poi_name);
+        poiName.setText("");
+        nameLayout.removeView(poiName);
         nameLayout.addView(beaconMajor);
         nameLayout.addView(separator);
         nameLayout.addView(beaconMinor);
         editBeacon = true;
         editRoom = false;
+        switch (currentFloor) {
+            case 2:
+                setUpNewMap(SECOND_FLOOR, R.drawable.plan_epf_etage2);
+                break;
+            case 1:
+                setUpNewMap(FIRST_FLOOR, R.drawable.plan_epf_etage1);
+                break;
+            case 0:
+                setUpNewMap(GROUND_FLOOR, -1);
+                break;
+            case -1:
+                setUpNewMap(LOWER_FLOOR, -1);
+                break;
+        }
     }
 
     public void onPOIClick(View view) {
@@ -363,11 +454,25 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             nameLayout.removeView(beaconMajor);
             nameLayout.removeView(separator);
             nameLayout.removeView(beaconMinor);
-            nameLayout.addView(poi_name);
+            nameLayout.addView(poiName);
         }
-        poi_name.setText("");
+        poiName.setText("");
         editBeacon = false;
         editRoom = false;
+        switch (currentFloor) {
+            case 2:
+                setUpNewMap(SECOND_FLOOR, R.drawable.plan_epf_etage2);
+                break;
+            case 1:
+                setUpNewMap(FIRST_FLOOR, R.drawable.plan_epf_etage1);
+                break;
+            case 0:
+                setUpNewMap(GROUND_FLOOR, -1);
+                break;
+            case -1:
+                setUpNewMap(LOWER_FLOOR, -1);
+                break;
+        }
     }
 
     public void onRoomClick(View view) {
@@ -375,11 +480,25 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             nameLayout.removeView(beaconMajor);
             nameLayout.removeView(separator);
             nameLayout.removeView(beaconMinor);
-            nameLayout.addView(poi_name);
+            nameLayout.addView(poiName);
         }
-        poi_name.setText("");
+        poiName.setText("");
         editRoom = true;
         editBeacon = false;
+        switch (currentFloor) {
+            case 2:
+                setUpNewMap(SECOND_FLOOR, R.drawable.plan_epf_etage2);
+                break;
+            case 1:
+                setUpNewMap(FIRST_FLOOR, R.drawable.plan_epf_etage1);
+                break;
+            case 0:
+                setUpNewMap(GROUND_FLOOR, -1);
+                break;
+            case -1:
+                setUpNewMap(LOWER_FLOOR, -1);
+                break;
+        }
     }
 
     public void onGPSClick(View view) {
@@ -393,7 +512,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             if (beaconMajor.getText().toString().matches("") || beaconMinor.getText().toString().matches("")) {
                 Toast.makeText(this, R.string.admin_name_missing, Toast.LENGTH_SHORT).show();
             } else checkForUpdate();
-        } else if (poi_name.getText().toString().matches("")) {
+        } else if (poiName.getText().toString().matches("")) {
             Toast.makeText(this, R.string.admin_name_missing, Toast.LENGTH_SHORT).show();
         } else checkForUpdate();
     }
@@ -402,7 +521,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         if (editBeacon) {
             itemName = beaconMajor.getText().toString() + beaconMinor.getText().toString();
         } else {
-            itemName = poi_name.getText().toString();
+            itemName = poiName.getText().toString();
         }
         if (itemName.matches("")) {
             Toast.makeText(this, R.string.admin_target_missing, Toast.LENGTH_SHORT).show();
@@ -449,10 +568,10 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         if (editBeacon) {
             itemName = beaconMajor.getText().toString() + "/" + beaconMinor.getText().toString();
         } else {
-            itemName = poi_name.getText().toString();
+            itemName = poiName.getText().toString();
         }
-        itemXCoord = xcoord.getText().toString();
-        itemYCoord = ycoord.getText().toString();
+        itemXCoord = xCoord.getText().toString();
+        itemYCoord = yCoord.getText().toString();
 
         if (editBeacon) {
             try {
@@ -482,10 +601,10 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         if (editBeacon) {
             itemName = beaconMajor.getText().toString() + "/" + beaconMinor.getText().toString();
         } else {
-            itemName = poi_name.getText().toString();
+            itemName = poiName.getText().toString();
         }
-        itemXCoord = xcoord.getText().toString();
-        itemYCoord = ycoord.getText().toString();
+        itemXCoord = xCoord.getText().toString();
+        itemYCoord = yCoord.getText().toString();
 
         if (editBeacon) {
             try {
@@ -515,10 +634,10 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         if (editBeacon) {
             itemName = beaconMajor.getText().toString() + "/" + beaconMinor.getText().toString();
         } else {
-            itemName = poi_name.getText().toString();
+            itemName = poiName.getText().toString();
         }
-        itemXCoord = xcoord.getText().toString();
-        itemYCoord = ycoord.getText().toString();
+        itemXCoord = xCoord.getText().toString();
+        itemYCoord = yCoord.getText().toString();
         if (editBeacon) {
             try {
                 jsonObject.put(CONTENT_TYPE, "beacon");
@@ -593,7 +712,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         if (editBeacon) {
             targetName = beaconMajor.getText().toString() + "/" + beaconMinor.getText().toString();
         } else {
-            targetName = poi_name.getText().toString();
+            targetName = poiName.getText().toString();
         }
         JSONArray resultArray;
         try {
@@ -667,8 +786,21 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         BeaconDetector.sharedBeaconDetector().setActivity(this);
         if (beaconManager.isBound(BeaconDetector.sharedBeaconDetector().getBeaconConsumer()))
             beaconManager.setBackgroundMode(false);
+        switch (currentFloor) {
+            case 2:
+                setUpNewMap(SECOND_FLOOR, R.drawable.plan_epf_etage2);
+                break;
+            case 1:
+                setUpNewMap(FIRST_FLOOR, R.drawable.plan_epf_etage1);
+                break;
+            case 0:
+                setUpNewMap(GROUND_FLOOR, -1);
+                break;
+            case -1:
+                setUpNewMap(LOWER_FLOOR, -1);
+                break;
+        }
     }
-
 
     @Override
     protected void onDestroy() {
@@ -676,7 +808,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         BeaconDetector.sharedBeaconDetector.stopMonitoring();
         beaconManager.unbind(BeaconDetector.sharedBeaconDetector.getBeaconConsumer());
     }
-
 
     @Override
     protected void onPause() {
@@ -697,7 +828,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     closestBeacon = currentBeacon;
                 }
             }
-            Log.d(TAG, "rangedBeacons: before if");
             if (closestBeacon != null) {
                 final GABeacon finalClosestBeacon = closestBeacon;
                 runOnUiThread(new Runnable() {
@@ -705,11 +835,9 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     public void run() {
                         beaconMajor.setText(finalClosestBeacon.getMajor() + "");
                         beaconMinor.setText(finalClosestBeacon.getMinor() + "");
-                        Log.d(TAG, "run: in if");
                     }
                 });
             } else {
-                Log.d(TAG, "rangedBeacons: displaying toast");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

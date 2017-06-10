@@ -26,7 +26,7 @@ public class MapItem {
     String imageUrl;
     Bitmap image;
     // Coordinates
-    Pair<Integer, Integer> coordinates = new Pair<>(0, 0);
+    public Pair<Integer, Integer> coordinates = new Pair<>(0, 0);
     private int id = 0;
     // Returns view for item
     private ImageView view;
