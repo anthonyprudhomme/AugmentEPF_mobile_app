@@ -367,8 +367,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             for (int i = 0; i < allBeacons.size(); i++) {
                 GABeacon gaBeacon = allBeacons.get(i);
                 if (gaBeacon.getMapId() == currentFloor) {
-                    x = gaBeacon.xCoord - 1;
-                    y = gaBeacon.yCoord - 1;
+                    x = gaBeacon.getxCoord() - 1;
+                    y = gaBeacon.getyCoord() - 1;
                     names = new ArrayList<>();
                     names.add(gaBeacon.getName());
                     int currentCellHeight = cellHeight;
@@ -888,7 +888,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     private View.OnClickListener gridItemListener = new View.OnClickListener() {
         public void onClick(View v) {
             AdminItemView admindata = (AdminItemView) v;
-            admindata.paint();
+            for (int i=0; i<gridLayout.getChildCount();i++){
+                    AdminItemView refreshTarget = (AdminItemView) gridLayout.getChildAt(i);
+                refreshTarget.refresh();
+            }
+            admindata.highlight();
             xCoord.setText(admindata.getxPos() + "");
             yCoord.setText(admindata.getyPos() + "");
             ArrayList<String> targetNames = admindata.getNames();

@@ -99,7 +99,11 @@ public class AdminItemView extends android.support.v7.widget.AppCompatImageView 
         FLOOR_ACCESS
     }
 
-    public void paint(){
+    public  void refresh(){
+        this.setImageResource(0);
+    }
+
+    public void highlight(){
        this.setImageResource(R.drawable.highlight);
     }
 
