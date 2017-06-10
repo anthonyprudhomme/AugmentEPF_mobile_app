@@ -424,80 +424,85 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     }
 
     public void onBeaconClick(View view) {
-        poiName.setText("");
-        nameLayout.removeView(poiName);
-        nameLayout.addView(beaconMajor);
-        nameLayout.addView(separator);
-        nameLayout.addView(beaconMinor);
-        editBeacon = true;
-        editRoom = false;
-        switch (currentFloor) {
-            case 2:
-                setUpNewMap(SECOND_FLOOR, R.drawable.plan_epf_etage2);
-                break;
-            case 1:
-                setUpNewMap(FIRST_FLOOR, R.drawable.plan_epf_etage1);
-                break;
-            case 0:
-                setUpNewMap(GROUND_FLOOR, -1);
-                break;
-            case -1:
-                setUpNewMap(LOWER_FLOOR, -1);
-                break;
+        if (!editBeacon) {
+            beaconMajor.setText("");
+            beaconMinor.setText("");
+            nameLayout.removeView(poiName);
+            nameLayout.addView(beaconMajor);
+            nameLayout.addView(separator);
+            nameLayout.addView(beaconMinor);
+            editBeacon = true;
+            editRoom = false;
+            switch (currentFloor) {
+                case 2:
+                    setUpNewMap(SECOND_FLOOR, R.drawable.plan_epf_etage2);
+                    break;
+                case 1:
+                    setUpNewMap(FIRST_FLOOR, R.drawable.plan_epf_etage1);
+                    break;
+                case 0:
+                    setUpNewMap(GROUND_FLOOR, -1);
+                    break;
+                case -1:
+                    setUpNewMap(LOWER_FLOOR, -1);
+                    break;
+            }
         }
     }
 
     public void onPOIClick(View view) {
-        if (!editRoom) {
-            beaconMajor.setText("");
-            beaconMinor.setText("");
-            nameLayout.removeView(beaconMajor);
-            nameLayout.removeView(separator);
-            nameLayout.removeView(beaconMinor);
-            nameLayout.addView(poiName);
-        }
-        poiName.setText("");
-        editBeacon = false;
-        editRoom = false;
-        switch (currentFloor) {
-            case 2:
-                setUpNewMap(SECOND_FLOOR, R.drawable.plan_epf_etage2);
-                break;
-            case 1:
-                setUpNewMap(FIRST_FLOOR, R.drawable.plan_epf_etage1);
-                break;
-            case 0:
-                setUpNewMap(GROUND_FLOOR, -1);
-                break;
-            case -1:
-                setUpNewMap(LOWER_FLOOR, -1);
-                break;
+        if (editBeacon || editRoom) {
+            if (editBeacon) {
+                nameLayout.removeView(beaconMajor);
+                nameLayout.removeView(separator);
+                nameLayout.removeView(beaconMinor);
+                nameLayout.addView(poiName);
+            }
+            poiName.setText("");
+            editBeacon = false;
+            editRoom = false;
+            switch (currentFloor) {
+                case 2:
+                    setUpNewMap(SECOND_FLOOR, R.drawable.plan_epf_etage2);
+                    break;
+                case 1:
+                    setUpNewMap(FIRST_FLOOR, R.drawable.plan_epf_etage1);
+                    break;
+                case 0:
+                    setUpNewMap(GROUND_FLOOR, -1);
+                    break;
+                case -1:
+                    setUpNewMap(LOWER_FLOOR, -1);
+                    break;
+            }
         }
     }
 
     public void onRoomClick(View view) {
-        if (editBeacon) {
-            nameLayout.removeView(beaconMajor);
-            nameLayout.removeView(separator);
-            nameLayout.removeView(beaconMinor);
-            nameLayout.addView(poiName);
-        }
-        poiName.setText("");
-        editRoom = true;
-        editBeacon = false;
-        switch (currentFloor) {
-            case 2:
-                setUpNewMap(SECOND_FLOOR, R.drawable.plan_epf_etage2);
-                break;
-            case 1:
-                setUpNewMap(FIRST_FLOOR, R.drawable.plan_epf_etage1);
-                break;
-            case 0:
-                setUpNewMap(GROUND_FLOOR, -1);
-                break;
-            case -1:
-                setUpNewMap(LOWER_FLOOR, -1);
-                break;
+        if (!editRoom) {
+            if (editBeacon) {
+                nameLayout.removeView(beaconMajor);
+                nameLayout.removeView(separator);
+                nameLayout.removeView(beaconMinor);
+                nameLayout.addView(poiName);
+            }
+            poiName.setText("");
+            editRoom = true;
+            editBeacon = false;
+            switch (currentFloor) {
+                case 2:
+                    setUpNewMap(SECOND_FLOOR, R.drawable.plan_epf_etage2);
+                    break;
+                case 1:
+                    setUpNewMap(FIRST_FLOOR, R.drawable.plan_epf_etage1);
+                    break;
+                case 0:
+                    setUpNewMap(GROUND_FLOOR, -1);
+                    break;
+                case -1:
+                    setUpNewMap(LOWER_FLOOR, -1);
+                    break;
+            }
         }
     }
 
