@@ -70,7 +70,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     private boolean editBeacon, existing, editRoom;
     private boolean hasUserAskedForClosestBeacon = false;
     public boolean gestureEnabled;
-    private int currentFloor, screenWidth, screenHeight, currentMapHeight, currentMapWidth, cellHeight, cellWidth, nbCol, nbRow;
+    private int currentFloor, screenWidth, screenHeight, currentMapHeight, currentMapWidth, cellHeight, cellWidth, nbCol, nbRow, itemXCoord, itemYCoord;
     private int numberOfFingerTouchingTheScreen = 0;
     private float effectiveScale = 1f;
     private float scale = 1f;
@@ -78,7 +78,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     private ImageView imageView;
     private TextView separator;
     private EditText xCoord, yCoord, poiName, beaconMajor, beaconMinor;
-    private String itemName, itemXCoord, itemYCoord;
+    private String itemName;
     private LinearLayout nameLayout;
     private JSONObject jsonObject = new JSONObject();
     private JSONArray jsonArray = new JSONArray();
@@ -254,8 +254,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         return super.onOptionsItemSelected(item);
     }
 
-    private void addGridItem(int xPos, int yPos, ArrayList<AdminItemView.ItemType> itemTypes, int cellHeight, int cellWidth) {
-        AdminItemView itemView = new AdminItemView(this, cellHeight, cellWidth, itemTypes);
+    private void addGridItem(int xPos, int yPos, AdminItemView.ItemType itemTypes, int cellHeight, int cellWidth, ArrayList<String> names) {
+        AdminItemView itemView = new AdminItemView(this, cellHeight, cellWidth, xPos, yPos, itemTypes, names);
         GridLayout.LayoutParams param = new GridLayout.LayoutParams();
         param.height = cellHeight;
         param.width = cellWidth;
@@ -263,6 +263,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         param.columnSpec = GridLayout.spec(xPos);
         param.rowSpec = GridLayout.spec(yPos);
         itemView.setLayoutParams(param);
+        itemView.setOnClickListener(gridItemListener);
         gridLayout.addView(itemView);
     }
 
@@ -326,8 +327,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             widthFixFrequency = nbCol / widthDelta;
         }
 
-        ArrayList<AdminItemView.ItemType> itemTypes = new ArrayList<>();
-        itemTypes.add(AdminItemView.ItemType.EMPTY);
+        AdminItemView.ItemType itemTypes = AdminItemView.ItemType.EMPTY;
+        ArrayList<String> names = new ArrayList<>();
         for (int i = 0; i < nbCol; i++) {
             for (int j = 0; j < nbRow; j++) {
                 int currentCellHeight = cellHeight;
@@ -338,13 +339,12 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                 if (heightFixFrequency != 0 && j % heightFixFrequency == heightFixFrequency - 1) {
                     currentCellHeight++;
                 }
-                addGridItem(i, j, itemTypes, currentCellHeight, currentCellWidth);
+                addGridItem(i, j, itemTypes, currentCellHeight, currentCellWidth, names);
             }
         }
 
         ArrayList<MapItem> mapItems = gaBeaconMap.getMapItems();
-        itemTypes = new ArrayList<>();
-        itemTypes.add(AdminItemView.ItemType.PATH);
+        itemTypes = AdminItemView.ItemType.PATH;
         for (int i = 0; i < mapItems.size(); i++) {
             MapItem mapItem = mapItems.get(i);
             x = mapItem.coordinates.first - 1;
@@ -357,18 +357,19 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             if (heightFixFrequency != 0 && y % heightFixFrequency == heightFixFrequency - 1) {
                 currentCellHeight++;
             }
-            addGridItem(x, y, itemTypes, currentCellHeight, currentCellWidth);
+            addGridItem(x, y, itemTypes, currentCellHeight, currentCellWidth, names);
         }
 
         if (editBeacon) {
             ArrayList<GABeacon> allBeacons = GABeacon.allBeacons;
-            itemTypes = new ArrayList<>();
-            itemTypes.add(AdminItemView.ItemType.BEACON);
+            itemTypes = AdminItemView.ItemType.BEACON;
             for (int i = 0; i < allBeacons.size(); i++) {
                 GABeacon gaBeacon = allBeacons.get(i);
                 if (gaBeacon.getMapId() == currentFloor) {
                     x = gaBeacon.xCoord - 1;
                     y = gaBeacon.yCoord - 1;
+                    names = new ArrayList<>();
+                    names.add(gaBeacon.getName());
                     int currentCellHeight = cellHeight;
                     int currentCellWidth = cellWidth;
                     if (widthFixFrequency != 0 && x % widthFixFrequency == widthFixFrequency - 1) {
@@ -377,18 +378,19 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     if (heightFixFrequency != 0 && y % heightFixFrequency == heightFixFrequency - 1) {
                         currentCellHeight++;
                     }
-                    addGridItem(x, y, itemTypes, currentCellHeight, currentCellWidth);
+                    addGridItem(x, y, itemTypes, currentCellHeight, currentCellWidth, names);
                 }
             }
         } else if (editRoom) {
             ArrayList<ClassRoom> classRooms = ClassRoom.getClassRooms();
-            itemTypes = new ArrayList<>();
-            itemTypes.add(AdminItemView.ItemType.ROOM);
+            itemTypes = AdminItemView.ItemType.ROOM;
             for (int i = 0; i < classRooms.size(); i++) {
                 ClassRoom classRoom = classRooms.get(i);
                 if (classRoom.getPosition().getFloor() == currentFloor) {
                     x = classRoom.getPosition().getPositionX() - 1;
                     y = classRoom.getPosition().getPositionY() - 1;
+                    names = new ArrayList<>();
+                    names.add(classRoom.getName());
                     int currentCellHeight = cellHeight;
                     int currentCellWidth = cellWidth;
                     if (widthFixFrequency != 0 && x % widthFixFrequency == widthFixFrequency - 1) {
@@ -397,18 +399,19 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     if (heightFixFrequency != 0 && y % heightFixFrequency == heightFixFrequency - 1) {
                         currentCellHeight++;
                     }
-                    addGridItem(x, y, itemTypes, currentCellHeight, currentCellWidth);
+                    addGridItem(x, y, itemTypes, currentCellHeight, currentCellWidth, names);
                 }
             }
         } else {
             ArrayList<PointOfInterest> pointOfInterests = PointOfInterest.getPointOfInterests();
-            itemTypes = new ArrayList<>();
-            itemTypes.add(AdminItemView.ItemType.POI);
+            itemTypes = AdminItemView.ItemType.POI;
             for (int i = 0; i < pointOfInterests.size(); i++) {
                 PointOfInterest pointOfInterest = pointOfInterests.get(i);
                 if (pointOfInterest.getPosition().getFloor() == currentFloor) {
                     x = pointOfInterest.getPosition().getPositionX() - 1;
                     y = pointOfInterest.getPosition().getPositionY() - 1;
+                    names = new ArrayList<>();
+                    names.add(pointOfInterest.getName());
                     int currentCellHeight = cellHeight;
                     int currentCellWidth = cellWidth;
                     if (widthFixFrequency != 0 && x % widthFixFrequency == widthFixFrequency - 1) {
@@ -417,7 +420,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     if (heightFixFrequency != 0 && y % heightFixFrequency == heightFixFrequency - 1) {
                         currentCellHeight++;
                     }
-                    addGridItem(x, y, itemTypes, currentCellHeight, currentCellWidth);
+                    addGridItem(x, y, itemTypes, currentCellHeight, currentCellWidth, names);
                 }
             }
         }
@@ -575,8 +578,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         } else {
             itemName = poiName.getText().toString();
         }
-        itemXCoord = xCoord.getText().toString();
-        itemYCoord = yCoord.getText().toString();
+        itemXCoord = Integer.valueOf(xCoord.getText().toString()) + 1;
+        itemYCoord = Integer.valueOf(yCoord.getText().toString()) + 1;
 
         if (editBeacon) {
             try {
@@ -608,8 +611,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         } else {
             itemName = poiName.getText().toString();
         }
-        itemXCoord = xCoord.getText().toString();
-        itemYCoord = yCoord.getText().toString();
+        itemXCoord = Integer.valueOf(xCoord.getText().toString()) + 1;
+        itemYCoord = Integer.valueOf(yCoord.getText().toString()) + 1;
 
         if (editBeacon) {
             try {
@@ -641,8 +644,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         } else {
             itemName = poiName.getText().toString();
         }
-        itemXCoord = xCoord.getText().toString();
-        itemYCoord = yCoord.getText().toString();
+        itemXCoord = Integer.valueOf(xCoord.getText().toString()) + 1;
+        itemYCoord = Integer.valueOf(yCoord.getText().toString()) + 1;
         if (editBeacon) {
             try {
                 jsonObject.put(CONTENT_TYPE, "beacon");
@@ -880,4 +883,22 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     public Point middlePoint(Point p1, Point p2) {
         return new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
     }
+
+    private View.OnClickListener gridItemListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            AdminItemView admindata = (AdminItemView) v;
+            xCoord.setText(admindata.getxPos() + "");
+            yCoord.setText(admindata.getyPos() + "");
+            ArrayList<String> targetNames = admindata.getNames();
+            if (!targetNames.isEmpty()) {
+                if (targetNames.size() == 1) {
+                    poiName.setText(targetNames.get(0));
+                } else {
+                    for (int i = 0; i < targetNames.size(); i++) {
+                        poiName.setText(targetNames.get(i));
+                    }
+                }
+            }
+        }
+    };
 }
