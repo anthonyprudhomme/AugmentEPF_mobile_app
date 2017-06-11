@@ -73,8 +73,8 @@ public class GABeacon {
         //allBeacons.add(new GABeacon(UUID, 3, 44020, "BeaconName6", "White", 10, 31, 3, 2));
     }
 
-    public int xCoord;
-    public int yCoord;
+    private int xCoord;
+    private int yCoord;
     public Pair<Integer, Integer> mapIndexPath;
     private String name;
     private double accuracy = -1;
@@ -128,6 +128,14 @@ public class GABeacon {
 
     public int getMinor() {
         return minor;
+    }
+
+    public int getxCoord() {
+        return xCoord;
+    }
+
+    public int getyCoord() {
+        return yCoord;
     }
 
     public String getName() {

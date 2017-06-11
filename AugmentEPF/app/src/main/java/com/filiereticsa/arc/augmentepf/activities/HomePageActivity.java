@@ -349,6 +349,8 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     }
 
     public void onAdminClick(View view) {
+        Intent intent = new Intent(this, AdminActivity.class);
+        startActivity(intent);
     }
 
     public void onConnectClick(View view) {

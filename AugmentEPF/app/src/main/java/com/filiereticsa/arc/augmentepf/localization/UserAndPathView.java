@@ -63,7 +63,6 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.d(TAG, "onDraw: userPosition");
         if (userCoordinates == null && userPosition != null) {
             userCoordinates = getCoordinatesFromIndexPath(userPosition);
         }

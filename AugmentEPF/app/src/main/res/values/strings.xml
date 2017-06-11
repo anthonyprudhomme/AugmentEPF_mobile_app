@@ -210,7 +210,7 @@
     <string name="create">Create</string>
     <string name="confirm_password">Confirm password:</string>
     <string name="account_created">Account created</string>
-    <string name="fullscreen">FullScreen</string>
+    <string name="admin_activity_title">Administrative Tools</string>
     <string name="nearby_points_of_interest">Nearby points of interest</string>
     <string name="available_classrooms">Available classrooms</string>
     <string name="not_localized">You haven\'t been localized yet</string>
@@ -269,4 +269,32 @@
     <string name="go_to_next_class">Go to next class</string>
     <string name="no_next_class_found">Couldn\'t find your next class. Sorry...</string>
 
+    <!--____________________________________________________________________________________________
+                                        Admin Activity
+   _____________________________________________________________________________________________-->
+    <string name="admin_name_missing">Name required</string>
+    <string name="admin_target_missing">None selected</string>
+    <string name="confirm">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="admin_edit_beacons">Edit beacons</string>
+    <string name="admin_edit_poi">Edit points of interests</string>
+    <string name="admin_xcoord">X Coordinate:</string>
+    <string name="admin_ycoord">Y Coordinate:</string>
+    <string name="admin_name">Name:</string>
+    <string name="admin_target">Closest:</string>
+    <string name="admin_locate">Closest beacon</string>
+    <string name="admin_remove">Remove</string>
+    <string name="admin_save">Add</string>
+    <string name="admin_2nf_floor">2nd Floor</string>
+    <string name="admin_1st_floor">1st Floor</string>
+    <string name="admin_ground_floor">Ground Floor</string>
+    <string name="admin_lower_floor">Lower Floor</string>
+    <string name="admin_update">Update existing?</string>
+    <string name="admin_save_new">Save as new?</string>
+    <string name="admin_edit_rooms">Edit rooms</string>
+    <string name="admin_detector_failed">None detected</string>
+    <string name="admin_map_error">Map not available</string>
+    <string name="zoom">Zoom</string>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
 </resources>

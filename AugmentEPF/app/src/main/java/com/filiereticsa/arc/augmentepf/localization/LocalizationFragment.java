@@ -27,7 +27,6 @@ import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.interfaces.DestinationSelectedInterface;
 import com.filiereticsa.arc.augmentepf.interfaces.HomePageInterface;
 import com.filiereticsa.arc.augmentepf.localization.guidage.Guidance;
-import com.filiereticsa.arc.augmentepf.localization.guidage.TrajectorySegment;
 import com.filiereticsa.arc.augmentepf.models.Place;
 
 import java.util.ArrayList;
@@ -69,8 +68,9 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     private Bitmap mapBitmap;
     private Guidance guidance;
     private int index;
+    private boolean isInAdminMode = false;
 
-    private HashMap<Integer,Bitmap> mapDict = new HashMap<>();
+    private HashMap<Integer, Bitmap> mapDict = new HashMap<>();
 
     public boolean isGestureEnabled() {
         return gestureEnabled;
@@ -157,54 +157,61 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
 
     @Override
     public void userMovedToMap(final GABeaconMap map) {
-        if (isAdded()) {
-            currentMap = map;
-            Log.d(TAG, "user moved to map");
-            if (currentMap != null) {
-                if(!mapDict.containsKey(currentMap.getId())){
-                    mapBitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                            currentMap.getImageResId());
-                }else{
-                    mapBitmap = mapDict.get(currentMap.getId());
-                }
-                if (mapBitmap != null) {
-                    int height = mapBitmap.getHeight();
-                    int width = mapBitmap.getWidth();
-                    double pictureRatio = ((float) height) / ((float) width);
-                    WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-                    Display display = wm.getDefaultDisplay();
-                    Point size = new Point();
-                    display.getSize(size);
-                    screenWidth = size.x;
-                    screenHeight = size.y;
-                    final FrameLayout.LayoutParams imageParams = new FrameLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.WRAP_CONTENT,
-                            RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    float imageHeight;
-                    float imageWidth;
-                    float heightRatio = height / screenHeight;
-                    float widthRatio = width / screenWidth;
-                    if (heightRatio > widthRatio) {
-                        imageHeight = screenHeight;
-                        imageWidth = (float) (screenHeight / pictureRatio);
+        if (!isInAdminMode) {
+            if (isAdded()) {
+                currentMap = map;
+                Log.d(TAG, "user moved to map");
+                if (currentMap != null) {
+                    if (!mapDict.containsKey(currentMap.getId())) {
+                        final BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inSampleSize = 2;
+                        if (mapBitmap != null) {
+                            mapBitmap.recycle();
+                        }
+                        mapBitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                                currentMap.getImageResId(), options);
                     } else {
-                        imageHeight = (float) ((screenWidth * pictureRatio));
-                        imageWidth = (screenWidth);
+                        mapBitmap = mapDict.get(currentMap.getId());
                     }
-                    imageParams.height = (int) imageHeight;
-                    imageParams.width = (int) imageWidth;
-                    currentMapHeight = (int) imageHeight;
-                    currentMapWidth = (int) imageWidth;
-                    gridDimensions = currentMap.getMapDimensions();
-                    if (isAdded()) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                currentMapImageView.setLayoutParams(imageParams);
-                                currentMapImageView.setImageBitmap(mapBitmap);
-                                gestureEnabled = true;
-                            }
-                        });
+                    if (mapBitmap != null) {
+                        int height = mapBitmap.getHeight();
+                        int width = mapBitmap.getWidth();
+                        double pictureRatio = ((float) height) / ((float) width);
+                        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                        Display display = wm.getDefaultDisplay();
+                        Point size = new Point();
+                        display.getSize(size);
+                        screenWidth = size.x;
+                        screenHeight = size.y;
+                        final FrameLayout.LayoutParams imageParams = new FrameLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        float imageHeight;
+                        float imageWidth;
+                        float heightRatio = height / screenHeight;
+                        float widthRatio = width / screenWidth;
+                        if (heightRatio > widthRatio) {
+                            imageHeight = screenHeight;
+                            imageWidth = (float) (screenHeight / pictureRatio);
+                        } else {
+                            imageHeight = (float) ((screenWidth * pictureRatio));
+                            imageWidth = (screenWidth);
+                        }
+                        imageParams.height = (int) imageHeight;
+                        imageParams.width = (int) imageWidth;
+                        currentMapHeight = (int) imageHeight;
+                        currentMapWidth = (int) imageWidth;
+                        gridDimensions = currentMap.getMapDimensions();
+                        if (isAdded()) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    currentMapImageView.setLayoutParams(imageParams);
+                                    currentMapImageView.setImageBitmap(mapBitmap);
+                                    gestureEnabled = true;
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -213,111 +220,115 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
 
     @Override
     public void userMovedToIndexPath(Pair<Integer, Integer> position, double heading, double magneticHeading, String direction) {
-        oldUserPosition = position;
-        if ((userAndPathView == null || userAndPathView.getWidth() == 0 || userAndPathView.getHeight() == 0)
-                && currentMapHeight != 0 && currentMapWidth != 0) {
-            if (isAdded()) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        userAndPathView = new UserAndPathView(getContext(), currentMapHeight, currentMapWidth);
-                        LinearLayout.LayoutParams userAndPathLayoutParams = new LinearLayout.LayoutParams(
-                                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        userAndPathView.requestLayout();
-                        userAndPathLayoutParams.width = currentMapWidth;
-                        userAndPathLayoutParams.height = currentMapHeight;
-                        userAndPathView.setLayoutParams(userAndPathLayoutParams);
-                        if (userAndPathView.getParent() != null) {
-                            ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
-                        }
-                        if (userAndPathView.getParent() != null) {
-                            ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
-                        }
-                        mapContainer.addView(userAndPathView);
-                        userAndPathView.bringToFront();
-                        userAndPathView.setScaleType(ImageView.ScaleType.FIT_XY);
-
-                        userOrientationView = new UserOrientationView(getContext());
-                        LinearLayout.LayoutParams userOrientationLayoutParams = new LinearLayout.LayoutParams(
-                                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        userOrientationView.requestLayout();
-                        userOrientationLayoutParams.width = currentMapWidth;
-                        userOrientationLayoutParams.height = currentMapHeight;
-                        userOrientationView.setLayoutParams(userOrientationLayoutParams);
-                        if (userOrientationView.getParent() != null) {
-                            ((ViewGroup) userOrientationView.getParent()).removeView(userOrientationView);
-                        }
-                        if (userOrientationView.getParent() != null) {
-                            ((ViewGroup) userOrientationView.getParent()).removeView(userOrientationView);
-                        }
-                        mapContainer.addView(userOrientationView);
-                        userOrientationView.bringToFront();
-                        userOrientationView.setScaleType(ImageView.ScaleType.FIT_XY);
-                    }
-                });
-            }
-        }
-        if (currentMapWidth != 0 && currentMapHeight != 0) {
-            if (userAndPathView != null) {
-                userAndPathView.dimensionChanged(gridDimensions, currentMapHeight, currentMapWidth);
-                final PositionAnimation userPositionAnimation = new PositionAnimation(userAndPathView, position);
-                userPositionAnimation.setDuration(500);
+        if (!isInAdminMode) {
+            oldUserPosition = position;
+            if ((userAndPathView == null || userAndPathView.getWidth() == 0 || userAndPathView.getHeight() == 0)
+                    && currentMapHeight != 0 && currentMapWidth != 0) {
                 if (isAdded()) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            userAndPathView.startAnimation(userPositionAnimation);
+
+                            userAndPathView = new UserAndPathView(getContext(), currentMapHeight, currentMapWidth);
+                            LinearLayout.LayoutParams userAndPathLayoutParams = new LinearLayout.LayoutParams(
+                                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            userAndPathView.requestLayout();
+                            userAndPathLayoutParams.width = currentMapWidth;
+                            userAndPathLayoutParams.height = currentMapHeight;
+                            userAndPathView.setLayoutParams(userAndPathLayoutParams);
+                            if (userAndPathView.getParent() != null) {
+                                ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
+                            }
+                            if (userAndPathView.getParent() != null) {
+                                ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
+                            }
+                            mapContainer.addView(userAndPathView);
+                            userAndPathView.bringToFront();
+                            userAndPathView.setScaleType(ImageView.ScaleType.FIT_XY);
+
+                            userOrientationView = new UserOrientationView(getContext());
+                            LinearLayout.LayoutParams userOrientationLayoutParams = new LinearLayout.LayoutParams(
+                                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            userOrientationView.requestLayout();
+                            userOrientationLayoutParams.width = currentMapWidth;
+                            userOrientationLayoutParams.height = currentMapHeight;
+                            userOrientationView.setLayoutParams(userOrientationLayoutParams);
+                            if (userOrientationView.getParent() != null) {
+                                ((ViewGroup) userOrientationView.getParent()).removeView(userOrientationView);
+                            }
+                            if (userOrientationView.getParent() != null) {
+                                ((ViewGroup) userOrientationView.getParent()).removeView(userOrientationView);
+                            }
+                            mapContainer.addView(userOrientationView);
+                            userOrientationView.bringToFront();
+                            userOrientationView.setScaleType(ImageView.ScaleType.FIT_XY);
                         }
                     });
                 }
-                //debug
-                userAndPathView.setHeading(heading);
-                userAndPathView.setMagneticHeading(magneticHeading);
-                userAndPathView.setDirection(direction);
-
-                if(userOrientationView!= null){
-                    userOrientationView.invalidate();
-                    final OrientationAnimation userOrientationAnimation = new OrientationAnimation(userOrientationView, userAndPathView.getCoordinatesFromIndexPath(position));
-                    userOrientationAnimation.setDuration(500);
+            }
+            if (currentMapWidth != 0 && currentMapHeight != 0) {
+                if (userAndPathView != null) {
+                    userAndPathView.dimensionChanged(gridDimensions, currentMapHeight, currentMapWidth);
+                    final PositionAnimation userPositionAnimation = new PositionAnimation(userAndPathView, position);
+                    userPositionAnimation.setDuration(500);
                     if (isAdded()) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                userOrientationView.startAnimation(userOrientationAnimation);
+                                userAndPathView.startAnimation(userPositionAnimation);
                             }
                         });
                     }
+                    //debug
+                    userAndPathView.setHeading(heading);
+                    userAndPathView.setMagneticHeading(magneticHeading);
+                    userAndPathView.setDirection(direction);
+
+                    if (userOrientationView != null) {
+                        final OrientationAnimation userOrientationAnimation = new OrientationAnimation(userOrientationView, userAndPathView.getCoordinatesFromIndexPath(position));
+                        userOrientationAnimation.setDuration(500);
+                        if (isAdded()) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    userOrientationView.startAnimation(userOrientationAnimation);
+                                }
+                            });
+                        }
+                    }
                 }
             }
-        }
 
-        if (!isUserMovingTheMap) {
-            if (oldPosition == null) {
-                oldPosition = new Pair<>(0, 0);
-            }
-            Pair<Integer, Integer> positionCoordinates = getCoordinatesFromIndexPath(gridDimensions, position);
-            final MapAnimation mapAnimation = new MapAnimation(mapContainer, positionCoordinates, oldPosition, mScale, screenWidth, screenHeight);
-            mScale = DEFAULT_ZOOM;
-            oldPosition = positionCoordinates;
-            mapAnimation.setDuration(500);
-            if (isAdded()) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mapContainer.startAnimation(mapAnimation);
-                    }
-                });
+            if (!isUserMovingTheMap) {
+                if (oldPosition == null) {
+                    oldPosition = new Pair<>(0, 0);
+                }
+                Pair<Integer, Integer> positionCoordinates = getCoordinatesFromIndexPath(gridDimensions, position);
+                final MapAnimation mapAnimation = new MapAnimation(mapContainer, positionCoordinates, oldPosition, mScale, screenWidth, screenHeight);
+                mScale = DEFAULT_ZOOM;
+                oldPosition = positionCoordinates;
+                mapAnimation.setDuration(500);
+                if (isAdded()) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mapContainer.startAnimation(mapAnimation);
+                        }
+                    });
+                }
             }
         }
     }
 
     public Pair<Integer, Integer> getCoordinatesFromIndexPath(Pair<Integer, Integer> gridDimension, Pair<Integer, Integer> position) {
-        int nbRow = gridDimension.first;
-        int nbCol = gridDimension.second;
-        return new Pair<>((int) ((position.second) * (currentMapHeight / nbRow)), (int) ((position.first) * (currentMapWidth / nbCol)));
+        if (gridDimension != null) {
+            int nbRow = gridDimension.first;
+            int nbCol = gridDimension.second;
+            return new Pair<>((int) ((position.second) * (currentMapHeight / nbRow)), (int) ((position.first) * (currentMapWidth / nbCol)));
+        }
+        return null;
     }
 
     @Override
@@ -335,11 +346,16 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
 
     @Override
     public void onPathChanged(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path, FloorAccess.FloorAccessType floorAccessType) {
-        if (userAndPathView != null) {
-            Log.d(TAG, "onPathChanged: new path");
-            userAndPathView.setCurrentPath(path, floorAccessType);
-            userAndPathView.invalidate();
-        }
+        if (!isInAdminMode) {
+            if (userAndPathView != null) {
+                userAndPathView.setCurrentPath(path, floorAccessType);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        userAndPathView.invalidate();
+                    }
+                });
+            }
 
 //        if (guidance == null && path != null) {
 //            guidance = new Guidance(path.first);
@@ -358,13 +374,16 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
 //                Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
 //            }
 //        }
+        }
     }
 
     @Override
     public void onOrientationChange(double currentHeading) {
-        if (userOrientationView!= null){
-            userOrientationView.setHeading(currentHeading);
-            userOrientationView.invalidate();
+        if (isInAdminMode) {
+            if (userOrientationView != null) {
+                userOrientationView.setHeading(currentHeading);
+                userOrientationView.invalidate();
+            }
         }
     }
 
@@ -400,7 +419,9 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
 
     @Override
     public void onDestinationSelected(Place place) {
-        mapContainer.invalidate();
+        if (!isInAdminMode) {
+            mapContainer.invalidate();
+        }
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -429,6 +450,10 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
 
             return true;
         }
+    }
+
+    public void setInAdminMode(boolean inAdminMode) {
+        isInAdminMode = inAdminMode;
     }
 }
 

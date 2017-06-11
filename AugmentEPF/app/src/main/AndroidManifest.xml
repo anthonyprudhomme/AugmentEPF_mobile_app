@@ -31,9 +31,10 @@
         <activity android:name=".activities.PathConsultationActivity" />
         <activity android:name=".activities.ConnectionActivity" />
         <activity android:name=".activities.SettingsActivity" />
-        <activity android:name=".activities.AdminActivity" />
+        <activity android:name=".activities.AdminActivity"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".activities.CreateAccountActivity" />
-        <activity android:name=".activities.CalendarActivity"></activity>
+        <activity android:name=".activities.CalendarActivity" />
     </application>
 
 </manifest>
