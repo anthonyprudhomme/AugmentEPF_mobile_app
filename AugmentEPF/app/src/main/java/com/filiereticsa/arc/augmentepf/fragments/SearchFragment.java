@@ -4,6 +4,7 @@ package com.filiereticsa.arc.augmentepf.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +12,17 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 
+import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
 import com.filiereticsa.arc.augmentepf.adapters.SearchListAdapter;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
+import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.models.ClassRoom;
 import com.filiereticsa.arc.augmentepf.models.Place;
 import com.filiereticsa.arc.augmentepf.models.PointOfInterest;
+import com.filiereticsa.arc.augmentepf.models.Position;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +44,7 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
     private SearchListAdapter classRoomAdapter;
     private SearchListAdapter pointOfInterestAdapter;
     public static HTTPRequestInterface httpRequestInterface;
+    private AutoCompleteTextView searchInput;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,7 +59,6 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
         setAutoCompleteSearch(view);
         return view;
     }
-
 
 
     private void initPOILoading() {
@@ -104,15 +108,17 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
 
     public void setAutoCompleteSearch(View view) {
         // Get the string array of all class names
-        String[] allClassrooms = ClassRoom.getClassroomsAsStrings();
+        String[] allPlaces = AppUtils.concateneStringsArrays(ClassRoom.getClassroomsAsStrings(),
+                PointOfInterest.getPoisAsStrings());
+
 
         // Get the AutoCompleteTextView from the search fragment
-        AutoCompleteTextView searchInput = (AutoCompleteTextView) view.findViewById(R.id.search_input);
+        searchInput = (AutoCompleteTextView) view.findViewById(R.id.search_input);
 
         // Create an autocompletion list with string array entryUser
         // "simple_dropdown_item_1line" is a display style
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_dropdown_item_1line, allClassrooms);
+                android.R.layout.simple_dropdown_item_1line, allPlaces);
 
         // Put the autocompletion list in our object of autocompletion
         searchInput.setAdapter(adapter);
@@ -136,13 +142,17 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
     public void onRequestDone(String result, int requestId) {
         switch (requestId) {
             case HTTPRequestManager.AVAILABLE_CLASSROOMS:
-                ClassRoom.onAvailableRequestDone(result);
+                if (result.equals(ERROR)) {
+
+                }else{
+                    ClassRoom.onAvailableRequestDone(result);
+                }
                 break;
 
             case HTTPRequestManager.CLASSROOMS:
-                if(result.equals(ERROR)){
+                if (result.equals(ERROR)) {
                     ClassRoom.loadClassRoomsFromFile();
-                }else {
+                } else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
                         String success = jsonObject.getString(STATE);
@@ -158,9 +168,9 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
                 break;
 
             case HTTPRequestManager.POI:
-                if(result.equals(ERROR)){
+                if (result.equals(ERROR)) {
                     PointOfInterest.loadPOIFromFile();
-                }else {
+                } else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
                         String success = jsonObject.getString(STATE);
@@ -179,5 +189,26 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
                 break;
         }
 
+    }
+
+    public void onGoClick() {
+        String searchedValue = searchInput.getText().toString();
+        ClassRoom searchedClassroom = ClassRoom.getClassRoomCalled(searchedValue);
+        PointOfInterest searchedPoi = PointOfInterest.getPoiCalled(searchedValue);
+        if (searchedClassroom != null) {
+            Position position = searchedClassroom.getPosition();
+            GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(
+                            position.getPositionX(),
+                            position.getPositionY()),
+                    position.getFloor());
+        } else {
+            if (searchedPoi != null) {
+                Position position = searchedPoi.getPosition();
+                GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(
+                                position.getPositionX(),
+                                position.getPositionY()),
+                        position.getFloor());
+            }
+        }
     }
 }

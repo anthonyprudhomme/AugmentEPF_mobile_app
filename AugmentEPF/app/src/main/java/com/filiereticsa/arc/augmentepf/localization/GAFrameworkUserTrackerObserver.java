@@ -21,4 +21,5 @@ public interface GAFrameworkUserTrackerObserver {
 
     void onPathChanged(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path, FloorAccess.FloorAccessType floorAccessType);
 
+    void onOrientationChange(double currentHeading);
 }

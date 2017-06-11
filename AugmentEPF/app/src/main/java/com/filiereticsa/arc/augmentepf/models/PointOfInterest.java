@@ -85,10 +85,11 @@ public class PointOfInterest extends Place {
 
             if (currentPosition != null) {
                 GABeaconMapHelper mapHelper = GAFrameworkUserTracker.sharedTracker().getMapHelper();
+                ArrayList<Place> poisToRemove = new ArrayList<>();
                 for (int i = 0; i < surroundingPoi.size(); i++) {
                     Place currentPoi = surroundingPoi.get(i);
                     if (currentPoi.getPosition().getFloor() == mapHelper.getMapFloor()) {
-                        surroundingPoi.remove(currentPoi);
+                        poisToRemove.add(currentPoi);
                         poiWithDistances.add(
                                 new Pair<>(
                                         currentPoi,
@@ -99,6 +100,7 @@ public class PointOfInterest extends Place {
                                         ).second));
                     }
                 }
+                surroundingPoi.removeAll(poisToRemove);
                 Collections.sort(poiWithDistances, new Comparator<Pair<Place, Integer>>() {
                     public int compare(Pair<Place, Integer> o1, Pair<Place, Integer> o2) {
                         if (o1.second < o2.second) {
@@ -235,5 +237,23 @@ public class PointOfInterest extends Place {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public static PointOfInterest getPoiCalled(String poiName) {
+        for (int i = 0; i < pointOfInterests.size(); i++) {
+            PointOfInterest currentPoi = pointOfInterests.get(i);
+            if (currentPoi.getName().equals(poiName)){
+                return currentPoi;
+            }
+        }
+        return null;
+    }
+
+    public static String[] getPoisAsStrings() {
+        String[] classroomsAsStrings = new String[pointOfInterests.size()];
+        for (int i = 0; i < pointOfInterests.size(); i++) {
+            classroomsAsStrings[i] = pointOfInterests.get(i).getName();
+        }
+        return classroomsAsStrings;
     }
 }

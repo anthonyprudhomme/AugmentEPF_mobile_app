@@ -31,6 +31,7 @@ import com.filiereticsa.arc.augmentepf.localization.guidage.TrajectorySegment;
 import com.filiereticsa.arc.augmentepf.models.Place;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by anthonyprudhomme on 20/10/16.
@@ -47,6 +48,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     private ImageView currentMapImageView;
     private FloatingActionButton floatingActionButton;
     private UserAndPathView userAndPathView = null;
+    private UserOrientationView userOrientationView = null;
     private GABeaconMap currentMap;
     private int currentMapHeight = 0;
     private int currentMapWidth = 0;
@@ -67,6 +69,8 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     private Bitmap mapBitmap;
     private Guidance guidance;
     private int index;
+
+    private HashMap<Integer,Bitmap> mapDict = new HashMap<>();
 
     public boolean isGestureEnabled() {
         return gestureEnabled;
@@ -156,15 +160,13 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         if (isAdded()) {
             currentMap = map;
             Log.d(TAG, "user moved to map");
-            // TODO Uncomment this and give the real path to the map
-            //BitmapManager bitmapManager = new BitmapManager();
-            //final Bitmap mapBitmap = bitmapManager.loadBitmapFromFile("PATH_TO_MAP");
-            if (mapBitmap != null) {
-                mapBitmap.recycle();
-            }
             if (currentMap != null) {
-                mapBitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                        currentMap.getImageResId());
+                if(!mapDict.containsKey(currentMap.getId())){
+                    mapBitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                            currentMap.getImageResId());
+                }else{
+                    mapBitmap = mapDict.get(currentMap.getId());
+                }
                 if (mapBitmap != null) {
                     int height = mapBitmap.getHeight();
                     int width = mapBitmap.getWidth();
@@ -218,14 +220,15 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        userAndPathView = new UserAndPathView(getActivity(), currentMapHeight, currentMapWidth);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+
+                        userAndPathView = new UserAndPathView(getContext(), currentMapHeight, currentMapWidth);
+                        LinearLayout.LayoutParams userAndPathLayoutParams = new LinearLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                                 RelativeLayout.LayoutParams.WRAP_CONTENT);
                         userAndPathView.requestLayout();
-                        layoutParams.width = currentMapWidth;
-                        layoutParams.height = currentMapHeight;
-                        userAndPathView.setLayoutParams(layoutParams);
+                        userAndPathLayoutParams.width = currentMapWidth;
+                        userAndPathLayoutParams.height = currentMapHeight;
+                        userAndPathView.setLayoutParams(userAndPathLayoutParams);
                         if (userAndPathView.getParent() != null) {
                             ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
                         }
@@ -235,6 +238,24 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                         mapContainer.addView(userAndPathView);
                         userAndPathView.bringToFront();
                         userAndPathView.setScaleType(ImageView.ScaleType.FIT_XY);
+
+                        userOrientationView = new UserOrientationView(getContext());
+                        LinearLayout.LayoutParams userOrientationLayoutParams = new LinearLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        userOrientationView.requestLayout();
+                        userOrientationLayoutParams.width = currentMapWidth;
+                        userOrientationLayoutParams.height = currentMapHeight;
+                        userOrientationView.setLayoutParams(userOrientationLayoutParams);
+                        if (userOrientationView.getParent() != null) {
+                            ((ViewGroup) userOrientationView.getParent()).removeView(userOrientationView);
+                        }
+                        if (userOrientationView.getParent() != null) {
+                            ((ViewGroup) userOrientationView.getParent()).removeView(userOrientationView);
+                        }
+                        mapContainer.addView(userOrientationView);
+                        userOrientationView.bringToFront();
+                        userOrientationView.setScaleType(ImageView.ScaleType.FIT_XY);
                     }
                 });
             }
@@ -242,13 +263,13 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         if (currentMapWidth != 0 && currentMapHeight != 0) {
             if (userAndPathView != null) {
                 userAndPathView.dimensionChanged(gridDimensions, currentMapHeight, currentMapWidth);
-                final PositionAnimation animation = new PositionAnimation(userAndPathView, position);
-                animation.setDuration(500);
+                final PositionAnimation userPositionAnimation = new PositionAnimation(userAndPathView, position);
+                userPositionAnimation.setDuration(500);
                 if (isAdded()) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            userAndPathView.startAnimation(animation);
+                            userAndPathView.startAnimation(userPositionAnimation);
                         }
                     });
                 }
@@ -256,6 +277,20 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                 userAndPathView.setHeading(heading);
                 userAndPathView.setMagneticHeading(magneticHeading);
                 userAndPathView.setDirection(direction);
+
+                if(userOrientationView!= null){
+                    userOrientationView.invalidate();
+                    final OrientationAnimation userOrientationAnimation = new OrientationAnimation(userOrientationView, userAndPathView.getCoordinatesFromIndexPath(position));
+                    userOrientationAnimation.setDuration(500);
+                    if (isAdded()) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                userOrientationView.startAnimation(userOrientationAnimation);
+                            }
+                        });
+                    }
+                }
             }
         }
 
@@ -301,25 +336,35 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     @Override
     public void onPathChanged(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path, FloorAccess.FloorAccessType floorAccessType) {
         if (userAndPathView != null) {
+            Log.d(TAG, "onPathChanged: new path");
             userAndPathView.setCurrentPath(path, floorAccessType);
+            userAndPathView.invalidate();
         }
 
-        if (guidance == null && path != null) {
-            guidance = new Guidance(path.first);
-        }
+//        if (guidance == null && path != null) {
+//            guidance = new Guidance(path.first);
+//        }
+//
+//        if (guidance != null) {
+//            ArrayList<TrajectorySegment> trajectory = guidance.getTrajectory();
+//            // TODO do something about that
+//            index = guidance.getCurrentSegment(oldUserPosition, index);
+//            if (index == -1) {
+//                index = 0;
+//                if (path != null) {
+//                    guidance.setPath(path.first);
+//                }
+//            } else {
+//                Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
+//            }
+//        }
+    }
 
-        if (guidance != null) {
-            ArrayList<TrajectorySegment> trajectory = guidance.getTrajectory();
-            // TODO do something about that
-            index = guidance.getCurrentSegment(oldUserPosition, index);
-            if (index == -1) {
-                index = 0;
-                if (path != null) {
-                    guidance.setPath(path.first);
-                }
-            } else {
-                Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
-            }
+    @Override
+    public void onOrientationChange(double currentHeading) {
+        if (userOrientationView!= null){
+            userOrientationView.setHeading(currentHeading);
+            userOrientationView.invalidate();
         }
     }
 

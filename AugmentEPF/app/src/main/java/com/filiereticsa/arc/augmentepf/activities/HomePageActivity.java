@@ -19,9 +19,11 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
+import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.fragments.OptionsFragment;
@@ -34,7 +36,10 @@ import com.filiereticsa.arc.augmentepf.localization.GABeaconMap;
 import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
 import com.filiereticsa.arc.augmentepf.localization.LocalizationFragment;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
+import com.filiereticsa.arc.augmentepf.models.Class;
+import com.filiereticsa.arc.augmentepf.models.ICalTimeTable;
 import com.filiereticsa.arc.augmentepf.models.Place;
+import com.filiereticsa.arc.augmentepf.models.Position;
 
 import org.altbeacon.beacon.BeaconManager;
 import org.json.JSONArray;
@@ -49,6 +54,10 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     public static final String ERROR = "Error";
     public static final String STATE = "state";
     public static final String TRUE = "true";
+    public static final String GET_NEXT_COURSE_PHP = "getNextCourse.php";
+    public static final String ID = "id";
+    public static final String TOKEN = "token";
+    public static final String GET_ROOMS_PHP = "getRooms.php";
     public static HTTPRequestInterface httpRequestInterface;
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
     private SlidingDrawer leftSlidingDrawer;
@@ -64,6 +73,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
 
     public static boolean isUserConnected = false;
     private View rootView;
+    private Class nextClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,6 +210,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
             @Override
             public void onDrawerClosed() {
                 canMapBeMoved = true;
+                Log.d(TAG, "onDrawerClosed: ");
                 rightSlidingDrawer.setVisibility(View.VISIBLE);
                 drawerHandle.setBackgroundResource(R.drawable.nav_left_bar_open);
                 floatingActionButton.setVisibility(View.VISIBLE);
@@ -221,6 +232,8 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                 leftSlidingDrawer.setVisibility(View.GONE);
                 floatingActionButton.setVisibility(View.GONE);
                 searchFragment.onDrawerOpened();
+                askForNextCourse();
+                askForAvailableRooms();
             }
         });
 
@@ -255,6 +268,21 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                 floatingActionButton.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    private void askForAvailableRooms() {
+        HTTPRequestManager.doPostRequest(GET_ROOMS_PHP, "", this, HTTPRequestManager.AVAILABLE_CLASSROOMS);
+    }
+
+    private void askForNextCourse() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(ID, ConnectionActivity.idUser);
+            jsonObject.put(TOKEN, ConnectionActivity.token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        HTTPRequestManager.doPostRequest(GET_NEXT_COURSE_PHP, jsonObject.toString(), this, HTTPRequestManager.NEXT_COURSE);
     }
 
     public void setUpEditText() {
@@ -316,6 +344,8 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     }
 
     public void onGoClick(View view) {
+        searchFragment.onGoClick();
+        rightSlidingDrawer.close();
     }
 
     public void onAdminClick(View view) {
@@ -430,6 +460,37 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                 }
 
                 break;
+
+            case HTTPRequestManager.NEXT_COURSE:
+                Log.d(TAG, "onRequestDone: next course");
+                if (result.equals("Error")) {
+                    // TODO remove this (this is only to test)
+                    changeButtonColor();
+                }
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    String state = jsonObject.getString(STATE);
+                    if (state.equals(TRUE)) {
+                        nextClass = new Class(jsonObject);
+                        changeButtonColor();
+                    } else {
+                        nextClass = ICalTimeTable.iCalInstance.getNextCourse();
+                        if (nextClass != null) {
+                            changeButtonColor();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+        }
+    }
+
+    private void changeButtonColor() {
+        Button nextClassButton = (Button) findViewById(R.id.next_class_button);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            nextClassButton.setBackground(getResources().getDrawable(R.drawable.red_button, null));
+        } else {
+            nextClassButton.setBackground(getResources().getDrawable(R.drawable.red_button));
         }
     }
 
@@ -447,6 +508,20 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         HTTPRequestManager.checkEPFWiFi(httpRequestInterface, HTTPRequestManager.WIFI_CHECK);
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public void onNextClassClicked(View view) {
+        if (nextClass != null) {
+            Position nextClassPosition = nextClass.getClassRoom().getPosition();
+            Pair<Integer, Integer> arrivalPoint = new Pair<>(
+                    nextClassPosition.getPositionX(),
+                    nextClassPosition.getPositionY());
+            int floor = nextClassPosition.getFloor();
+            GAFrameworkUserTracker.sharedTracker().setTarget(arrivalPoint, floor);
+        } else {
+            Toast.makeText(this, R.string.no_next_class_found, Toast.LENGTH_SHORT).show();
+            askForNextCourse();
+        }
     }
 }
 

@@ -6,12 +6,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 
 import com.filiereticsa.arc.augmentepf.R;
@@ -35,7 +39,7 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
     private int imageWidth;
     private Pair<Integer, Integer> userCoordinates = null;
     private Pair<Integer, Integer> pathCoordinates = null;
-    private double debugHeading = 0;
+    private double heading = 0;
 
     private ArrayList<Pair<Integer, Integer>> currentPath;
     private double magneticHeading = 0;
@@ -44,6 +48,7 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
 
     private Bitmap elevatorBitmap;
     private Bitmap stairBitmap;
+    public static int radius;
 
     public UserAndPathView(Context context, int height, int width) {
         super(context);
@@ -58,17 +63,19 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        Log.d(TAG, "onDraw: userPosition");
         if (userCoordinates == null && userPosition != null) {
             userCoordinates = getCoordinatesFromIndexPath(userPosition);
         }
         if (userCoordinates != null) {
-            int radius = Math.min(imageWidth / gridDimension.first, imageHeight / gridDimension.second) * 2;
+            radius = Math.min(imageWidth / gridDimension.first, imageHeight / gridDimension.second) * 2;
             // Draw the path first for the user position to be above the path
             if (currentPath != null) {
                 drawPath(canvas, radius);
             }
             // Draw the user position above the path
             drawUserPosition(canvas, radius);
+            //drawUserOrientation(canvas, radius, heading);
             // Draw the debug text that shows info that helps debugging
             //drawDebugText(canvas);
         }
@@ -93,10 +100,10 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
                     canvas.drawCircle(pathCoordinates.second, pathCoordinates.first, (int) (radius / 1.5), paint);
                 } else {
                     if (currentFloorAccesType == FloorAccess.FloorAccessType.ELEVATOR) {
-                        drawIcon(paint,R.drawable.elevator_icon,pathCoordinates,radius,canvas);
+                        drawIcon(paint, R.drawable.elevator_icon, pathCoordinates, radius, canvas);
                     } else {
                         if (currentFloorAccesType == FloorAccess.FloorAccessType.STAIRS) {
-                            drawIcon(paint,R.drawable.stair_icon,pathCoordinates,radius,canvas);
+                            drawIcon(paint, R.drawable.stair_icon, pathCoordinates, radius, canvas);
                         }
                     }
                 }
@@ -106,18 +113,18 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
         canvas.drawPath(path, paint);
     }
 
-    private void drawIcon(Paint paint, int imageResId, Pair<Integer, Integer> pathCoordinates, int radius,Canvas canvas) {
+    private void drawIcon(Paint paint, int imageResId, Pair<Integer, Integer> pathCoordinates, int radius, Canvas canvas) {
         Bitmap iconBitmap = null;
-        switch (imageResId){
+        switch (imageResId) {
             case R.drawable.stair_icon:
-                if (stairBitmap == null){
+                if (stairBitmap == null) {
                     stairBitmap = BitmapFactory.decodeResource(getResources(), imageResId);
                 }
                 iconBitmap = stairBitmap;
                 break;
 
             case R.drawable.elevator_icon:
-                if (elevatorBitmap == null){
+                if (elevatorBitmap == null) {
                     elevatorBitmap = BitmapFactory.decodeResource(getResources(), imageResId);
                 }
                 iconBitmap = elevatorBitmap;
@@ -163,7 +170,7 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(50);
         canvas.drawText(/*"x: " + userPosition.first + " y: " + userPosition.second + */
-                " ang: " + (int) debugHeading + " mag: " + (int) magneticHeading + " " + direction, 50, 50, paint);
+                " ang: " + (int) heading + " mag: " + (int) magneticHeading + " " + direction, 50, 50, paint);
     }
 
 
@@ -196,7 +203,7 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
     }
 
     public void setHeading(double heading) {
-        this.debugHeading = heading;
+        this.heading = heading;
     }
 
     public void setCurrentPath(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path, FloorAccess.FloorAccessType floorAccessType) {

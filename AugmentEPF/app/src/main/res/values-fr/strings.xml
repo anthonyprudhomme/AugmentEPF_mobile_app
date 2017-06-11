@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AugmentEPF</string>
-    <string name="hello_blank_fragment" />
+    <string name="hello_blank_fragment" >Bonjour</string>
     <string name="app_need_location">L\'application a besoin d\'accéder à votre localisation</string>
     <string name="app_need_location_message">Donnez accès à la localisation pour que l\'application puisse détecter les beacons en arrière plan</string>
     <string name="title_activity_main">MainActivity</string>
@@ -196,4 +196,22 @@
     <string name="success_epf_wifi">Connecté au Wi-Fi de l\'EPF</string>
     <string name="current">Actuel</string>
     <string name="failed_connect_calendar">Échec de chargement du calendrier. Vérifiez que vous êtes connecté au Wi-Fi de l\'EPF.</string>
+    <string name="enter_ical">Saisissez votre lien iCal</string>
+    <string name="friday">Vendredi</string>
+    <string name="guidanceFor">\" pendant \"</string>
+    <string name="guidanceMeters">" mètres"</string>
+    <string name="guidanceProblem">Problème avec la direction</string>
+    <string name="guidanceStraightAhead">Tout droit</string>
+    <string name="guidanceTurnLeft">Tournez à gauche</string>
+    <string name="guidanceTurnRight">Tounez à droite</string>
+    <string name="ical">iCal</string>
+    <string name="monday">Lundi</string>
+    <string name="next"><![CDATA[>>]]></string>
+    <string name="previous"><![CDATA[<<]]></string>
+    <string name="saturday">Samedi</string>
+    <string name="sunday">Dimanche</string>
+    <string name="thurday">Jeudi</string>
+    <string name="tuesday">Mardi</string>
+    <string name="wednesday">Mercredi</string>
+    <string name="to">au</string>
 </resources>

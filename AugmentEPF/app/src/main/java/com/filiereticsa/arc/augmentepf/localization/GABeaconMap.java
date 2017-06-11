@@ -48,7 +48,7 @@ public class GABeaconMap {
     private ArrayList<FloorAccess> floorAccesses;
 
     private static final String MAP_JSON = "maps.json";
-    private static final String URL = "getMaps.php";
+    private static final String URL = "getMap.php";
     private static final String MAP = "map";
     private static final String HEADING = "heading";
     private static final String ID = "id";
@@ -259,24 +259,6 @@ public class GABeaconMap {
         this.mapItems = mapItems;
         this.floorAccesses = floorAccesses;
     }
-
-//    public GABeaconMap(int id) {
-//        if (maps == null) {
-//            maps = new HashMap<>();
-//        }
-//        this.id = id;
-//        int j = 0;
-//        switch (id) {
-//            case 2:
-//
-//                break;
-//
-//            case 1:
-//
-//                break;
-//        }
-//        maps.put(this.id, this);
-//    }
 
     // JSON from server
     public GABeaconMap(JSONObject jsonObject) {
@@ -496,9 +478,7 @@ public class GABeaconMap {
     }
 
     public static void askForMaps() {
-        JSONObject jsonObject = new JSONObject();
-        // TODO rename this according to Guilhem's name
-        HTTPRequestManager.doPostRequest(URL, jsonObject.toString(),
+        HTTPRequestManager.doPostRequest(URL, "",
                 HomePageActivity.httpRequestInterface, HTTPRequestManager.MAPS);
     }
 

@@ -18,10 +18,11 @@
             android:layout_width="wrap_content"
             android:background="@drawable/red_button"
             android:onClick="onIcalClicked"
-            android:text="@string/ical_link"
+            android:text="@string/ical"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:layout_margin="2dp"/>
 
         <Button
             android:id="@+id/previous_button"
@@ -33,7 +34,8 @@
             android:text="@string/previous"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:layout_margin="2dp"/>
 
         <Button
             android:id="@+id/current_button"
@@ -45,7 +47,8 @@
             android:text="@string/current"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:layout_margin="2dp"/>
 
         <Button
             android:id="@+id/next_button"
@@ -57,16 +60,20 @@
             android:text="@string/next"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:layout_margin="2dp"/>
 
 
     </LinearLayout>
 
-    <EditText
+    <TextView
+        android:id="@+id/current_week"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textUri"
-        android:hint="@string/ical_link" />
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
 
     <ScrollView
         android:layout_width="match_parent"

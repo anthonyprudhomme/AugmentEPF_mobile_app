@@ -132,9 +132,8 @@ public class SettingsActivity extends PreferenceActivity implements HTTPRequestI
 
     @Override
     public void onRequestDone(String result, int requestId) {
-        Log.d(TAG, "onRequestDone: " + result);
         switch (requestId) {
-            case HTTPRequestManager.CONNECTION:
+            case HTTPRequestManager.ICAL:
                 if (result.equals(ERROR)) {
                     Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
                 }
@@ -143,10 +142,9 @@ public class SettingsActivity extends PreferenceActivity implements HTTPRequestI
                 try {
                     jsonObject = new JSONObject(result);
                     // Show in the log the message given by the result : it will give error or success information
-                    Log.d(TAG, "onRequestDone: " + jsonObject.getString(MESSAGE));
                     String success = jsonObject.getString(MESSAGE);
                     if (success.equals(SUCCESS)) {
-                        Log.d(TAG, "onRequestDone: success : " + jsonObject.toString());
+                        // TODO do something when success ?
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -98,5 +99,28 @@ public class ICalTimeTable {
 
     public void setNextClass(Class nextClass) {
         this.nextClass = nextClass;
+    }
+
+    public Class getNextCourse() {
+        Calendar calendar = Calendar.getInstance();
+        String dayString = getKeyFromCalendar(calendar);
+        if (classes.containsKey(dayString)) {
+            ArrayList<Class> classesForCurrentDay = classes.get(dayString);
+            for (int i = 0; i < classesForCurrentDay.size(); i++) {
+                Class currentClass = classesForCurrentDay.get(i);
+                if (calendar.getTime().before(currentClass.getStartDate())) {
+                    return currentClass;
+                }
+            }
+        }
+        return null;
+    }
+
+    // method that returns a string to get the current day of classes from the HashMap classes
+    public String getKeyFromCalendar(Calendar calendar){
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        return String.valueOf(year) + String.valueOf(day) + String.valueOf(month);
     }
 }

@@ -214,10 +214,17 @@
     <string name="nearby_points_of_interest">Nearby points of interest</string>
     <string name="available_classrooms">Available classrooms</string>
     <string name="not_localized">You haven\'t been localized yet</string>
+
+    <!--Points of interest-->
     <string name="man_restroom">Man restroom</string>
     <string name="info_restroom_man">Restroom for men.</string>
     <string name="woman_restroom">Woman restroom</string>
     <string name="info_restroom_woman">Restroom for women.</string>
+    <!--____________________-->
+
+    <!--____________________________________________________________________________________________
+                               Connection and AccountCreation Activities
+    _____________________________________________________________________________________________-->
     <string name="password_password_confirmation_no_match">Your password confirmation doesn\'t match your password</string>
     <string name="admin_code">Admin code</string>
     <string name="enter_login">Please enter a login</string>
@@ -230,9 +237,36 @@
     <string name="logout">Logout</string>
     <string name="fail_epf_wifi">Please use EPF Wi-Fi to use this app</string>
     <string name="success_epf_wifi">Successfully connected to EPF Wi-Fi</string>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+    <!--____________________________________________________________________________________________
+                                         Calendar Activity
+    _____________________________________________________________________________________________-->
     <string name="failed_connect_calendar">Failed to load calendar. Please make sure you are connected to EPF Wi-Fi.</string>
     <string name="current">Today</string>
     <string name="next"><![CDATA[>>]]></string>
     <string name="previous"><![CDATA[<<]]></string>
+    <string name="enter_ical">Enter your iCal Link</string>
+    <!--days-->
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thurday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+
+    <string name="ical">iCal</string>
+    <string name="to">to</string>
+    <string name="go_to">Do you want to go to</string>
+    <string name="define_path">Define path</string>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+
+    <string name="hello_blank_fragment">Hello</string>
+    <string name="go_to_next_class">Go to next class</string>
+    <string name="no_next_class_found">Couldn\'t find your next class. Sorry...</string>
 
 </resources>

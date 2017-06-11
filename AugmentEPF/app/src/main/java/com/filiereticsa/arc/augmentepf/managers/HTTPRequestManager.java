@@ -39,6 +39,7 @@ public class HTTPRequestManager {
     public static final int CALENDAR = 10;
 
     public static final int ICAL = 12;
+    public static final int NEXT_COURSE = 13;
 
 
     /*==============================================================================================
