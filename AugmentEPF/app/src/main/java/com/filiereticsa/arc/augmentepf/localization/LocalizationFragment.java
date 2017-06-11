@@ -349,12 +349,14 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         if (!isInAdminMode) {
             if (userAndPathView != null) {
                 userAndPathView.setCurrentPath(path, floorAccessType);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        userAndPathView.invalidate();
-                    }
-                });
+                if (isAdded()) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            userAndPathView.invalidate();
+                        }
+                    });
+                }
             }
 
 //        if (guidance == null && path != null) {
