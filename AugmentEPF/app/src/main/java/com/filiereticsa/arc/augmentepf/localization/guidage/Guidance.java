@@ -62,6 +62,7 @@ public class Guidance {
      */
     public int getCurrentSegment(Pair<Integer, Integer> currentPosition, int index) {
         boolean find = false;
+        boolean endPath = false;
 
         // Compare all positions of the index segment with the current
         for (int i = 0; i < positionsSegment.get(index).size(); i++) {
@@ -71,8 +72,13 @@ public class Guidance {
             // Compare the two positions
             if (testPosition.first == currentPosition.first
                     && testPosition.second == currentPosition.second) {
+                // If it's the last position of the segment & the last segment => end of path
+                if ((i == positionsSegment.get(index).size() - 1) &&
+                        (index == positionsSegment.size() - 1)) {
+                    endPath = true;
+                }
                 // If the position is the last position of the segment, pass at the next segment
-                if (i == positionsSegment.get(index).size() - 1) {
+                else if (i == positionsSegment.get(index).size() - 1) {
                     index = index + 1;
                 }
 
@@ -81,9 +87,12 @@ public class Guidance {
             }
         }
 
-        // If the algorithm did'nt find the position in the segment
+        // If the algorithm didn't find the position in the segment
         if (find == false) {
             index = -1; // To identify an error
+        }
+        if (endPath == true) {
+            index = Integer.MAX_VALUE; // To identify
         }
 
         return index;

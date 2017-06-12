@@ -81,7 +81,9 @@
 
     <!-- Tpye d'utilisateur -->
     <string name="type">Type</string>
-    <string name="select_user_type">Sélectionner le type d\'utilisateur</string>
+    <string name="information_user_type">
+        Affiche des informations sur votre type d\'utilisateur
+    </string>
 
     <!-- Les différents types d'utilisateur -->
     <string-array name="user_type_array">
@@ -194,4 +196,8 @@
     <string name="logout">Se déconnecter</string>
     <string name="fail_epf_wifi">Veuillez utiliser le Wi-Fi de l\'EPF pour utiliser cette application</string>
     <string name="success_epf_wifi">Connecté au Wi-Fi de l\'EPF</string>
+    <!--TODO Manage following input-->
+    <string name="title_change_mail">Change your mail</string>
+    <string name="title_reset_pw">Reset password</string>
+    <string name="userTypeAnonym">Anonymous</string>
 </resources>

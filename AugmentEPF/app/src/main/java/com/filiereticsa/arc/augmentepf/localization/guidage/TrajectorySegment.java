@@ -96,7 +96,7 @@ public class TrajectorySegment {
                 whichDirection = 3;
                 break;
             case "0303": // bottom
-                this.newDirectionCoordinates = new Pair<>(0,-1);
+                this.newDirectionCoordinates = new Pair<>(0,1);
                 whichDirection = 3;
                 break;
             case "2020": // right
@@ -155,7 +155,7 @@ public class TrajectorySegment {
                 break;
             case 3:
                 this.directionInstruction =
-                        AugmentEPFApplication.getAppContext().getString(R.string.guidanceTurnRight);
+                        AugmentEPFApplication.getAppContext().getString(R.string.guidanceStraightAhead);
                 break;
             default:
                 this.directionInstruction =

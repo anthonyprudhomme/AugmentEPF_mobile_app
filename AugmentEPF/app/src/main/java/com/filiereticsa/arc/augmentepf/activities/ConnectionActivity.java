@@ -116,7 +116,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "sendAccountCreationToServer: " + jsonObject.toString());
+        //Log.d(TAG, "sendAccountCreationToServer: " + jsonObject.toString());
         HTTPRequestManager.doPostRequest(CONNECTION, jsonObject.toString(),
                 this, HTTPRequestManager.CONNECTION);
     }

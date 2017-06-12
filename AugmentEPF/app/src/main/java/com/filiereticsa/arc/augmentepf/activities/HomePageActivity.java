@@ -92,9 +92,12 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     }
 
     private void initFragments() {
-        searchFragment = (SearchFragment) getSupportFragmentManager().findFragmentById(R.id.search_fragment);
-        optionsFragment = (OptionsFragment) getSupportFragmentManager().findFragmentById(R.id.options_fragment);
-        localizationFragment = (LocalizationFragment) getSupportFragmentManager().findFragmentById(R.id.localization_fragment);
+        searchFragment = (SearchFragment)
+                getSupportFragmentManager().findFragmentById(R.id.search_fragment);
+        optionsFragment = (OptionsFragment)
+                getSupportFragmentManager().findFragmentById(R.id.options_fragment);
+        localizationFragment = (LocalizationFragment)
+                getSupportFragmentManager().findFragmentById(R.id.localization_fragment);
     }
 
     private void postRequestExample() {
@@ -161,7 +164,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
 
         final FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_action_button);
 
-      /*==========================================================================================
+        /*==========================================================================================
         |                                Set left sliding drawer listeners                        |
         ==========================================================================================*/
 

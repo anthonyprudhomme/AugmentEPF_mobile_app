@@ -37,7 +37,9 @@ import java.util.ArrayList;
  * Copyright © 2016 Granite Apps. All rights reserved.
  */
 
-public class LocalizationFragment extends Fragment implements GAFrameworkUserTrackerObserver, HomePageInterface, DestinationSelectedInterface {
+public class LocalizationFragment
+        extends Fragment
+        implements GAFrameworkUserTrackerObserver, HomePageInterface, DestinationSelectedInterface {
 
     public static final float DEFAULT_ZOOM = 0.4f;
     private static final String TAG = "Ici";
@@ -297,7 +299,8 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     }
 
     @Override
-    public void onPathChanged(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path, FloorAccess.FloorAccessType floorAccessType) {
+    public void onPathChanged(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path,
+                              FloorAccess.FloorAccessType floorAccessType) {
         if (userAndPathView != null) {
             userAndPathView.setCurrentPath(path, floorAccessType);
         }
@@ -306,16 +309,25 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             guidance = new Guidance(path.first);
         }
 
-        if (guidance != null) {
+        // There is a trajectory with instructions and it's not finished yet
+        if (guidance != null && index != Integer.MAX_VALUE) {
             ArrayList<TrajectorySegment> trajectory = guidance.getTrajectory();
-            // TODO do something about that
+
+            // Get the index in the segment which correspond at the position
             index = guidance.getCurrentSegment(oldUserPosition, index);
-            if (index == -1) {
+            if (index == -1) { // Error with the position
                 index = 0;
-                if (path != null) {
+                if (path != null) { // There is a path defined previously
                     guidance.setPath(path.first);
+                } else {
+                    index = Integer.MAX_VALUE;
+                    Log.d(TAG, "onPathChanged: " + "Congrats fdp!");
                 }
+            } else if (index == Integer.MAX_VALUE) { // The end of the path
+                Log.d(TAG, "onPathChanged: " + "Congrats, you arrive at the destination!");
+                // TODO Save the path on the DB, display that it's the end of the path
             } else {
+                // TODO Display instructions on the screen
                 Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
             }
         }

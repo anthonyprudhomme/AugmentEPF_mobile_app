@@ -9,12 +9,13 @@ import java.util.Date;
 
 public class PlannedPath extends Path {
 
-
     private AlarmType alarmType;
     private Date whenToAlarmUser;
 
-    public PlannedPath(Position departure, Position arrival, ArrayList<Position> path, boolean mustTakeElevator, Date departureDate, Date arrivalDate, AlarmType alarmType, Date whenToAlarmUser) {
-        super(departure, arrival, path, mustTakeElevator, departureDate, arrivalDate);
+    public PlannedPath(Position departure, Place closestDeparturePlace, Place arrival, ArrayList<Position> path,
+                       boolean mustTakeElevator, Date departureDate, Date arrivalDate,
+                       AlarmType alarmType, Date whenToAlarmUser) {
+        super(departure, closestDeparturePlace, arrival, path, mustTakeElevator, departureDate, arrivalDate);
         this.alarmType = alarmType;
         this.whenToAlarmUser = whenToAlarmUser;
     }

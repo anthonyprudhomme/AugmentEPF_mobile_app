@@ -2,31 +2,44 @@ package com.filiereticsa.arc.augmentepf.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.design.widget.TextInputEditText;
-import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.R;
+import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
+import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
-import static android.app.PendingIntent.getActivity;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class SettingsActivity extends PreferenceActivity {
+import static com.filiereticsa.arc.augmentepf.activities.HomePageActivity.ERROR;
 
-    private static final String TAG = "Ici";
+public class SettingsActivity
+        extends PreferenceActivity
+        implements HTTPRequestInterface, SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private static final String TAG = "Ici (Settings)";
+    private static final String MESSAGE = "message";
+    private static final String SUCCESS = "true";
+    // Links
+    public static final String ADD_ICAL_LINK = "addIcalLink.php";
+    public static final String SET_SETTINGS_LINK = "setSettings.php";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
 
-        // The button in settings for password
+        /*==========================================================================================
+                                The button in settings for EMAIL
+        ==========================================================================================*/
         Preference changeButton = findPreference(getString(R.string.changeEmailButton));
         // If the user click on this button
         changeButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -72,8 +85,12 @@ public class SettingsActivity extends PreferenceActivity {
                 return true;
             }
         });
+        /*========================================================================================*/
 
-        // The button in settings for password
+
+        /*==========================================================================================
+                                The button in settings for PASSWORD
+        ==========================================================================================*/
         Preference pwButton = findPreference(getString(R.string.resetPwButton));
         // If the user click on this button
         pwButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -119,6 +136,20 @@ public class SettingsActivity extends PreferenceActivity {
                 return true;
             }
         });
+        /*========================================================================================*/
+
+
+        /*==========================================================================================
+                                The button in settings for USER TYPE
+        ==========================================================================================*/
+        Preference userTypeButton = findPreference(getString(R.string.typeUser));
+
+        if ("".equals(ConnectionActivity.TYPE_USER) == false) {
+            userTypeButton.setSummary(ConnectionActivity.TYPE_USER);
+        } else {
+            userTypeButton.setSummary(R.string.userTypeAnonym);
+        }
+        /*========================================================================================*/
     }
 
     public void checkChangeEmail(String newEmail, String confirmEmail, String password) {
@@ -138,7 +169,10 @@ public class SettingsActivity extends PreferenceActivity {
 
         // Display the result of change
         if (emailOk && pwOk) {
+            // Display a confirmation
             Toast.makeText(this, R.string.emailChangeOk, Toast.LENGTH_SHORT).show();
+            // Set it on the server
+            setSettings(SettingsType.EMAIL, newEmail);
         } else if (emailOk == false) {
             Toast.makeText(this, R.string.emailChangeProblemEmail, Toast.LENGTH_SHORT).show();
         } else if (pwOk == false) {
@@ -169,5 +203,146 @@ public class SettingsActivity extends PreferenceActivity {
         } else if (newPwOk == false) {
             Toast.makeText(this, R.string.pwChangeProblemNew, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (!sharedPreferences.getString("ical", "").equals("")) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("id", ConnectionActivity.idUser);
+                jsonObject.put("token", ConnectionActivity.token);
+                jsonObject.put("ical", sharedPreferences.getString("ical", ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            HTTPRequestManager.doPostRequest(ADD_ICAL_LINK,
+                    jsonObject.toString(), this, HTTPRequestManager.ICAL);
+        }
+    }
+
+    @Override
+    public void onRequestDone(String result, int requestId) {
+        // Put the result in a JSONObject to use it.
+        JSONObject jsonObject = null;
+
+        switch (requestId) {
+            case HTTPRequestManager.ICAL:
+                if (result.equals(ERROR)) {
+                    Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
+                }
+                try {
+                    jsonObject = new JSONObject(result);
+                    // Show in the log the message given by the result :
+                    // it will give error or success information
+                    String success = jsonObject.getString(MESSAGE);
+                    if (success.equals(SUCCESS)) {
+                        // TODO do something when success?
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case HTTPRequestManager.SETTINGS:
+                if (result.equals(ERROR)) {
+                    Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
+                }
+                try {
+                    jsonObject = new JSONObject(result);
+                    // Show in the log the message given by the result :
+                    // it will give error or success information
+                    String success = jsonObject.getString(MESSAGE);
+                    if (success.equals(SUCCESS)) {
+                        // TODO do something when success?
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+    }
+
+    public void setSettings(SettingsType settingsType, String value) {
+        // Create an JSON object in order to have everything in
+        JSONObject jsonObject = new JSONObject();
+
+        switch (settingsType) {
+            case EMAIL:
+                // Boolean to determine if the email is correct or not
+                boolean emailOk = false;
+
+                // Like is the email which will be change, we verify that the value is not empty
+                if ("".equals(value)) {
+                    Toast.makeText(this, "Problem with the email adress entered",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    emailOk = true;
+                }
+
+                // Check if the boolean which verified the email is OK or not
+                if (emailOk) {
+                    try {
+                        // Put ID and token of the User for the authentification
+                        jsonObject.put("id", ConnectionActivity.idUser);
+                        jsonObject.put("token", ConnectionActivity.token);
+                        // Indicate which parameters you want change
+                        jsonObject.put("setAttribute", false);
+                        jsonObject.put("setEmail", true);
+                        jsonObject.put("setType", false);
+                        jsonObject.put("setIcal", false);
+                        // Put parameter which will be change and other empty
+                        jsonObject.put("attribute", new JSONArray());
+                        jsonObject.put("email", value);
+                        jsonObject.put("ical", "");
+                        jsonObject.put("type", "");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
+            case SPECIFIC_ATTRIBUTE:
+                // Boolean to determine if the attribute is correct or not
+                boolean specificAttOk = false;
+                // Create JSONArray for specific attribute request
+                JSONArray specificAttribute = new JSONArray();
+
+                // Like is the specific attribute which will be change,
+                // we verify that the value is not empty
+                if ("".equals(value)) {
+                    Toast.makeText(this, "Problem with the specific attribute",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // Put the value in the JSONArray
+                    specificAttribute.put(value);
+                    specificAttOk = true;
+                }
+
+                // Check if the boolean which verified the email is OK or not
+                if (specificAttOk) {
+                    try {
+                        // Put ID and token of the User for the authentification
+                        jsonObject.put("id", ConnectionActivity.idUser);
+                        jsonObject.put("token", ConnectionActivity.token);
+                        // Indicate which parameters you want change
+                        jsonObject.put("setAttribute", true);
+                        jsonObject.put("setEmail", false);
+                        jsonObject.put("setType", false);
+                        jsonObject.put("setIcal", false);
+                        // Put parameter which will be change and other empty
+                        jsonObject.put("attribute", specificAttribute);
+                        jsonObject.put("email", "");
+                        jsonObject.put("ical", "");
+                        jsonObject.put("type", "");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
+
+        // Send the request to the server
+        HTTPRequestManager.doPostRequest(SET_SETTINGS_LINK,
+                jsonObject.toString(), this, HTTPRequestManager.SETTINGS);
     }
 }

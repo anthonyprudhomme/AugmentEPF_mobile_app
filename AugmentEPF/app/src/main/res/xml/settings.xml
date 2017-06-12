@@ -29,13 +29,12 @@
         android:title="@string/user_parameters">
 
         <!-- User type -->
-        <ListPreference
-            android:key="type_user"
+        <Preference
+            android:key="@string/typeUser"
             android:title="@string/type"
-            android:summary="@string/select_user_type"
-            android:entries="@array/user_type_array"
-            android:entryValues="@array/user_type_values_array">
-        </ListPreference>
+            android:summary="@string/information_user_type"
+            android:enabled="false">
+        </Preference>
 
         <!-- Specific attribute -->
         <ListPreference
@@ -59,14 +58,14 @@
 
         <!-- Button to change the email -->
         <Preference
-            android:title="Change your mail"
+            android:title="@string/title_change_mail"
             android:key="@string/changeEmailButton"
             android:summary="@string/summaryChangeEmail">
         </Preference>
 
         <!-- Button to reset the password -->
         <Preference
-            android:title="Reset password"
+            android:title="@string/title_reset_pw"
             android:key="@string/resetPwButton"
             android:summary="@string/summaryChangePw">
         </Preference>

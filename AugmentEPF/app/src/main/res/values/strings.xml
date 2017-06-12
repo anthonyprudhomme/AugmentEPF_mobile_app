@@ -9,6 +9,7 @@
 
     <string name="text_classroom">Pick a classroom</string>
 
+    <!--TODO Translate guidance-->
     <!--============================================================================================
                                            Guidance
     =============================================================================================-->
@@ -20,8 +21,9 @@
     <string name="guidanceStraightAhead">Straight ahead</string>
     <string name="guidanceProblem">Problem with this direction</string>
     <!--.........................................................................................-->
-    <string name="guidanceFor"> for </string>
-    <string name="guidanceMeters"> meters</string>
+    <string name="guidanceFor">\u0020for\u0020</string>
+    <string name="guidanceMeters">\u0020meters</string>
+    <!--\u0020 it's to force a space in XML-->
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
@@ -84,9 +86,10 @@
 
     <!-- User type -->
     <string name="type">Type</string>
-    <string name="select_user_type">Select user type</string>
-
-    <!-- Different user type -->
+    <string name="information_user_type">Display information about your user type</string>
+    <string name="typeUser" />
+<!--
+    &lt;!&ndash; Different user type &ndash;&gt;
     <string-array name="user_type_array">
         <item>Student</item>
         <item>Visitor</item>
@@ -94,14 +97,14 @@
         <item>Contributor</item>
         <item>Admin</item>
     </string-array>
-    <!-- The value of the choice above -->
+    &lt;!&ndash; The value of the choice above &ndash;&gt;
     <string-array name="user_type_values_array">
         <item>S</item>
         <item>V</item>
         <item>T</item>
         <item>C</item>
         <item>A</item>
-    </string-array>
+    </string-array>-->
 
     <!--.........................................................................................-->
 
@@ -222,7 +225,7 @@
     <string name="admin_code">Admin code</string>
     <string name="enter_login">Please enter a login</string>
     <string name="enter_email">Please enter an e-mail</string>
-    <string name="enter_password">Pleaser enter a password</string>
+    <string name="enter_password">Please enter a password</string>
     <string name="enter_password_confirmation">Please enter a password confirmation</string>
     <string name="error_server">Something went wrong with the server</string>
     <string name="need_internet_account">You need internet connection to create an account</string>
@@ -230,5 +233,9 @@
     <string name="logout">Logout</string>
     <string name="fail_epf_wifi">Please use EPF Wi-Fi to use this app</string>
     <string name="success_epf_wifi">Successfully connected to EPF Wi-Fi</string>
+    <!--TODO Manage following input-->
+    <string name="title_change_mail">Change your mail</string>
+    <string name="title_reset_pw">Reset password</string>
+    <string name="userTypeAnonym">Anonymous</string>
 
 </resources>

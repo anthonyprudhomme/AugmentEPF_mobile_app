@@ -10,14 +10,46 @@ import java.util.Date;
 public class Path {
 
     private Position departure;
-    private Position arrival;
+    private Place closestDeparturePlace;
+    private Place arrival;
     private ArrayList<Position> path;
     private boolean mustTakeElevator;
     private Date departureDate;
     private Date arrivalDate;
 
-    public Path(Position departure, Position arrival, ArrayList<Position> path, boolean mustTakeElevator, Date departureDate, Date arrivalDate) {
+    public static ArrayList<Path> testPath;
+
+    static{
+        testPath = new ArrayList<>();
+        for (int i=0; i < 10; i++){
+
+            Position pos = new Position(0,0,0);
+            Position departureTest = new Position(0,0,0);
+            Place closestDeparturePlaceTest = new Place("Closes" + i, pos);
+            Place arrivalTest = new Place("ArrName" +i, pos);
+            ArrayList<Position> pathTest = new ArrayList<Position>();
+            Date DepDateTest = new Date(System.currentTimeMillis());
+            Date ArrDateTest = new Date(System.currentTimeMillis());
+
+            Path path = new Path(
+                    departureTest,
+                    closestDeparturePlaceTest,
+                    arrivalTest,
+                    pathTest,
+                    false,
+                    DepDateTest,
+                    ArrDateTest
+            );
+
+            testPath.add(path);
+        }
+    }
+
+    public Path(Position departure, Place closestDeparturePlace, Place arrival,
+                ArrayList<Position> path, boolean mustTakeElevator, Date departureDate,
+                Date arrivalDate) {
         this.departure = departure;
+        this.closestDeparturePlace = closestDeparturePlace;
         this.arrival = arrival;
         this.path = path;
         this.mustTakeElevator = mustTakeElevator;
@@ -34,11 +66,11 @@ public class Path {
         this.departure = departure;
     }
 
-    public Position getArrival() {
+    public Place getArrival() {
         return arrival;
     }
 
-    public void setArrival(Position arrival) {
+    public void setArrival(Place arrival) {
         this.arrival = arrival;
     }
 
