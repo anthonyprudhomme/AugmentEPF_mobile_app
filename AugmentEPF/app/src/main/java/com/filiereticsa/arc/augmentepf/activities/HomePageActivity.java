@@ -170,6 +170,8 @@ public class HomePageActivity
                 getSupportFragmentManager().findFragmentById(R.id.options_fragment);
         localizationFragment = (LocalizationFragment)
                 getSupportFragmentManager().findFragmentById(R.id.localization_fragment);
+        cameraFragment = (CameraFragment)
+                getSupportFragmentManager().findFragmentById(R.id.camera_fragment);
     }
 
     private void postRequestExample() {

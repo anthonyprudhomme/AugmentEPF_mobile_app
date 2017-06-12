@@ -309,6 +309,7 @@
     <string name="description">This application was implemented by the ARC team in relation to the
      AugmentEPF project 2017</string>
     <string name="partner_with">In partnership with</string>
+    <string name="localisation_system">Localisation system by</string>
     <string name="contacts_info">Contacts information</string>
     <string name="contacts_mails_left">
         Anthony Prudhomme \n anthony.prudhomme@epfedu.fr \n \n

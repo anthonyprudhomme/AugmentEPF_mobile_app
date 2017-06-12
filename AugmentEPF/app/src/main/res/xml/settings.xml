@@ -11,14 +11,14 @@
             android:defaultValue="true"
             android:key="notification_user"
             android:summary="@string/notif_user_summary"
-            android:title="@string/notification"></CheckBoxPreference>
+            android:title="@string/notification" />
 
         <!-- Localisation -->
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="localisation_user"
             android:summary="@string/loc_user_summary"
-            android:title="@string/localisation"></CheckBoxPreference>
+            android:title="@string/localisation" />
     </PreferenceCategory>
 
     <!-- User parameters -->
@@ -26,11 +26,10 @@
 
         <!-- User type -->
         <Preference
+            android:enabled="false"
             android:key="@string/typeUser"
-            android:title="@string/type"
             android:summary="@string/information_user_type"
-            android:enabled="false">
-        </Preference>
+            android:title="@string/type" />
 
         <!-- Specific attribute -->
         <ListPreference
@@ -38,7 +37,7 @@
             android:entryValues="@array/specific_attribute_values_array"
             android:key="specific_attribute_user"
             android:summary="@string/select_specific_attribute"
-            android:title="@string/specific_attribute"></ListPreference>
+            android:title="@string/specific_attribute" />
 
         <!-- Lien iCal -->
         <EditTextPreference
@@ -48,27 +47,19 @@
             android:key="ical"
             android:singleLine="true"
             android:summary="@string/ical_summary"
-            android:title="@string/ical_link"></EditTextPreference>
+            android:title="@string/ical_link" />
 
         <!-- Button to change the email -->
         <Preference
-<<<<<<< HEAD
-            android:title="@string/title_change_mail"
-=======
->>>>>>> b60fbc2dd5a78a6763f72d0603a1e547a52bb165
             android:key="@string/changeEmailButton"
             android:summary="@string/summaryChangeEmail"
-            android:title="Change your mail"></Preference>
+            android:title="@string/title_change_mail" />
 
         <!-- Button to reset the password -->
         <Preference
-<<<<<<< HEAD
-            android:title="@string/title_reset_pw"
-=======
->>>>>>> b60fbc2dd5a78a6763f72d0603a1e547a52bb165
             android:key="@string/resetPwButton"
             android:summary="@string/summaryChangePw"
-            android:title="Reset password"></Preference>
+            android:title="@string/title_reset_pw" />
     </PreferenceCategory>
 
     <!-- Navigation parameters -->
@@ -80,6 +71,7 @@
             android:entryValues="@array/navigation_values_array"
             android:key="navigation_mode"
             android:summary="@string/select_nav_mode"
-            android:title="@string/nav_mode"></ListPreference>
+            android:title="@string/nav_mode" />
     </PreferenceCategory>
+
 </PreferenceScreen>

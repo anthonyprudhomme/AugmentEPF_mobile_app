@@ -177,6 +177,7 @@
     <string name="description">Cette application a été créée par l"'"équipe ARC dans le cadre
     du projet AugmentEPF 2017</string>
     <string name="partner_with">En partenariat avec</string>
+    <string name="localisation_system">Système de localisation par</string>
     <string name="contacts_info">Informations et contacts</string>
     <string name="contacts_mails_left">
         Anthony Prudhomme \n anthony.prudhomme@epfedu.fr \n \n

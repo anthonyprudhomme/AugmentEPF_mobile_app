@@ -178,7 +178,7 @@ public class LocalizationFragment
         textToSpeech = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
+                if (status != TextToSpeech.ERROR) {
                     // Set the language
                     Locale locale;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -193,6 +193,18 @@ public class LocalizationFragment
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //Close the Text to Speech Library
+        if (textToSpeech != null) {
+
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+            Log.d(TAG, "TTS Destroyed");
+        }
     }
 
     @Override
@@ -454,7 +466,7 @@ public class LocalizationFragment
                 String toSpeak = trajectory.get(index).getDirectionInstruction();
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null,null);
+                    textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
                 } else {
                     textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                 }
