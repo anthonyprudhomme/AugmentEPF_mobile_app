@@ -1,6 +1,5 @@
 package com.filiereticsa.arc.augmentepf.localization;
 
-import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -172,47 +171,31 @@ public class GABeaconMapHelper {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 if (i != 0 || j != 0) {
+                    if (i != 1 || j != -1) {
+                        if (i != -1 || j != 1) {
+                            if (i != 1 || j != 1) {
+                                if (i != -1 || j != -1) {
 
-                    MapItem item = null;
-                    Pair<Integer, Integer> currentIndexPath = new Pair<>(indexPath.first + i, indexPath.second + j);
+                                    MapItem item = null;
+                                    Pair<Integer, Integer> currentIndexPath = new Pair<>(indexPath.first + i, indexPath.second + j);
 
-                    ArrayList<MapItem> mapItems = map.mapItemsAtIndexPath(currentIndexPath); //O( n x (n+1))
+                                    ArrayList<MapItem> mapItems = map.mapItemsAtIndexPath(currentIndexPath); //O( n x (n+1))
 
-                    if (mapItems != null && mapItems.size() != 0) {
-                        item = mapItems.get(0); // O(1)
-                    }
-                    if (item != null) {
-                        neighbours.add(currentIndexPath); //O(n)
+                                    if (mapItems != null && mapItems.size() != 0) {
+                                        item = mapItems.get(0); // O(1)
+                                    }
+                                    if (item != null) {
+                                        neighbours.add(currentIndexPath); //O(n)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
 
         return neighbours;
-    }
-
-    // MARK: - Graph building functions
-    // Build edges with the provided intersections
-    private void buildEdgesAndVertices(ArrayList<Integer> intersectionIds) {
-        this.graph = new ArrayList<>();
-        this.vertices = new HashMap<>();
-        for (int i = 0; i < intersectionIds.size(); i++) {
-            MapItem originItem = map.mapItemWithId(i);
-            if (originItem == null) {
-                return;
-            }
-            // Create vertex if necessary
-            globalCurrentVertex = this.vertices.get(originItem.coordinates);
-            if (globalCurrentVertex != null) {
-                this.exploreAndBuildFromVertex(null);
-                this.vertices.put(originItem.coordinates, globalCurrentVertex);
-            } else {
-                globalCurrentVertex = new Vertex(originItem.coordinates);
-                this.vertices.put(globalCurrentVertex.indexPath, globalCurrentVertex);
-                this.exploreAndBuildFromVertex(null);
-                this.vertices.put(globalCurrentVertex.indexPath, globalCurrentVertex);
-            }
-        }
     }
 
     private ArrayList<Integer> exploreAndBuildFromVertex(Pair<Integer, Integer> direction) {
@@ -257,22 +240,29 @@ public class GABeaconMapHelper {
         } else {
             // Explore in all directions
             ArrayList<Integer> reachedIntersections = new ArrayList<>();
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    if (i != 0 || j != 0) {
-                        ArrayList<Integer> intersections = this.exploreAndBuildFromVertex(new Pair<>(i, j));
-                        if (intersections != null) {
-                            reachedIntersections.addAll(intersections);
-                        }
-                    }
-                }
+//            for (int i = -1; i <= 1; i++) {
+//                for (int j = -1; j <= 1; j++) {
+//                    if (i != 0 || j != 0) {
+            ArrayList<Integer> intersections1 = this.exploreAndBuildFromVertex(new Pair<>(0, 1));
+            ArrayList<Integer> intersections2 = this.exploreAndBuildFromVertex(new Pair<>(0, -1));
+            ArrayList<Integer> intersections3 = this.exploreAndBuildFromVertex(new Pair<>(1, 0));
+            ArrayList<Integer> intersections4 = this.exploreAndBuildFromVertex(new Pair<>(-1, 0));
+            if (intersections1 != null && intersections2 != null && intersections3 != null && intersections4 != null) {
+                reachedIntersections.addAll(intersections1);
+                reachedIntersections.addAll(intersections2);
+                reachedIntersections.addAll(intersections3);
+                reachedIntersections.addAll(intersections4);
             }
+//                    }
+//                }
+//            }
         }
         return null;
     }
 
     // Return the next found items that are not free in the provided direction
-    private Pair<ArrayList<MapItem>, Integer> nextVertexItems(Pair<Integer, Integer> originIndexPath, Pair<Integer, Integer> direction, int distance) {
+    private Pair<ArrayList<MapItem>, Integer> nextVertexItems
+    (Pair<Integer, Integer> originIndexPath, Pair<Integer, Integer> direction, int distance) {
         ArrayList<MapItem> nextItems = map.mapItemsAtIndexPath(new Pair<>(originIndexPath.first + direction.first, originIndexPath.second + direction.second));
         if (nextItems.size() == 0) {
             return null;
@@ -313,7 +303,7 @@ public class GABeaconMapHelper {
 
     private void buildGraph() { // O(11n^3 + 19n^2)
         ArrayList<Pair<Integer, Integer>> mapItemsIndexPathsToVisit = new ArrayList<>();
-        if (this.map!=null) {
+        if (this.map != null) {
             ArrayList<MapItem> mapItems = this.map.getMapItems(); // O(n)
             for (int i = 0; i < mapItems.size(); i++) { // O(n^2)
                 mapItemsIndexPathsToVisit.add(mapItems.get(i).coordinates);
@@ -329,6 +319,10 @@ public class GABeaconMapHelper {
                 vertices = null;
             }
         }
+    }
+
+    public int getMapFloor() {
+        return this.map.getFloor();
     }
 
     private class Edge {
@@ -372,9 +366,5 @@ public class GABeaconMapHelper {
             this.indexPath = indexPath;
         }
 
-    }
-
-    public int getMapFloor(){
-        return this.map.getFloor();
     }
 }

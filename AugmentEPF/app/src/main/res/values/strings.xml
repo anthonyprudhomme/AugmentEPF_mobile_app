@@ -21,9 +21,8 @@
     <string name="guidanceStraightAhead">Straight ahead</string>
     <string name="guidanceProblem">Problem with this direction</string>
     <!--.........................................................................................-->
-    <string name="guidanceFor">\u0020for\u0020</string>
-    <string name="guidanceMeters">\u0020meters</string>
-    <!--\u0020 it's to force a space in XML-->
+    <string name="guidanceFor">for</string>
+    <string name="guidanceMeters">meters</string>
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
@@ -162,11 +161,11 @@
     <!--.........................................................................................-->
 
     <!-- Texts for toasts -->
-        <!-- Passwords -->
+    <!-- Passwords -->
     <string name="pwChangeOk">Password changed!</string>
     <string name="pwChangeProblemOld">Problem with the old password</string>
     <string name="pwChangeProblemNew">New passwords aren\'t identical</string>
-        <!-- Email addresses -->
+    <!-- Email addresses -->
     <string name="emailChangeOk">Email address changed!</string>
     <string name="emailChangeProblemEmail">Email addresses aren\'t good</string>
     <string name="emailChangeProblemPw">This isn\'t the good password</string>
@@ -186,14 +185,12 @@
     <!-- Different mode of navigation -->
     <string-array name="navigation_array">
         <item>Plan</item>
-        <item>Compass</item>
-        <item>Trajectory</item>
+        <item>Camera</item>
     </string-array>
     <!-- The value of the choice above -->
     <string-array name="navigation_values_array">
         <item>P</item>
         <item>C</item>
-        <item>T</item>
     </string-array>
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
@@ -213,14 +210,21 @@
     <string name="create">Create</string>
     <string name="confirm_password">Confirm password:</string>
     <string name="account_created">Account created</string>
-    <string name="fullscreen">FullScreen</string>
+    <string name="admin_activity_title">Administrative Tools</string>
     <string name="nearby_points_of_interest">Nearby points of interest</string>
     <string name="available_classrooms">Available classrooms</string>
     <string name="not_localized">You haven\'t been localized yet</string>
+
+    <!--Points of interest-->
     <string name="man_restroom">Man restroom</string>
     <string name="info_restroom_man">Restroom for men.</string>
     <string name="woman_restroom">Woman restroom</string>
     <string name="info_restroom_woman">Restroom for women.</string>
+    <!--____________________-->
+
+    <!--____________________________________________________________________________________________
+                               Connection and AccountCreation Activities
+    _____________________________________________________________________________________________-->
     <string name="password_password_confirmation_no_match">Your password confirmation doesn\'t match your password</string>
     <string name="admin_code">Admin code</string>
     <string name="enter_login">Please enter a login</string>
@@ -237,5 +241,96 @@
     <string name="title_change_mail">Change your mail</string>
     <string name="title_reset_pw">Reset password</string>
     <string name="userTypeAnonym">Anonymous</string>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+    <!--____________________________________________________________________________________________
+                                         Calendar Activity
+    _____________________________________________________________________________________________-->
+    <string name="failed_connect_calendar">Failed to load calendar. Please make sure you are connected to EPF Wi-Fi.</string>
+    <string name="current">Today</string>
+    <string name="next"><![CDATA[>>]]></string>
+    <string name="previous"><![CDATA[<<]]></string>
+    <string name="enter_ical">Enter your iCal Link</string>
+    <!--days-->
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thurday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+
+    <string name="ical">iCal</string>
+    <string name="to">to</string>
+    <string name="go_to">Do you want to go to</string>
+    <string name="define_path">Define path</string>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+
+    <string name="hello_blank_fragment">Hello</string>
+    <string name="go_to_next_class">Go to next class</string>
+    <string name="no_next_class_found">Couldn\'t find your next class. Sorry...</string>
+
+    <!--____________________________________________________________________________________________
+                                        Admin Activity
+   _____________________________________________________________________________________________-->
+    <string name="admin_name_missing">Name required</string>
+    <string name="admin_target_missing">None selected</string>
+    <string name="confirm">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="admin_edit_beacons">Edit beacons</string>
+    <string name="admin_edit_poi">Edit points of interests</string>
+    <string name="admin_xcoord">X Coordinate:</string>
+    <string name="admin_ycoord">Y Coordinate:</string>
+    <string name="admin_name">Name:</string>
+    <string name="admin_target">Closest:</string>
+    <string name="admin_locate">Closest beacon</string>
+    <string name="admin_remove">Remove</string>
+    <string name="admin_save">Add</string>
+    <string name="admin_2nf_floor">2nd Floor</string>
+    <string name="admin_1st_floor">1st Floor</string>
+    <string name="admin_ground_floor">Ground Floor</string>
+    <string name="admin_lower_floor">Lower Floor</string>
+    <string name="admin_update">Update existing?</string>
+    <string name="admin_save_new">Save as new?</string>
+    <string name="admin_edit_rooms">Edit rooms</string>
+    <string name="admin_detector_failed">None detected</string>
+    <string name="admin_map_error">Map not available</string>
+    <string name="zoom">Zoom</string>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+    <!--============================================================================================
+                                           Contact menu
+    =============================================================================================-->
+
+    <string name="description">This application was implemented by the ARC team in relation to the
+     AugmentEPF project 2017</string>
+    <string name="partner_with">In partnership with</string>
+    <string name="contacts_info">Contacts information</string>
+    <string name="contacts_mails_left">
+        Anthony Prudhomme \n anthony.prudhomme@epfedu.fr \n \n
+        Cécile Tran \n cecile.tran@epfedu.fr \n \n
+        Hugo Ruiz \n hugo.ruiz@epfedu.fr \n \n
+        Guilhem Pequillat \n guilhem.pequillat@epfedu.fr
+
+    </string>
+    <string name="contacts_mails_right">
+        Coline Patris \n coline.patris@epfedu.fr \n \n
+        Jeremy Duong \n jeremy.duong@epfedu.fr\n \n
+        Antoine Goubin \n antoine.goubin@epfedu.fr
+    </string>
+
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+
+    <string name="permission_not_granted">Sorry!!! You can\'t use this app without granting permission</string>
+    <string name="fullscreen">Fullscreen</string>
+    <string name="destination">Destination :</string>
+    <string name="guidanceIn">in</string>
+    <string name="starting_guidance">Starting guidance</string>
 
 </resources>

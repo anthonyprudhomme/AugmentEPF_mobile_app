@@ -4,29 +4,25 @@
     android:layout_height="match_parent">
 
     <!-- General parameters -->
-    <PreferenceCategory
-        android:title="@string/general">
+    <PreferenceCategory android:title="@string/general">
 
         <!-- Notification -->
         <CheckBoxPreference
+            android:defaultValue="true"
             android:key="notification_user"
-            android:title="@string/notification"
             android:summary="@string/notif_user_summary"
-            android:defaultValue="true">
-        </CheckBoxPreference>
+            android:title="@string/notification"></CheckBoxPreference>
 
         <!-- Localisation -->
         <CheckBoxPreference
+            android:defaultValue="true"
             android:key="localisation_user"
-            android:title="@string/localisation"
             android:summary="@string/loc_user_summary"
-            android:defaultValue="true">
-        </CheckBoxPreference>
+            android:title="@string/localisation"></CheckBoxPreference>
     </PreferenceCategory>
 
     <!-- User parameters -->
-    <PreferenceCategory
-        android:title="@string/user_parameters">
+    <PreferenceCategory android:title="@string/user_parameters">
 
         <!-- User type -->
         <Preference
@@ -38,50 +34,52 @@
 
         <!-- Specific attribute -->
         <ListPreference
-            android:key="specific_attribute_user"
-            android:title="@string/specific_attribute"
-            android:summary="@string/select_specific_attribute"
             android:entries="@array/specific_attribute_array"
-            android:entryValues="@array/specific_attribute_values_array">
-        </ListPreference>
+            android:entryValues="@array/specific_attribute_values_array"
+            android:key="specific_attribute_user"
+            android:summary="@string/select_specific_attribute"
+            android:title="@string/specific_attribute"></ListPreference>
 
         <!-- Lien iCal -->
         <EditTextPreference
-            android:key="ical"
-            android:title="@string/ical_link"
-            android:summary="@string/ical_summary"
-            android:dialogTitle="@string/ical_link"
             android:dialogMessage="@string/format_ical"
+            android:dialogTitle="@string/ical_link"
             android:inputType="text"
-            android:singleLine="true">
-        </EditTextPreference>
+            android:key="ical"
+            android:singleLine="true"
+            android:summary="@string/ical_summary"
+            android:title="@string/ical_link"></EditTextPreference>
 
         <!-- Button to change the email -->
         <Preference
+<<<<<<< HEAD
             android:title="@string/title_change_mail"
+=======
+>>>>>>> b60fbc2dd5a78a6763f72d0603a1e547a52bb165
             android:key="@string/changeEmailButton"
-            android:summary="@string/summaryChangeEmail">
-        </Preference>
+            android:summary="@string/summaryChangeEmail"
+            android:title="Change your mail"></Preference>
 
         <!-- Button to reset the password -->
         <Preference
+<<<<<<< HEAD
             android:title="@string/title_reset_pw"
+=======
+>>>>>>> b60fbc2dd5a78a6763f72d0603a1e547a52bb165
             android:key="@string/resetPwButton"
-            android:summary="@string/summaryChangePw">
-        </Preference>
+            android:summary="@string/summaryChangePw"
+            android:title="Reset password"></Preference>
     </PreferenceCategory>
 
     <!-- Navigation parameters -->
-    <PreferenceCategory
-        android:title="@string/nav_parameters">
+    <PreferenceCategory android:title="@string/nav_parameters">
 
         <!-- Navigation mode -->
         <ListPreference
-            android:key="mode_navigation"
-            android:title="@string/nav_mode"
-            android:summary="@string/select_nav_mode"
             android:entries="@array/navigation_array"
-            android:entryValues="@array/navigation_values_array">
-        </ListPreference>
+            android:entryValues="@array/navigation_values_array"
+            android:key="navigation_mode"
+            android:summary="@string/select_nav_mode"
+            android:title="@string/nav_mode"></ListPreference>
     </PreferenceCategory>
 </PreferenceScreen>

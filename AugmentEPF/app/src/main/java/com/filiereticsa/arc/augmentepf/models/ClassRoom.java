@@ -1,11 +1,7 @@
 package com.filiereticsa.arc.augmentepf.models;
 
-import android.util.Log;
-import android.util.Pair;
-
+import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.fragments.SearchFragment;
-import com.filiereticsa.arc.augmentepf.localization.GABeaconMapHelper;
-import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
@@ -14,8 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Created by ARC© Team for AugmentEPF project on 07/05/2017.
@@ -23,7 +17,6 @@ import java.util.Comparator;
 
 public class ClassRoom extends Place {
 
-    private static final String TAG = "Ici";
     public static final String NAME = "name";
     public static final String FLOOR = "floor";
     public static final String POS_X = "x";
@@ -33,83 +26,18 @@ public class ClassRoom extends Place {
     public static final String MESSAGE = "message";
     public static final String CLASSROOMS_JSON = "classrooms.json";
     public static final String CLASS_ROOMS = "classRooms";
-    public static final String GET_AVAILABLE_CLASS_ROOMS_PHP = "getAvailableClassRooms.php";
+    public static final String GET_ROOMS_PHP = "getRooms.php";
     public static final String GET_CLASS_ROOMS_PHP = "getElementAdministration.php";
+    public static final String CONTENT_TYPE = "contentType";
+    public static final String RESULT = "result";
+    public static final String STATE = "state";
+    public static final String TRUE = "true";
+    private static final String TAG = "Ici";
     private static final String VALIDATE = "validate";
     private static final String YES = "y";
     private static final String NO = "n";
-    public static final String CONTENT_TYPE = "contentType";
-    public static final String RESULT = "result";
-
     private static ArrayList<ClassRoom> classRooms;
-
-    private boolean isFree;
     private static ArrayList<Place> availableClassroomList = new ArrayList<>();
-
-    public ClassRoom(String name, Position position, boolean isFree) {
-        super(name, position);
-        this.isFree = isFree;
-    }
-
-    public ClassRoom(JSONObject jsonObject) throws JSONException {
-        super(jsonObject.getString(NAME), new Position(jsonObject.getInt(POS_X), jsonObject.getInt(POS_Y), jsonObject.getInt(FLOOR)));
-        this.isFree = false;
-    }
-
-    public static ArrayList<Place> getAvailableClassroomList() {
-        if (availableClassroomList == null) {
-            availableClassroomList = new ArrayList<>();
-        } else {
-            availableClassroomList.clear();
-        }
-        for (int i = 0; i < classRooms.size(); i++) {
-            ClassRoom currentClassRoom = classRooms.get(i);
-            if (currentClassRoom.isFree()) {
-                availableClassroomList.add(currentClassRoom);
-            }
-        }
-        ArrayList<Pair<Place, Integer>> classWithDistances = new ArrayList<>();
-        if (GAFrameworkUserTracker.sharedTracker() != null
-                && GAFrameworkUserTracker.sharedTracker().getCurrentUserLocation() != null) {
-            Pair<Integer, Integer> currentPosition = GAFrameworkUserTracker.sharedTracker().getCurrentUserLocation().indexPath;
-
-            if (currentPosition != null) {
-                GABeaconMapHelper mapHelper = GAFrameworkUserTracker.sharedTracker().getMapHelper();
-                for (int i = 0; i < availableClassroomList.size(); i++) {
-                    Place currentClassRoom = availableClassroomList.get(i);
-                    if (currentClassRoom.getPosition().getFloor() == mapHelper.getMapFloor()) {
-                        availableClassroomList.remove(currentClassRoom);
-                        classWithDistances.add(
-                                new Pair<>(
-                                        currentClassRoom,
-                                        mapHelper.pathFrom(currentPosition,
-                                                new Pair<>(
-                                                        currentClassRoom.getPosition().getPositionX(),
-                                                        currentClassRoom.getPosition().getPositionY())
-                                        ).second));
-                    }
-                }
-                Collections.sort(classWithDistances, new Comparator<Pair<Place, Integer>>() {
-                    public int compare(Pair<Place, Integer> o1, Pair<Place, Integer> o2) {
-                        if (o1.second < o2.second) {
-                            return -1;
-                        } else {
-                            if (o1.second.equals(o2.second)) {
-                                return 0;
-                            } else {
-                                return 1;
-                            }
-                        }
-                    }
-                });
-                for (int i = classWithDistances.size() - 1; i >= 0; i--) {
-                    availableClassroomList.add(0, classWithDistances.get(i).first);
-                    Log.d(TAG, "getAvailableClassroomList: " + classWithDistances.get(i).second);
-                }
-            }
-        }
-        return availableClassroomList;
-    }
 
     static {
         classRooms = new ArrayList<>();
@@ -130,18 +58,97 @@ public class ClassRoom extends Place {
         classRooms.add(room7L);
 
         // Floor 2
-        ClassRoom roomi1 = new ClassRoom("i1", new Position(45, 10, 2), true);
+        ClassRoom roomi1 = new ClassRoom("I1", new Position(45, 10, 2), true);
         classRooms.add(roomi1);
-        ClassRoom roomi2 = new ClassRoom("i2", new Position(43, 10, 2), true);
+        ClassRoom roomi2 = new ClassRoom("I2", new Position(43, 10, 2), true);
         classRooms.add(roomi2);
-        ClassRoom roomi3 = new ClassRoom("i3", new Position(32, 10, 2), true);
+        ClassRoom roomi3 = new ClassRoom("I3", new Position(32, 10, 2), true);
         classRooms.add(roomi3);
-        ClassRoom roomi4 = new ClassRoom("i4", new Position(12, 10, 2), true);
+        ClassRoom roomi4 = new ClassRoom("I4", new Position(12, 10, 2), true);
         classRooms.add(roomi4);
-        ClassRoom roomi5 = new ClassRoom("i5", new Position(8, 10, 2), true);
+        ClassRoom roomi5 = new ClassRoom("I5", new Position(8, 10, 2), true);
         classRooms.add(roomi5);
-        ClassRoom roomi6 = new ClassRoom("i6", new Position(5, 10, 2), true);
+        ClassRoom roomi6 = new ClassRoom("I6", new Position(5, 10, 2), true);
         classRooms.add(roomi6);
+    }
+
+    private boolean isFree;
+
+    public ClassRoom(String name, Position position, boolean isFree) {
+        super(name, position);
+        this.isFree = isFree;
+    }
+
+    public ClassRoom(JSONObject jsonObject) throws JSONException {
+        super(jsonObject.getString(NAME), new Position(jsonObject.getInt(POS_X), jsonObject.getInt(POS_Y), jsonObject.getInt(FLOOR)));
+        this.isFree = false;
+    }
+
+//    public static ArrayList<Place> getAvailableClassroomList() {
+//        if (availableClassroomList == null) {
+//            availableClassroomList = new ArrayList<>();
+//        } else {
+//            availableClassroomList.clear();
+//        }
+//        for (int i = 0; i < classRooms.size(); i++) {
+//            ClassRoom currentClassRoom = classRooms.get(i);
+//            if (currentClassRoom.isFree()) {
+//                availableClassroomList.add(currentClassRoom);
+//            }
+//        }
+//
+//        ArrayList<Pair<Place, Integer>> classWithDistances = new ArrayList<>();
+//        if (GAFrameworkUserTracker.sharedTracker() != null
+//                && GAFrameworkUserTracker.sharedTracker().getCurrentUserLocation() != null) {
+//            Pair<Integer, Integer> currentPosition = GAFrameworkUserTracker.sharedTracker().getCurrentUserLocation().indexPath;
+//
+//            if (currentPosition != null) {
+//                GABeaconMapHelper mapHelper = GAFrameworkUserTracker.sharedTracker().getMapHelper();
+//                ArrayList<Place> classRoomsToRemove = new ArrayList<>();
+//                for (int i = 0; i < availableClassroomList.size(); i++) {
+//                    Place currentClassRoom = availableClassroomList.get(i);
+//                    if (currentClassRoom.getPosition().getFloor() == mapHelper.getMapFloor()) {
+//                        classRoomsToRemove.add(currentClassRoom);
+//                        classWithDistances.add(
+//                                new Pair<>(
+//                                        currentClassRoom,
+//                                        mapHelper.pathFrom(currentPosition,
+//                                                new Pair<>(
+//                                                        currentClassRoom.getPosition().getPositionX(),
+//                                                        currentClassRoom.getPosition().getPositionY())
+//                                        ).second));
+//                    }
+//                }
+//                availableClassroomList.removeAll(classRoomsToRemove);
+//                Collections.sort(classWithDistances, new Comparator<Pair<Place, Integer>>() {
+//                    public int compare(Pair<Place, Integer> o1, Pair<Place, Integer> o2) {
+//                        if (o1.second < o2.second) {
+//                            return -1;
+//                        } else {
+//                            if (o1.second > o2.second) {
+//                                return 0;
+//                            } else {
+//                                return 0;
+//                            }
+//                        }
+//                    }
+//                });
+//                for (int i = classWithDistances.size() - 1; i >= 0; i--) {
+//                    availableClassroomList.add(0, classWithDistances.get(i).first);
+//                    Log.d(TAG, "getAvailableClassroomList: " + classWithDistances.get(i).second);
+//                }
+//            }
+//        }
+//        return availableClassroomList;
+//    }
+
+    public static ArrayList<Place> getAvailableClassroomList() {
+        ArrayList<Place> classesAsPlaces = new ArrayList<>();
+        for (int i = 0; i < classRooms.size(); i++) {
+            classesAsPlaces.add(classRooms.get(i));
+        }
+        availableClassroomList = AppUtils.sortByClosest(classesAsPlaces);
+        return availableClassroomList;
     }
 
     public static String[] getClassroomsAsStrings() {
@@ -158,14 +165,6 @@ public class ClassRoom extends Place {
 
     public static void setClassRooms(ArrayList<ClassRoom> classRooms) {
         ClassRoom.classRooms = classRooms;
-    }
-
-    public boolean isFree() {
-        return isFree;
-    }
-
-    public void setFree(boolean free) {
-        isFree = free;
     }
 
     public static JSONObject getJsonFromClassRooms() {
@@ -231,15 +230,7 @@ public class ClassRoom extends Place {
     }
 
     public static void askForAvailableClassRooms() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            long currentTime = System.currentTimeMillis();
-            jsonObject.put(CURRENT_TIME, currentTime);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        // TODO rename this according to Guilhem's name
-        HTTPRequestManager.doPostRequest(GET_AVAILABLE_CLASS_ROOMS_PHP, jsonObject.toString(),
+        HTTPRequestManager.doPostRequest(GET_ROOMS_PHP, "",
                 SearchFragment.httpRequestInterface, HTTPRequestManager.AVAILABLE_CLASSROOMS);
     }
 
@@ -255,25 +246,29 @@ public class ClassRoom extends Place {
     }
 
     public static void onAvailableRequestDone(String result) {
-        JSONObject jsonObject;
-        try {
-            jsonObject = new JSONObject(result);
-            JSONArray availableClassJsonArray = jsonObject.getJSONArray(AVAILABLE);
-            if (availableClassroomList == null) {
-                availableClassroomList = new ArrayList<>();
+        if (result.equals("Error")) {
+            // if there is a connection timeout
+        } else {
+            JSONObject jsonObject;
+            try {
+                jsonObject = new JSONObject(result);
+                String state = jsonObject.getString(STATE);
+                if (state.equals(TRUE)) {
+                    JSONArray availableClassJsonArray = jsonObject.getJSONArray(AVAILABLE);
+                    if (availableClassroomList == null) {
+                        availableClassroomList = new ArrayList<>();
+                    }
+                    availableClassroomList.clear();
+                    for (int i = 0; i < availableClassJsonArray.length(); i++) {
+                        ClassRoom classRoomAvailable = ClassRoom.getClassRoomCalled((String) availableClassJsonArray.get(i));
+                        availableClassroomList.add(classRoomAvailable);
+                    }
+                } else {
+                    // if the request failed
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            availableClassroomList.clear();
-            for (int i = 0; i < availableClassJsonArray.length(); i++) {
-                JSONObject currentAvailableClassroom = availableClassJsonArray.getJSONObject(i);
-                String name = currentAvailableClassroom.getString(NAME);
-                int posX = currentAvailableClassroom.getInt(POS_X);
-                int posY = currentAvailableClassroom.getInt(POS_Y);
-                int floor = currentAvailableClassroom.getInt(FLOOR);
-                availableClassroomList.add(
-                        new ClassRoom(name,new Position(posX,posY,floor),true));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 
@@ -299,5 +294,23 @@ public class ClassRoom extends Place {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ClassRoom getClassRoomCalled(String classRoomName) {
+        for (int i = 0; i < classRooms.size(); i++) {
+            ClassRoom currentClassRoom = classRooms.get(i);
+            if (currentClassRoom.getName().equals(classRoomName)) {
+                return currentClassRoom;
+            }
+        }
+        return null;
+    }
+
+    public boolean isFree() {
+        return isFree;
+    }
+
+    public void setFree(boolean free) {
+        isFree = free;
     }
 }

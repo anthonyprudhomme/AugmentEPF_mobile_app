@@ -257,6 +257,20 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             averageHeading += 360;
         }
         this.currentHeading = averageHeading;
+
+        // This part is used to show User direction on Localization Fragment
+        if (currentMap != null) {
+            double correctedHeading = -(this.headingGyro - this.currentMap.heading);
+            if (correctedHeading > 360) {
+                correctedHeading -= 360;
+            }
+            if (correctedHeading < 0) {
+                correctedHeading += 360;
+            }
+            for (int i = 0; i < observers.size(); i++) {
+                observers.get(i).onOrientationChange(correctedHeading);
+            }
+        }
         // TODO uncomment this
         //this.directionCandidates = this.directionsForHeading(this.currentHeading-currentMap.heading);
     }
@@ -896,7 +910,9 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     public void setTarget(Pair<Integer, Integer> target, int floor) {
         this.target = target;
         this.floorTarget = floor;
-
+        if (currentUserLocation != null) {
+            this.definePathTo(currentUserLocation.indexPath, target, floorTarget);
+        }
     }
 
     @Override

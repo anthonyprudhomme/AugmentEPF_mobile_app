@@ -57,7 +57,6 @@ public class Path {
         this.arrivalDate = arrivalDate;
     }
 
-
     public Position getDeparture() {
         return departure;
     }

@@ -32,17 +32,19 @@ public class MapAnimation extends Animation {
 
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation transformation) {
-        int movementY = (int) (oldPosition.first + ((newPosition.first - oldPosition.first) * interpolatedTime));
-        int movementX = (int) (oldPosition.second + ((newPosition.second - oldPosition.second) * interpolatedTime));
-        float angleMovement = (oldAngle + ((newAngle - oldAngle) * interpolatedTime));
-        final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mapContainer.getLayoutParams();
-        mapContainer.setPivotX(movementX);
-        mapContainer.setPivotY(movementY);
-        mapContainer.setScaleX(1 / angleMovement);
-        mapContainer.setScaleY(1 / angleMovement);
-        layoutParams.leftMargin = screenWidth / 2 - movementX;
-        layoutParams.topMargin = screenHeight / 2 - movementY;
-        mapContainer.setLayoutParams(layoutParams);
-        mapContainer.requestLayout();
+        if (newPosition != null && oldPosition != null) {
+            int movementY = (int) (oldPosition.first + ((newPosition.first - oldPosition.first) * interpolatedTime));
+            int movementX = (int) (oldPosition.second + ((newPosition.second - oldPosition.second) * interpolatedTime));
+            float angleMovement = (oldAngle + ((newAngle - oldAngle) * interpolatedTime));
+            final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mapContainer.getLayoutParams();
+            mapContainer.setPivotX(movementX);
+            mapContainer.setPivotY(movementY);
+            mapContainer.setScaleX(1 / angleMovement);
+            mapContainer.setScaleY(1 / angleMovement);
+            layoutParams.leftMargin = screenWidth / 2 - movementX;
+            layoutParams.topMargin = screenHeight / 2 - movementY;
+            mapContainer.setLayoutParams(layoutParams);
+            mapContainer.requestLayout();
+        }
     }
 }

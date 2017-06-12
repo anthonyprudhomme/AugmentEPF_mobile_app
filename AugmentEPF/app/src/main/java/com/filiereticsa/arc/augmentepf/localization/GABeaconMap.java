@@ -6,7 +6,6 @@ import android.util.Pair;
 
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
-import com.filiereticsa.arc.augmentepf.fragments.SearchFragment;
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
@@ -24,31 +23,14 @@ import java.util.Map;
  */
 public class GABeaconMap {
 
-    private static final String TAG = "Ici";
     public static final String FLOOR_ACCESS_TYPE = "floorAccessType";
     public static final String FLOOR_ACCESS_X_POS = "floorAccessXPos";
     public static final String FLOOR_ACCESS_Y_POS = "floorAccessYPos";
     public static final String FLOOR_POSSIBILITY = "floorPossibility";
     public static final String FLOOR_ACCESS_POSSIBILITIES = "floorAccessPossibilities";
-    public static HashMap<Integer, GABeaconMap> maps;
-    public static ArrayList<GABeaconMap> mapsArrayList;
-    double heading = 0;
-    // Image url and image
-    String imagePath;
-    private int id;
-    private Pair<Integer, Integer> dimensions = new Pair<>(0, 0);
-    private int floor = 0;
-    private int nbRow = 0;
-    private int nbCol = 0;
-    private int imageResId;
-    // Mapping between ids and map items
-    private Map<Integer, MapItem> itemIdsToMapItems = new HashMap<>();
-    // Map items accessor
-    private ArrayList<MapItem> mapItems = null;
-    private ArrayList<FloorAccess> floorAccesses;
-
+    private static final String TAG = "Ici";
     private static final String MAP_JSON = "maps.json";
-    private static final String URL = "getMaps.php";
+    private static final String URL = "getMap.php";
     private static final String MAP = "map";
     private static final String HEADING = "heading";
     private static final String ID = "id";
@@ -62,11 +44,12 @@ public class GABeaconMap {
     private static final String YES = "y";
     private static final String NO = "n";
     private static final String MESSAGE = "message";
-
     private static final String ITEM_ID = "item_id";
     private static final String ITEM_TYPE = "type";
     private static final String POS_X = "posX";
     private static final String POS_Y = "pos_y";
+    public static HashMap<Integer, GABeaconMap> maps;
+    public static ArrayList<GABeaconMap> mapsArrayList;
 
     static {
         if (maps == null) {
@@ -87,13 +70,13 @@ public class GABeaconMap {
         }
 
         //Montée du couloir avec escaliers sur la gauche
-        for (int i = 10; i >= 3; i--) {
+        for (int i = 10; i >= 4; i--) {
             mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(19, i)));
         }
 
         //Passage avec l'ascenseur
         for (int i = 20; i <= 30; i++) {
-            mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 3)));
+            mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 4)));
         }
 
         //Descente avec escaliers à droite
@@ -106,7 +89,7 @@ public class GABeaconMap {
         }
 
         //Escaliers droite
-        for (int i = 31; i <= 37; i++) {
+        for (int i = 32; i <= 37; i++) {
             mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 4)));
         }
         for (int i = 5; i <= 7; i++) {
@@ -166,7 +149,7 @@ public class GABeaconMap {
         }
 
         //Passage avec l'ascenseur
-        for (int i = 20; i <= 30; i++) {
+        for (int i = 20; i <= 29; i++) {
             mapItems.add(new MapItem(j++, MapItem.MapItemType.Free, new Pair<>(i, 5)));
         }
 
@@ -246,6 +229,21 @@ public class GABeaconMap {
         mapsArrayList = new ArrayList<>(maps.values());
     }
 
+    double heading = 0;
+    // Image url and image
+    String imagePath;
+    private int id;
+    private Pair<Integer, Integer> dimensions = new Pair<>(0, 0);
+    private int floor = 0;
+    private int nbRow = 0;
+    private int nbCol = 0;
+    private int imageResId;
+    // Mapping between ids and map items
+    private Map<Integer, MapItem> itemIdsToMapItems = new HashMap<>();
+    // Map items accessor
+    private ArrayList<MapItem> mapItems = null;
+    private ArrayList<FloorAccess> floorAccesses;
+
     public GABeaconMap(double heading, int id,
                        int floor, int nbRow, int nbCol, int imageResId,
                        ArrayList<MapItem> mapItems, ArrayList<FloorAccess> floorAccesses) {
@@ -259,24 +257,6 @@ public class GABeaconMap {
         this.mapItems = mapItems;
         this.floorAccesses = floorAccesses;
     }
-
-//    public GABeaconMap(int id) {
-//        if (maps == null) {
-//            maps = new HashMap<>();
-//        }
-//        this.id = id;
-//        int j = 0;
-//        switch (id) {
-//            case 2:
-//
-//                break;
-//
-//            case 1:
-//
-//                break;
-//        }
-//        maps.put(this.id, this);
-//    }
 
     // JSON from server
     public GABeaconMap(JSONObject jsonObject) {
@@ -348,59 +328,6 @@ public class GABeaconMap {
 
     }
 
-    // Map Items Dictionary representation:
-    //  - key  : index path with item coordinates (x,y)
-    //  - value: a MapItem object
-    public ArrayList<MapItem> mapItemsAtIndexPath(Pair<Integer, Integer> indexPath) {
-        ArrayList<MapItem> listToReturn = new ArrayList<>();
-        for (int i = 0; i < getMapItems().size(); i++) { //O(n x (n + 1))
-            MapItem mapItem = getMapItems().get(i); //O(1)
-            if (mapItem.coordinates.first.equals(indexPath.first) && mapItem.coordinates.second.equals(indexPath.second)) {
-                listToReturn.add(mapItem); //O(n)
-            }
-        }
-        return listToReturn;
-    }
-
-    // Path to image
-
-    // MARK - Initializers
-
-    public MapItem mapItemWithId(int id) {
-        return itemIdsToMapItems.get(id);
-    }
-
-    public ArrayList<MapItem> getMapItems() {
-        if (mapItems == null) {
-            mapItems = new ArrayList<>(itemIdsToMapItems.values());
-        }
-        return mapItems;
-    }
-
-    public int getImageResId() {
-        return imageResId;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public Pair<Integer, Integer> getMapDimensions() {
-        return new Pair<>(nbRow, nbCol);
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public int getFloor() {
-        return floor;
-    }
-
-    public ArrayList<FloorAccess> getFloorAccesses() {
-        return floorAccesses;
-    }
-
     public static JSONObject getJsonFromMaps() {
         JSONObject mapsAsJsonObject = new JSONObject();
         JSONArray mapsAsJsonArray = new JSONArray();
@@ -439,10 +366,10 @@ public class GABeaconMap {
                     for (int k = 0; k < floorAccess.getFloorsPossibilities().size(); k++) {
                         int floor = floorAccess.getFloorsPossibilities().get(k);
                         JSONObject floorPossibilityJson = new JSONObject();
-                        floorPossibilityJson.put(FLOOR_POSSIBILITY,floor);
+                        floorPossibilityJson.put(FLOOR_POSSIBILITY, floor);
                         floorPossibilities.put(floorPossibilityJson);
                     }
-                    floorAccessJson.put(FLOOR_ACCESS_POSSIBILITIES,floorPossibilities);
+                    floorAccessJson.put(FLOOR_ACCESS_POSSIBILITIES, floorPossibilities);
 
                     floorAccessesJsonArray.put(floorAccessJson);
                 }
@@ -460,6 +387,10 @@ public class GABeaconMap {
         }
         return mapsAsJsonObject;
     }
+
+    // Path to image
+
+    // MARK - Initializers
 
     public static void onMapsRequestDone(String result) {
         JSONObject jsonObject;
@@ -496,9 +427,7 @@ public class GABeaconMap {
     }
 
     public static void askForMaps() {
-        JSONObject jsonObject = new JSONObject();
-        // TODO rename this according to Guilhem's name
-        HTTPRequestManager.doPostRequest(URL, jsonObject.toString(),
+        HTTPRequestManager.doPostRequest(URL, "",
                 HomePageActivity.httpRequestInterface, HTTPRequestManager.MAPS);
     }
 
@@ -529,7 +458,7 @@ public class GABeaconMap {
             for (int i = 0; i < mapAsJsonArray.length(); i++) {
 
                 JSONObject currentMapJsonObject = mapAsJsonArray.getJSONObject(i);
-                Log.d(TAG, "loadMapsFromJson: "+currentMapJsonObject.toString());
+                Log.d(TAG, "loadMapsFromJson: " + currentMapJsonObject.toString());
                 GABeaconMap map = new GABeaconMap(currentMapJsonObject);
                 mapsArrayList.add(map);
                 maps.put(map.getId(), map);
@@ -537,6 +466,55 @@ public class GABeaconMap {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    // Map Items Dictionary representation:
+    //  - key  : index path with item coordinates (x,y)
+    //  - value: a MapItem object
+    public ArrayList<MapItem> mapItemsAtIndexPath(Pair<Integer, Integer> indexPath) {
+        ArrayList<MapItem> listToReturn = new ArrayList<>();
+        for (int i = 0; i < getMapItems().size(); i++) { //O(n x (n + 1))
+            MapItem mapItem = getMapItems().get(i); //O(1)
+            if (mapItem.coordinates.first.equals(indexPath.first) && mapItem.coordinates.second.equals(indexPath.second)) {
+                listToReturn.add(mapItem); //O(n)
+            }
+        }
+        return listToReturn;
+    }
+
+    public MapItem mapItemWithId(int id) {
+        return itemIdsToMapItems.get(id);
+    }
+
+    public ArrayList<MapItem> getMapItems() {
+        if (mapItems == null) {
+            mapItems = new ArrayList<>(itemIdsToMapItems.values());
+        }
+        return mapItems;
+    }
+
+    public int getImageResId() {
+        return imageResId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Pair<Integer, Integer> getMapDimensions() {
+        return new Pair<>(nbRow, nbCol);
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public int getFloor() {
+        return floor;
+    }
+
+    public ArrayList<FloorAccess> getFloorAccesses() {
+        return floorAccesses;
     }
 
     public int getNbRow() {

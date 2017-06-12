@@ -19,18 +19,16 @@ import java.util.ArrayList;
  */
 public class GABeacon {
 
-    private static final String TAG = "Ici";
-    private final static double LIMIT_UNKNOWN_IMMEDIATE = 0;
-    private final static double LIMIT_IMMEDIATE_NEAR = 0.5;
-    private final static double LIMIT_NEAR_FAR = 3;
     public static final String ID_USER = "idUser";
     public static final String TOKEN = "token";
     public static final String CONTENT_TYPE = "contentType";
     public static final String RESULT = "result";
-    public static ArrayList<GABeacon> allBeacons;
-    private static int proximityHistorySize = 3;
-
     public static final String URL = "getElementAdministration.php";
+    public static final String EMBCUUID = "699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012";
+    private static final String TAG = "Ici";
+    private final static double LIMIT_UNKNOWN_IMMEDIATE = 0;
+    private final static double LIMIT_IMMEDIATE_NEAR = 0.5;
+    private final static double LIMIT_NEAR_FAR = 3;
     private static final String BEACON_JSON = "beacons.json";
     private static final String BEACON = "beacon";
     private static final String UUID = "uuid";
@@ -43,8 +41,8 @@ public class GABeacon {
     private static final String VALIDATE = "validate";
     private static final String YES = "y";
     private static final String NO = "n";
-
-    public static final String EMBCUUID = "699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012";
+    public static ArrayList<GABeacon> allBeacons;
+    private static int proximityHistorySize = 3;
 
     static {
         allBeacons = new ArrayList<>();
@@ -53,7 +51,7 @@ public class GABeacon {
         allBeacons.add(new GABeacon(EMBCUUID, 3, 42194, 8, 10, 2));
         allBeacons.add(new GABeacon(EMBCUUID, 3, 43216, 12, 10, 2));
         allBeacons.add(new GABeacon(EMBCUUID, 3, 43364, 19, 6, 2));
-        allBeacons.add(new GABeacon(EMBCUUID, 1, 40935, 25, 3, 2));
+        allBeacons.add(new GABeacon(EMBCUUID, 1, 40935, 25, 4, 2));
         allBeacons.add(new GABeacon(EMBCUUID, 3, 43348, 31, 6, 2));
         allBeacons.add(new GABeacon(EMBCUUID, 3, 44067, 31, 10, 2));
         allBeacons.add(new GABeacon(EMBCUUID, 1, 39757, 39, 10, 2));
@@ -73,9 +71,9 @@ public class GABeacon {
         //allBeacons.add(new GABeacon(UUID, 3, 44020, "BeaconName6", "White", 10, 31, 3, 2));
     }
 
-    public int xCoord;
-    public int yCoord;
     public Pair<Integer, Integer> mapIndexPath;
+    private int xCoord;
+    private int yCoord;
     private String name;
     private double accuracy = -1;
     private String proximity = "Unknown";
@@ -110,6 +108,131 @@ public class GABeacon {
         }
     }
 
+    public static int getProximityHistorySize() {
+        return proximityHistorySize;
+    }
+
+    public static GABeacon findBeacon(Beacon altBeacon) {
+        for (int i = 0; i < allBeacons.size(); i++) {
+            GABeacon beacon = allBeacons.get(i);
+            if (altBeacon.getId2().toInt() == -1) {
+
+                if (beacon.getUuid().equalsIgnoreCase(altBeacon.getId1().toString())
+                        && beacon.getMinor() == altBeacon.getId3().toInt()) {
+                    beacon.setDistance(altBeacon.getDistance());
+                    return beacon;
+                } else {
+                    return null;
+                }
+            }
+            if (beacon.getUuid().equalsIgnoreCase(altBeacon.getId1().toString())
+                    && beacon.getMinor() == altBeacon.getId3().toInt()
+                    && beacon.getMajor() == altBeacon.getId2().toInt()) {
+                beacon.setDistance(altBeacon.getDistance());
+                return beacon;
+            }
+        }
+        return null;
+    }
+
+    public static JSONObject getJsonFromBeacons() {
+        JSONObject beaconAsJsonObject = new JSONObject();
+        JSONArray beaconAsJsonArray = new JSONArray();
+        for (int i = 0; i < allBeacons.size(); i++) {
+            GABeacon currentBeacon = allBeacons.get(i);
+            JSONObject currentBeaconJson = new JSONObject();
+            try {
+                currentBeaconJson.put(UUID, currentBeacon.getUuid());
+                currentBeaconJson.put(FLOOR, currentBeacon.getMapId());
+                currentBeaconJson.put(POS_X, currentBeacon.getMapIndexPath().first);
+                currentBeaconJson.put(POS_Y, currentBeacon.getMapIndexPath().second);
+                currentBeaconJson.put(MINOR, currentBeacon.getMinor());
+                currentBeaconJson.put(MAJOR, currentBeacon.getMajor());
+
+                beaconAsJsonArray.put(currentBeaconJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            beaconAsJsonObject.put(BEACON, beaconAsJsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return beaconAsJsonObject;
+    }
+
+    public static void onBeaconRequestDone(String result) {
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(result);
+            JSONArray beaconJsonArray = jsonObject.getJSONArray(RESULT);
+            if (allBeacons == null) {
+                allBeacons = new ArrayList<>();
+            }
+            allBeacons.clear();
+            for (int i = 0; i < beaconJsonArray.length(); i++) {
+                JSONObject currentBeaconJson = beaconJsonArray.getJSONObject(i);
+                int major = currentBeaconJson.getInt(MAJOR);
+                int minor = currentBeaconJson.getInt(MINOR);
+                int posX = currentBeaconJson.getInt(POS_X);
+                int posY = currentBeaconJson.getInt(POS_Y);
+                int floor = currentBeaconJson.getInt(FLOOR);
+                allBeacons.add(
+                        new GABeacon(EMBCUUID, major, minor, posX, posY, floor));
+            }
+            GABeacon.saveBeaconsToFile();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void askForBeacons() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(CONTENT_TYPE, "beacon");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        HTTPRequestManager.doPostRequest(URL, jsonObject.toString(),
+                HomePageActivity.httpRequestInterface, HTTPRequestManager.BEACONS);
+    }
+
+    public static void saveBeaconsToFile() {
+        FileManager fileManager = new FileManager(null, BEACON_JSON);
+        fileManager.saveFile(getJsonFromBeacons().toString());
+    }
+
+    public static void loadBeaconsFromFile() {
+        FileManager fileManager = new FileManager(null, BEACON_JSON);
+        String data = fileManager.readFile();
+        if (data != null && !data.equals("")) {
+            try {
+                JSONObject jsonObject = new JSONObject(data);
+                GABeacon.loadBeaconsFromJson(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void loadBeaconsFromJson(JSONObject beaconAsJson) {
+        allBeacons = new ArrayList<>();
+        JSONArray beaconAsJsonArray;
+        try {
+            beaconAsJsonArray = beaconAsJson.getJSONArray(BEACON);
+            for (int i = 0; i < beaconAsJsonArray.length(); i++) {
+                JSONObject currentBeaconJsonObject = beaconAsJsonArray.getJSONObject(i);
+                GABeacon gaBeacon = new GABeacon(currentBeaconJsonObject);
+                allBeacons.add(gaBeacon);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public int getMapId() {
         return mapId;
     }
@@ -128,6 +251,14 @@ public class GABeacon {
 
     public int getMinor() {
         return minor;
+    }
+
+    public int getxCoord() {
+        return xCoord;
+    }
+
+    public int getyCoord() {
+        return yCoord;
     }
 
     public String getName() {
@@ -161,33 +292,6 @@ public class GABeacon {
 
     public double getAccuracy() {
         return accuracy;
-    }
-
-    public static int getProximityHistorySize() {
-        return proximityHistorySize;
-    }
-
-    public static GABeacon findBeacon(Beacon altBeacon) {
-        for (int i = 0; i < allBeacons.size(); i++) {
-            GABeacon beacon = allBeacons.get(i);
-            if (altBeacon.getId2().toInt() == -1) {
-
-                if (beacon.getUuid().equalsIgnoreCase(altBeacon.getId1().toString())
-                        && beacon.getMinor() == altBeacon.getId3().toInt()) {
-                    beacon.setDistance(altBeacon.getDistance());
-                    return beacon;
-                } else {
-                    return null;
-                }
-            }
-            if (beacon.getUuid().equalsIgnoreCase(altBeacon.getId1().toString())
-                    && beacon.getMinor() == altBeacon.getId3().toInt()
-                    && beacon.getMajor() == altBeacon.getId2().toInt()) {
-                beacon.setDistance(altBeacon.getDistance());
-                return beacon;
-            }
-        }
-        return null;
     }
 
     private String getProximityFromDistance(double distance) {
@@ -239,104 +343,6 @@ public class GABeacon {
         proximityHistory.add(proximity);
         if (proximity.equals("Unknown") && (!hasConsecutiveProximity("Unknown", proximityHistorySize))) {
             proximity = lastProximity;
-        }
-    }
-
-    public static JSONObject getJsonFromBeacons() {
-        JSONObject beaconAsJsonObject = new JSONObject();
-        JSONArray beaconAsJsonArray = new JSONArray();
-        for (int i = 0; i < allBeacons.size(); i++) {
-            GABeacon currentBeacon = allBeacons.get(i);
-            JSONObject currentBeaconJson = new JSONObject();
-            try {
-                currentBeaconJson.put(UUID, currentBeacon.getUuid());
-                currentBeaconJson.put(FLOOR, currentBeacon.getMapId());
-                currentBeaconJson.put(POS_X, currentBeacon.getMapIndexPath().first);
-                currentBeaconJson.put(POS_Y, currentBeacon.getMapIndexPath().second);
-                currentBeaconJson.put(MINOR, currentBeacon.getMinor());
-                currentBeaconJson.put(MAJOR, currentBeacon.getMajor());
-
-                beaconAsJsonArray.put(currentBeaconJson);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            beaconAsJsonObject.put(BEACON, beaconAsJsonArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return beaconAsJsonObject;
-    }
-
-    public static void onBeaconRequestDone(String result) {
-        JSONObject jsonObject;
-        try {
-            jsonObject = new JSONObject(result);
-            JSONArray beaconJsonArray = jsonObject.getJSONArray(RESULT);
-            if (allBeacons == null) {
-                allBeacons = new ArrayList<>();
-            }
-            allBeacons.clear();
-            for (int i = 0; i < beaconJsonArray.length(); i++) {
-                JSONObject currentBeaconJson = beaconJsonArray.getJSONObject(i);
-                int major = currentBeaconJson.getInt(MAJOR);
-                int minor = currentBeaconJson.getInt(MINOR);
-                int posX = currentBeaconJson.getInt(POS_X);
-                int posY = currentBeaconJson.getInt(POS_Y);
-                int floor = currentBeaconJson.getInt(FLOOR);
-                allBeacons.add(
-                        new GABeacon(EMBCUUID,major,minor,posX,posY,floor));
-            }
-            GABeacon.saveBeaconsToFile();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public static void askForBeacons() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put(CONTENT_TYPE, "beacon");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        HTTPRequestManager.doPostRequest(URL, jsonObject.toString(),
-                HomePageActivity.httpRequestInterface, HTTPRequestManager.BEACONS);
-    }
-
-    public static void saveBeaconsToFile() {
-        FileManager fileManager = new FileManager(null, BEACON_JSON);
-        fileManager.saveFile(getJsonFromBeacons().toString());
-    }
-
-    public static void loadBeaconsFromFile() {
-        FileManager fileManager = new FileManager(null, BEACON_JSON);
-        String data = fileManager.readFile();
-        if (data != null && !data.equals("")) {
-            try {
-                JSONObject jsonObject = new JSONObject(data);
-                GABeacon.loadBeaconsFromJson(jsonObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static void loadBeaconsFromJson(JSONObject beaconAsJson) {
-        allBeacons = new ArrayList<>();
-        JSONArray beaconAsJsonArray;
-        try {
-            beaconAsJsonArray = beaconAsJson.getJSONArray(BEACON);
-            for (int i = 0; i < beaconAsJsonArray.length(); i++) {
-                JSONObject currentBeaconJsonObject = beaconAsJsonArray.getJSONObject(i);
-                GABeacon gaBeacon = new GABeacon(currentBeaconJsonObject);
-                allBeacons.add(gaBeacon);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 

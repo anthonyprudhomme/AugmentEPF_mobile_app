@@ -2,7 +2,6 @@ package com.filiereticsa.arc.augmentepf.localization;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -21,20 +20,19 @@ import java.util.ArrayList;
 public class MapItem {
 
     private static final String TAG = "Ici";
-    MapItemType type = MapItemType.Free;
-    String name;
-    String imageUrl;
-    Bitmap image;
-    // Coordinates
-    Pair<Integer, Integer> coordinates = new Pair<>(0, 0);
-    private int id = 0;
-    // Returns view for item
-    private ImageView view;
-
     private static final String ITEM_ID = "item_id";
     private static final String ITEM_TYPE = "type";
     private static final String POS_X = "posX";
     private static final String POS_Y = "pos_y";
+    // Coordinates
+    public Pair<Integer, Integer> coordinates = new Pair<>(0, 0);
+    MapItemType type = MapItemType.Free;
+    String name;
+    String imageUrl;
+    Bitmap image;
+    private int id = 0;
+    // Returns view for item
+    private ImageView view;
 
     public MapItem(int id, MapItemType type, Pair<Integer, Integer> coordinates) {
         this.id = id;

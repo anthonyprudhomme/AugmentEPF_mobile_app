@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
@@ -27,15 +26,15 @@ public class OptionsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (HomePageActivity.isUserConnected){
+        if (HomePageActivity.isUserConnected) {
             imageButton.setText(R.string.logout);
         }
     }
 
     public void changeLoginButtonText() {
-        if (HomePageActivity.isUserConnected){
+        if (HomePageActivity.isUserConnected) {
             imageButton.setText(R.string.logout);
-        }else{
+        } else {
             imageButton.setText(R.string.connect);
         }
     }

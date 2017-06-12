@@ -1,9 +1,6 @@
 package com.filiereticsa.arc.augmentepf.adapters;
 
 import android.content.Context;
-import android.provider.ContactsContract;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +14,8 @@ import com.filiereticsa.arc.augmentepf.models.Place;
 import com.filiereticsa.arc.augmentepf.models.PlannedPath;
 import com.filiereticsa.arc.augmentepf.models.Position;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by ARC© Team for AugmentEPF project on 07/06/2017.
@@ -57,11 +50,13 @@ public class HistoryListAdapter extends ArrayAdapter<Path> {
         Path path = getItem(position);
 
         if (path != null) {
+
             // Set the corresponding item view graphics elements for either planned or history path
             // If path is an instance of PlannedPath
             if (path instanceof PlannedPath) {
                 coloredBar.setBackgroundResource(R.color.colorPrimary);
                 historyIcon.setBackgroundResource(R.drawable.planned_icon);
+
             } else { // else path is an history path
                 coloredBar.setBackgroundResource(R.color.colorLightGrey);
                 historyIcon.setBackgroundResource(R.drawable.history_icon);
@@ -72,7 +67,7 @@ public class HistoryListAdapter extends ArrayAdapter<Path> {
             Place arrival = path.getArrival();
 
             // Set the texts in the view
-            // departureName.setText(departure.getName());
+            // TODO /!\ departureName.setText(departure.getName());
             arrivalName.setText(arrival.getName());
 
             // Set the time format
@@ -90,7 +85,6 @@ public class HistoryListAdapter extends ArrayAdapter<Path> {
 
             // Set the date in the corresponding textView
             startDate.setText(date);
-
         }
 
         return view;

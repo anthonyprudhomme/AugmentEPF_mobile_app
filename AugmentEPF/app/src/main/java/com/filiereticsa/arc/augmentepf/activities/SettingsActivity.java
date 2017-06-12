@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -150,6 +151,8 @@ public class SettingsActivity
             userTypeButton.setSummary(R.string.userTypeAnonym);
         }
         /*========================================================================================*/
+
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
     }
 
     public void checkChangeEmail(String newEmail, String confirmEmail, String password) {
@@ -173,9 +176,9 @@ public class SettingsActivity
             Toast.makeText(this, R.string.emailChangeOk, Toast.LENGTH_SHORT).show();
             // Set it on the server
             setSettings(SettingsType.EMAIL, newEmail);
-        } else if (emailOk == false) {
+        } else if (!emailOk) {
             Toast.makeText(this, R.string.emailChangeProblemEmail, Toast.LENGTH_SHORT).show();
-        } else if (pwOk == false) {
+        } else if (!pwOk) {
             Toast.makeText(this, R.string.emailChangeProblemPw, Toast.LENGTH_SHORT).show();
         }
     }

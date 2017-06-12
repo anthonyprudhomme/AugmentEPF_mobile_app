@@ -14,15 +14,14 @@ import java.util.ArrayList;
 
 public class FloorAccess {
 
-    private Pair<Integer, Integer> position;
-    private FloorAccessType floorAccessType;
-    private ArrayList<Integer> floorsPossibilities;
-
     public static final String FLOOR_ACCESS_TYPE = "floorAccessType";
     public static final String FLOOR_ACCESS_X_POS = "floorAccessXPos";
     public static final String FLOOR_ACCESS_Y_POS = "floorAccessYPos";
     public static final String FLOOR_POSSIBILITY = "floorPossibility";
     public static final String FLOOR_ACCESS_POSSIBILITIES = "floorAccessPossibilities";
+    private Pair<Integer, Integer> position;
+    private FloorAccessType floorAccessType;
+    private ArrayList<Integer> floorsPossibilities;
 
     public FloorAccess(Pair<Integer, Integer> position, FloorAccessType floorAccessType, ArrayList<Integer> floorsPossibilities) {
         this.position = position;
@@ -34,7 +33,7 @@ public class FloorAccess {
         try {
             int xPos = currentFloorAccess.getInt(FLOOR_ACCESS_X_POS);
             int yPos = currentFloorAccess.getInt(FLOOR_ACCESS_Y_POS);
-            this.position = new Pair<>(xPos,yPos);
+            this.position = new Pair<>(xPos, yPos);
 
             this.floorAccessType = FloorAccessType.valueOf(currentFloorAccess.getString(FLOOR_ACCESS_TYPE));
 
@@ -60,7 +59,7 @@ public class FloorAccess {
         return floorsPossibilities;
     }
 
-    enum FloorAccessType {
+    public enum FloorAccessType {
         STAIRS,
         ELEVATOR
     }

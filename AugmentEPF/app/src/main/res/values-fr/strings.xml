@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AugmentEPF</string>
-    <string name="hello_blank_fragment" />
+
+    <string name="hello_blank_fragment">Bonjour</string>
     <string name="app_need_location">L\'application a besoin d\'accéder à votre localisation</string>
     <string name="app_need_location_message">Donnez accès à la localisation pour que l\'application puisse détecter les beacons en arrière plan</string>
     <string name="title_activity_main">MainActivity</string>
@@ -140,11 +141,11 @@
     <!--.........................................................................................-->
 
     <!-- Texts for toasts -->
-        <!-- Passwords -->
+    <!-- Passwords -->
     <string name="pwChangeOk">Mot de passe changé !</string>
     <string name="pwChangeProblemOld">Problème avec l\'ancien mot de passe</string>
     <string name="pwChangeProblemNew">Les nouveaux mots de passe ne sont pas identiques</string>
-        <!-- Email addresses -->
+    <!-- Email addresses -->
     <string name="emailChangeOk">Adresse email changée !</string>
     <string name="emailChangeProblemEmail">Les adresses email ne sont pas bonnes</string>
     <string name="emailChangeProblemPw">Ce n\'est pas le bon mot de passe</string>
@@ -164,15 +165,32 @@
     <!-- Différents modes de navigation -->
     <string-array name="navigation_array">
         <item>Plan</item>
-        <item>Compas</item>
-        <item>Trajectoire</item>
+        <item>Caméra</item>
     </string-array>
-    <!-- Valeurs associées -->
-    <string-array name="navigation_values_array">
-        <item>P</item>
-        <item>C</item>
-        <item>T</item>
-    </string-array>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+    <!--============================================================================================
+                                       Contact Menu
+   =============================================================================================-->
+
+    <string name="description">Cette application a été créée par l"'"équipe ARC dans le cadre
+    du projet AugmentEPF 2017</string>
+    <string name="partner_with">En partenariat avec</string>
+    <string name="contacts_info">Informations et contacts</string>
+    <string name="contacts_mails_left">
+        Anthony Prudhomme \n anthony.prudhomme@epfedu.fr \n \n
+        Cécile Tran \n cecile.tran@epfedu.fr \n \n
+        Hugo Ruiz \n hugo.ruiz@epfedu.fr \n \n
+        Guilhem Pequillat \n guilhem.pequillat@epfedu.fr
+
+    </string>
+    <string name="contacts_mails_right">
+        Coline Patris \n coline.patris@epfedu.fr \n \n
+        Jeremy Duong \n jeremy.duong@epfedu.fr\n \n
+        Antoine Goubin \n antoine.goubin@epfedu.fr
+    </string>
+
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
@@ -196,8 +214,60 @@
     <string name="logout">Se déconnecter</string>
     <string name="fail_epf_wifi">Veuillez utiliser le Wi-Fi de l\'EPF pour utiliser cette application</string>
     <string name="success_epf_wifi">Connecté au Wi-Fi de l\'EPF</string>
+
     <!--TODO Manage following input-->
     <string name="title_change_mail">Change your mail</string>
     <string name="title_reset_pw">Reset password</string>
     <string name="userTypeAnonym">Anonymous</string>
+
+    <string name="current">Actuel</string>
+    <string name="failed_connect_calendar">Échec de chargement du calendrier. Vérifiez que vous êtes connecté au Wi-Fi de l\'EPF.</string>
+    <string name="enter_ical">Saisissez votre lien iCal</string>
+    <string name="friday">Vendredi</string>
+    <string name="guidanceFor">pendant</string>
+    <string name="guidanceIn">dans</string>
+    <string name="guidanceMeters">mètres</string>
+    <string name="guidanceProblem">Problème avec la direction</string>
+    <string name="guidanceStraightAhead">Tout droit</string>
+    <string name="guidanceTurnLeft">Tournez à gauche</string>
+    <string name="guidanceTurnRight">Tournez à droite</string>
+    <string name="ical">iCal</string>
+    <string name="monday">Lundi</string>
+    <string name="next"><![CDATA[>>]]></string>
+    <string name="previous"><![CDATA[<<]]></string>
+    <string name="saturday">Samedi</string>
+    <string name="sunday">Dimanche</string>
+    <string name="thurday">Jeudi</string>
+    <string name="tuesday">Mardi</string>
+    <string name="wednesday">Mercredi</string>
+    <string name="to">au</string>
+    <string name="admin_activity_title">Outils Administratifs</string>
+    <string name="admin_edit_beacons">Éditer balises</string>
+    <string name="admin_edit_poi">Éditer points d\'intérêts</string>
+    <string name="admin_locate">Balise la plus proche</string>
+    <string name="admin_name">Nom :</string>
+    <string name="admin_name_missing">Nom requis</string>
+    <string name="admin_remove">Supprimer</string>
+    <string name="admin_save">Ajouter</string>
+    <string name="admin_target">Le plus proche :</string>
+    <string name="admin_target_missing">Aucun sélectionné(e)</string>
+    <string name="admin_xcoord">Coordonnée X :</string>
+    <string name="admin_ycoord">Coordonnée Y :</string>
+    <string name="confirm">Êtes-vous sûr ?</string>
+    <string name="yes">Oui</string>
+    <string name="admin_1st_floor">1er étage</string>
+    <string name="admin_2nf_floor">2ème étage</string>
+    <string name="admin_ground_floor">Rez-de-chaussée</string>
+    <string name="admin_lower_floor">Étage inférieur</string>
+    <string name="admin_detector_failed">Aucune détectée</string>
+    <string name="admin_edit_rooms">Éditer les salles</string>
+    <string name="admin_update">Mettre à jour ?</string>
+    <string name="admin_save_new">Enregistrer nouveau ?</string>
+    <string name="admin_map_error">Carte non disponible</string>
+    <string name="define_path">Définir un trajet</string>
+    <string name="go_to">"Voulez-vous allez en "</string>
+    <string name="go_to_next_class">Prochain cours</string>
+    <string name="no_next_class_found">Pas de prochain cours trouvé. Désolé...</string>
+    <string name="permission_not_granted">Désolé !!! Vous ne pouvez pas utiliser cette application sans autoriser l\'accès aux ressources du téléphone.</string>
+    <string name="zoom">Zoom</string>
 </resources>

@@ -162,7 +162,7 @@ public class GABeaconLocalizer {
                 beaconCoordinates = new Point(currentBeacon.mapIndexPath.first, currentBeacon.mapIndexPath.second);
             } else {
                 // Using coordinates
-                beaconCoordinates = new Point(currentBeacon.xCoord, currentBeacon.yCoord);
+                beaconCoordinates = new Point(currentBeacon.getxCoord(), currentBeacon.getyCoord());
             }
 
             if (currentBeacon.getAccuracy() != -1) {
