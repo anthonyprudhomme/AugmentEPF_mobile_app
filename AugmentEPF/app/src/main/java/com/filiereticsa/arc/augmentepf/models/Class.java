@@ -17,11 +17,11 @@ import java.util.Locale;
 
 public class Class {
 
-    private static final String TAG = "Ici";
     public static final String CATEGORY = "category";
     public static final String ROOM = "room";
     public static final String DATE_END = "dateEnd";
     public static final String DATE_START = "dateStart";
+    private static final String TAG = "Ici";
     private String name;
     private Date startDate;
     private Date endDate;
@@ -44,7 +44,7 @@ public class Class {
             String startDateString = jsonObject.getString(DATE_START);
             try {
                 calendar.setTime(sdf.parse(startDateString));
-                Log.d(TAG, "Class: "+calendar.getTime().toString());
+                Log.d(TAG, "Class: " + calendar.getTime().toString());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -54,7 +54,7 @@ public class Class {
             String endDateString = jsonObject.getString(DATE_END);
             try {
                 calendar.setTime(sdf.parse(endDateString));
-                Log.d(TAG, "Class: "+calendar.getTime().toString());
+                Log.d(TAG, "Class: " + calendar.getTime().toString());
             } catch (ParseException e) {
                 e.printStackTrace();
             }

@@ -31,19 +31,19 @@ import java.util.ArrayList;
 
 public class SearchFragment extends Fragment implements HTTPRequestInterface {
 
-    private static final String TAG = "Ici";
-    private static final String VALIDATE = "validate";
-    private static final String YES = "y";
     public static final String ERROR = "Error";
     public static final String STATE = "state";
     public static final String TRUE = "true";
+    private static final String TAG = "Ici";
+    private static final String VALIDATE = "validate";
+    private static final String YES = "y";
+    public static HTTPRequestInterface httpRequestInterface;
     private ListView listViewClassRoom;
     private ListView listViewPoi;
     private ArrayList<Place> availableClassroomList = new ArrayList<>();
     private ArrayList<Place> surroundingPoi = new ArrayList<>();
     private SearchListAdapter classRoomAdapter;
     private SearchListAdapter pointOfInterestAdapter;
-    public static HTTPRequestInterface httpRequestInterface;
     private AutoCompleteTextView searchInput;
 
     @Override
@@ -144,7 +144,7 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
             case HTTPRequestManager.AVAILABLE_CLASSROOMS:
                 if (result.equals(ERROR)) {
 
-                }else{
+                } else {
                     ClassRoom.onAvailableRequestDone(result);
                 }
                 break;

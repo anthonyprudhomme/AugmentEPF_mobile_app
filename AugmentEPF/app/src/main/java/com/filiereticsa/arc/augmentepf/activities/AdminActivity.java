@@ -1,6 +1,5 @@
 package com.filiereticsa.arc.augmentepf.activities;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.util.Log;
 import android.util.Pair;
-import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.Menu;
@@ -19,7 +17,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -32,6 +29,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 import com.filiereticsa.arc.augmentepf.localization.BeaconDetector;
@@ -63,21 +61,21 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     public static final String MESSAGE = "message";
     public static final String GET_ELEMENT_PHP = "getElement.php";
     public static final String RESULT = "result";
-    private static final String TAG = "Ici";
     public static final int SECOND_FLOOR = 2;
     public static final int FIRST_FLOOR = 1;
     public static final int GROUND_FLOOR = 0;
     public static final int LOWER_FLOOR = -1;
+    private static final String TAG = "Ici";
     private static final int MAX_LENGTH = 5;
-
+    public static BeaconDetectorInterface beaconDetectorInterface;
+    public boolean gestureEnabled;
     private boolean editBeacon, existing, editRoom;
     private boolean hasUserAskedForClosestBeacon = false;
-    public boolean gestureEnabled;
-    private int currentFloor, screenWidth, screenHeight, currentMapHeight, currentMapWidth, cellHeight, cellWidth, nbCol, nbRow, itemXCoord, itemYCoord;
+    private int currentFloor, currentMapHeight, currentMapWidth,
+            cellHeight, cellWidth, nbCol, nbRow, itemXCoord, itemYCoord;
     private int numberOfFingerTouchingTheScreen = 0;
     private float effectiveScale = 1f;
     private float scale = 1f;
-    public static BeaconDetectorInterface beaconDetectorInterface;
     private ImageView imageView;
     private TextView separator;
     private EditText xCoord, yCoord, poiName, beaconMajor, beaconMinor;
@@ -91,12 +89,93 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     private GABeaconMap gaBeaconMap;
     private Pair<Integer, Integer> gridDimensions;
     private FrameLayout mapContainer;
+    View.OnTouchListener mapTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            if (event.getPointerCount() == 2) {
+                Log.d(TAG, "onTouch: ");
+                Point finger1 = new Point((int) event.getX(0), (int) event.getY(0));
+                Point finger2 = new Point((int) event.getX(1), (int) event.getY(1));
+                Point middle = middlePoint(finger1, finger2);
+                if (event.getAction() != 3) {
+                    effectiveScale = scale;
+                    mapContainer.setTranslationX(mapContainer.getTranslationX() + (mapContainer.getPivotX() - middle.x) * (1 - mapContainer.getScaleX()));
+                    mapContainer.setTranslationY(mapContainer.getTranslationY() + (mapContainer.getPivotY() - middle.y) * (1 - mapContainer.getScaleY()));
+                    mapContainer.setPivotX(middle.x);
+                    mapContainer.setPivotY(middle.y);
+                    mapContainer.setScaleX(1 / effectiveScale);
+                    mapContainer.setScaleY(1 / effectiveScale);
+                }
+            }
+            return true;
+        }
+    };
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
     private GridLayout gridLayout;
     private SeekBar zoomSeekBar;
     private boolean isUserSettingScale;
+    SeekBar.OnSeekBarChangeListener zoomChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            scale = 1 - ((float) progress / 11);
+            effectiveScale = scale;
+            Log.d(TAG, "onProgressChanged: " + effectiveScale);
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mapContainer.getLayoutParams();
+            layoutParams.rightMargin = (int) (layoutParams.leftMargin - currentMapWidth * effectiveScale);
+            layoutParams.bottomMargin = (int) (layoutParams.topMargin - currentMapHeight * effectiveScale);
+            Point middle = new Point(layoutParams.rightMargin - layoutParams.leftMargin,
+                    layoutParams.bottomMargin - layoutParams.topMargin);
+            mapContainer.setTranslationX(mapContainer.getTranslationX() + (mapContainer.getPivotX() - middle.x) * (1 - mapContainer.getScaleX()));
+            mapContainer.setTranslationY(mapContainer.getTranslationY() + (mapContainer.getPivotY() - middle.y) * (1 - mapContainer.getScaleY()));
+            mapContainer.setPivotX(middle.x);
+            mapContainer.setPivotY(middle.y);
+            mapContainer.setScaleX(1 / effectiveScale);
+            mapContainer.setScaleY(1 / effectiveScale);
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            isUserSettingScale = true;
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            isUserSettingScale = false;
+        }
+    };
     private AdminItemView adminData;
+    private View.OnClickListener gridItemListener = new View.OnClickListener() {
+        public void onClick(View viewClicked) {
+            if (numberOfFingerTouchingTheScreen == 1) {
+                if (adminData != null) {
+                    adminData.unHighlight();
+                }
+                adminData = (AdminItemView) viewClicked;
+                adminData.highlight();
+                xCoord.setText(adminData.getxPos() + "");
+                yCoord.setText(adminData.getyPos() + "");
+                ArrayList<String> targetNames = adminData.getNames();
+                if (!targetNames.isEmpty()) {
+                    if (targetNames.size() == 1) {
+                        if (editBeacon) {
+                            String[] separated = targetNames.get(0).split("/");
+                            beaconMajor.setText(separated[0]);
+                            beaconMinor.setText(separated[1]);
+                        } else
+                            poiName.setText(targetNames.get(0));
+                    } else {
+                        for (int i = 0; i < targetNames.size(); i++) {
+                            if (editBeacon) {
+
+                            } else
+                                poiName.setText("multiple targets" + i);
+                        }
+                    }
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,14 +222,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         editRoom = false;
         currentFloor = 0;
         beaconDetectorInterface = this;
-
-        //Get size of current user screen
-        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        screenWidth = size.x;
-        screenHeight = size.y;
 
         mapContainer = (FrameLayout) findViewById(R.id.mapContainer);
 
@@ -281,14 +352,14 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
             float imageHeight;
             float imageWidth;
-            float heightRatio = height / screenHeight;
-            float widthRatio = width / screenWidth;
+            float heightRatio = height / AppUtils.screenHeight;
+            float widthRatio = width / AppUtils.screenWidth;
             if (heightRatio > widthRatio) {
-                imageHeight = screenHeight;
-                imageWidth = (float) (screenHeight / pictureRatio);
+                imageHeight = AppUtils.screenHeight;
+                imageWidth = (float) (AppUtils.screenHeight / pictureRatio);
             } else {
-                imageHeight = (float) ((screenWidth * pictureRatio));
-                imageWidth = (screenWidth);
+                imageHeight = (float) ((AppUtils.screenWidth * pictureRatio));
+                imageWidth = (AppUtils.screenWidth);
             }
             imageParams.height = (int) imageHeight;
             imageParams.width = (int) imageWidth;
@@ -855,6 +926,10 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         }
     }
 
+    public Point middlePoint(Point p1, Point p2) {
+        return new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
+    }
+
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
 
@@ -879,92 +954,4 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             return true;
         }
     }
-
-    public Point middlePoint(Point p1, Point p2) {
-        return new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
-    }
-
-    private View.OnClickListener gridItemListener = new View.OnClickListener() {
-        public void onClick(View viewClicked) {
-            if (numberOfFingerTouchingTheScreen == 1) {
-                if (adminData!=null){
-                    adminData.unHighlight();
-                }
-                adminData = (AdminItemView) viewClicked;
-                adminData.highlight();
-                xCoord.setText(adminData.getxPos() + "");
-                yCoord.setText(adminData.getyPos() + "");
-                ArrayList<String> targetNames = adminData.getNames();
-                if (!targetNames.isEmpty()) {
-                    if (targetNames.size() == 1) {
-                        if (editBeacon) {
-                            String[] separated = targetNames.get(0).split("/");
-                            beaconMajor.setText(separated[0]);
-                            beaconMinor.setText(separated[1]);
-                        } else
-                            poiName.setText(targetNames.get(0));
-                    } else {
-                        for (int i = 0; i < targetNames.size(); i++) {
-                            if (editBeacon) {
-
-                            } else
-                                poiName.setText("multiple targets" + i);
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    View.OnTouchListener mapTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent event) {
-            if (event.getPointerCount() == 2) {
-                Log.d(TAG, "onTouch: ");
-                Point finger1 = new Point((int) event.getX(0), (int) event.getY(0));
-                Point finger2 = new Point((int) event.getX(1), (int) event.getY(1));
-                Point middle = middlePoint(finger1, finger2);
-                if (event.getAction() != 3) {
-                    effectiveScale = scale;
-                    mapContainer.setTranslationX(mapContainer.getTranslationX() + (mapContainer.getPivotX() - middle.x) * (1 - mapContainer.getScaleX()));
-                    mapContainer.setTranslationY(mapContainer.getTranslationY() + (mapContainer.getPivotY() - middle.y) * (1 - mapContainer.getScaleY()));
-                    mapContainer.setPivotX(middle.x);
-                    mapContainer.setPivotY(middle.y);
-                    mapContainer.setScaleX(1 / effectiveScale);
-                    mapContainer.setScaleY(1 / effectiveScale);
-                }
-            }
-            return true;
-        }
-    };
-
-    SeekBar.OnSeekBarChangeListener zoomChangeListener = new SeekBar.OnSeekBarChangeListener() {
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            scale = 1 - ((float) progress / 11);
-            effectiveScale = scale;
-            Log.d(TAG, "onProgressChanged: " + effectiveScale);
-            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mapContainer.getLayoutParams();
-            layoutParams.rightMargin = (int) (layoutParams.leftMargin - currentMapWidth * effectiveScale);
-            layoutParams.bottomMargin = (int) (layoutParams.topMargin - currentMapHeight * effectiveScale);
-            Point middle = new Point(layoutParams.rightMargin - layoutParams.leftMargin,
-                    layoutParams.bottomMargin - layoutParams.topMargin);
-            mapContainer.setTranslationX(mapContainer.getTranslationX() + (mapContainer.getPivotX() - middle.x) * (1 - mapContainer.getScaleX()));
-            mapContainer.setTranslationY(mapContainer.getTranslationY() + (mapContainer.getPivotY() - middle.y) * (1 - mapContainer.getScaleY()));
-            mapContainer.setPivotX(middle.x);
-            mapContainer.setPivotY(middle.y);
-            mapContainer.setScaleX(1 / effectiveScale);
-            mapContainer.setScaleY(1 / effectiveScale);
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-            isUserSettingScale = true;
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-            isUserSettingScale = false;
-        }
-    };
 }

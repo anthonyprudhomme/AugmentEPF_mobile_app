@@ -6,16 +6,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.RectF;
-import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 
 import com.filiereticsa.arc.augmentepf.R;
@@ -31,6 +27,7 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
 
     private static final String TAG = "Ici";
     private static final int STROKE_WIDTH = 10;
+    public static int radius;
     private Paint paint;
     private Path path;
     private Pair<Integer, Integer> userPosition;
@@ -40,15 +37,12 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
     private Pair<Integer, Integer> userCoordinates = null;
     private Pair<Integer, Integer> pathCoordinates = null;
     private double heading = 0;
-
     private ArrayList<Pair<Integer, Integer>> currentPath;
     private double magneticHeading = 0;
     private String direction;
     private FloorAccess.FloorAccessType currentFloorAccesType;
-
     private Bitmap elevatorBitmap;
     private Bitmap stairBitmap;
-    public static int radius;
 
     public UserAndPathView(Context context, int height, int width) {
         super(context);

@@ -19,11 +19,10 @@ public class ICalTimeTable {
     public static final String DATE = "date";
     public static final String TAB = "tab";
     public static final String TIME_TABLE = "timeTable";
+    public static ICalTimeTable iCalInstance;
     private HashMap<String, ArrayList<Class>> classes;
     private Class nextClass = null;
     private JSONObject timeTableAsJson;
-
-    public static ICalTimeTable iCalInstance;
 
     public ICalTimeTable(HashMap<String, ArrayList<Class>> classes) {
         this.classes = classes;
@@ -117,7 +116,7 @@ public class ICalTimeTable {
     }
 
     // method that returns a string to get the current day of classes from the HashMap classes
-    public String getKeyFromCalendar(Calendar calendar){
+    public String getKeyFromCalendar(Calendar calendar) {
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);

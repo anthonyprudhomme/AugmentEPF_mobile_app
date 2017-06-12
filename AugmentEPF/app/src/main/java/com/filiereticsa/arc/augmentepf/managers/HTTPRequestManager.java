@@ -19,10 +19,6 @@ import okhttp3.Response;
 // This manager will help you handle http requests
 public class HTTPRequestManager {
 
-    private static final String TAG = "Ici";
-    private static OkHttpClient client = new OkHttpClient();
-    private static final String serverUrl = "http://192.168.206.106/AugmentEPF/php/";
-
     /*==============================================================================================
     |                                      ALL CONSTANT                                            |
     ==============================================================================================*/
@@ -40,6 +36,9 @@ public class HTTPRequestManager {
     public static final int ELEMENT = 11;
     public static final int ICAL = 12;
     public static final int NEXT_COURSE = 13;
+    private static final String TAG = "Ici";
+    private static final String serverUrl = "http://192.168.206.106/AugmentEPF/php/";
+    private static OkHttpClient client = new OkHttpClient();
 
 
     /*==============================================================================================
@@ -127,6 +126,21 @@ public class HTTPRequestManager {
         return response.body().string();
     }
 
+    public static boolean checkConnectionToEPFServer() {
+        try {
+            return InetAddress.getByName(serverUrl).isReachable(2000);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public enum RequestType {
+        POST,
+        GET,
+        CHECK
+    }
+
     // This class will send the request as an asynchronous task in order to avoid crash :
     // You can't do HTTP Request on the UIThread, that's why there is this class
     private static class HttpAsyncTask extends AsyncTask<RequestParameter, Void, String> {
@@ -203,20 +217,5 @@ public class HTTPRequestManager {
             this.observer = observer;
             this.requestId = requestId;
         }
-    }
-
-    public enum RequestType {
-        POST,
-        GET,
-        CHECK
-    }
-
-    public static boolean checkConnectionToEPFServer() {
-        try {
-            return InetAddress.getByName(serverUrl).isReachable(2000);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 }

@@ -2,10 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context="com.filiereticsa.arc.augmentepf.fragments.OptionsFragment"
-    android:orientation="vertical"
     android:background="@drawable/left_background"
-    android:weightSum="15">
+    android:orientation="vertical"
+    android:weightSum="15"
+    tools:context="com.filiereticsa.arc.augmentepf.fragments.OptionsFragment">
 
     <Button
         android:id="@+id/connect_button"
@@ -15,22 +15,22 @@
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
+        android:layout_weight="1"
         android:background="@drawable/red_button"
         android:onClick="onConnectClick"
         android:padding="15dp"
         android:text="@string/connect"
         android:textColor="@color/white"
-        android:textSize="18sp"
-        android:layout_weight="1"/>
+        android:textSize="18sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginBottom="5dp"
-        android:gravity="center"
         android:layout_marginRight="20dp"
-        android:layout_weight="3">
+        android:layout_weight="3"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/calendar_button"
@@ -45,69 +45,70 @@
 
         <ImageButton
             android:id="@+id/settings_button"
-            android:onClick="onSettingsClick"
-            android:src="@drawable/settings_icon"
-            android:scaleType="fitXY"
-            android:padding="15dp"
             android:layout_width="75dp"
             android:layout_height="75dp"
+            android:layout_margin="20dp"
             android:background="@drawable/settings_button"
-            android:layout_margin="20dp"/>
+            android:onClick="onSettingsClick"
+            android:padding="15dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/settings_icon" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="5">
-    <Button
-        android:id="@+id/planned_trajectory_button"
-        style="@android:style/Widget.Button"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/white_left_button"
-        android:text="@string/planned_trajectory"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="18sp" />
+        android:layout_weight="5"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/plan_trajectory_button"
-        style="@android:style/Widget.Button"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/white_left_button"
-        android:onClick="onPlannedClick"
-        android:text="@string/plan_trajectory"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="18sp" />
+        <Button
+            android:id="@+id/planned_trajectory_button"
+            style="@android:style/Widget.Button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/white_left_button"
+            android:text="@string/planned_trajectory"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/history_button"
-        style="@android:style/Widget.Button"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/white_left_button"
-        android:onClick="onHistoryClick"
-        android:text="@string/trajectory_history"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="18sp" />
+        <Button
+            android:id="@+id/plan_trajectory_button"
+            style="@android:style/Widget.Button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/white_left_button"
+            android:onClick="onPlannedClick"
+            android:text="@string/plan_trajectory"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/history_button"
+            style="@android:style/Widget.Button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/white_left_button"
+            android:onClick="onHistoryClick"
+            android:text="@string/trajectory_history"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_margin="10dp"
+        android:layout_weight="3"
         android:gravity="center"
-        android:padding="10dp"
-        android:layout_weight="3">
+        android:orientation="horizontal"
+        android:padding="10dp">
 
         <Button
             android:id="@+id/contact_button"
@@ -115,28 +116,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="30dp"
             android:background="@drawable/white_button"
             android:onClick="onContactClick"
             android:padding="10dp"
-            android:layout_marginLeft="10dp"
             android:text="@string/contact"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp" />
 
-    <ImageButton
-        android:id="@+id/admin_button"
-        android:onClick="onAdminClick"
-        android:src="@drawable/admin_icon"
-        android:scaleType="fitXY"
-        android:padding="10dp"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:background="@drawable/admin_button"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="5dp"/>
+        <ImageButton
+            android:id="@+id/admin_button"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/admin_button"
+            android:onClick="onAdminClick"
+            android:padding="10dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/admin_icon" />
 
-        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

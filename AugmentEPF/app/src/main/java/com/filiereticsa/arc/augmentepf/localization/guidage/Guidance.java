@@ -5,7 +5,6 @@ import android.util.Pair;
 
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.activities.AugmentEPFApplication;
-import com.filiereticsa.arc.augmentepf.models.Position;
 
 import java.util.ArrayList;
 
@@ -20,6 +19,13 @@ public class Guidance {
     private ArrayList<TrajectorySegment> trajectory;
     private ArrayList<ArrayList<Pair<Integer, Integer>>> positionsSegment;
 
+    public Guidance(ArrayList<Pair<Integer, Integer>> path) {
+        this.path = path;
+
+        pathAnalysis();
+
+    }
+
     private ArrayList<TrajectorySegment> computeAllTrajectory() {
         // To put all segments in the trajectory
         ArrayList<TrajectorySegment> trajectoryAllSeg = new ArrayList<>();
@@ -30,6 +36,7 @@ public class Guidance {
         // Creation of variables
         int xBefore, xAfter, yBefore, yAfter;
         String code;
+
 
         // Start at 1 because we have i-1 & finish at (size-1) because we have i+1
         // i-1 & i+1 are for the displacements of the user
@@ -47,7 +54,13 @@ public class Guidance {
 
             // Add the segment computed with the code computed
             trajectoryAllSeg.add(new TrajectorySegment(code));
-            //Log.d(TAG, "trajectory: " + trajectory.get(i-1).getDirectionInstruction());
+//            Log.d(TAG, "trajectory: " + trajectory.get(i - 1).getDirectionInstruction());
+        }
+        if (trajectory != null) {
+            for (int i = 0; i < trajectory.size(); i++) {
+                Log.d(TAG, "computeAllTrajectory: " + trajectory.get(i).getDirectionInstruction());
+            }
+            Log.d(TAG, "computeAllTrajectory: ------------");
         }
 
         // Return the trajectory
@@ -56,12 +69,14 @@ public class Guidance {
 
     /**
      * Try to find if the currentPosition exist in the list of positions of the segment (n° index)
+     *
      * @param currentPosition
      * @param index
      * @return
      */
     public int getCurrentSegment(Pair<Integer, Integer> currentPosition, int index) {
-        boolean find = false;
+        boolean found = false;
+        boolean endPath = false;
 
         // Compare all positions of the index segment with the current
         for (int i = 0; i < positionsSegment.get(index).size(); i++) {
@@ -69,21 +84,29 @@ public class Guidance {
             Pair<Integer, Integer> testPosition = positionsSegment.get(index).get(i);
 
             // Compare the two positions
-            if (testPosition.first == currentPosition.first
-                    && testPosition.second == currentPosition.second) {
+            if (testPosition.first.equals(currentPosition.first)
+                    && testPosition.second.equals(currentPosition.second)) {
+                // If it's the last position of the segment & the last segment => end of path
+                if ((i == positionsSegment.get(index).size() - 1) &&
+                        index == positionsSegment.size() - 1) {
+                    endPath = true;
+                }
                 // If the position is the last position of the segment, pass at the next segment
-                if (i == positionsSegment.get(index).size() - 1) {
+                else if (i == positionsSegment.get(index).size() - 1) {
                     index = index + 1;
                 }
 
-                // The algorithm find a position
-                find = true;
+                // The algorithm found a position
+                found = true;
             }
         }
 
-        // If the algorithm did'nt find the position in the segment
-        if (find == false) {
+        // If the algorithm didn't find the position in the segment
+        if (!found) {
             index = -1; // To identify an error
+        }
+        if (endPath) {
+            index = Integer.MAX_VALUE; // To identify the end of the path
         }
 
         return index;
@@ -91,13 +114,6 @@ public class Guidance {
 
     public ArrayList<TrajectorySegment> getTrajectory() {
         return trajectory;
-    }
-
-    public Guidance(ArrayList<Pair<Integer, Integer>> path) {
-        this.path = path;
-
-        pathAnalysis();
-
     }
 
     private void pathAnalysis() {
@@ -156,12 +172,22 @@ public class Guidance {
                     allAbsolutePosition.add(absolutePosition);
                 }
 
-                // 1 instruction ~= 1m & 1 iteration = 1 instruction
-                distance = AugmentEPFApplication.getAppContext().getString(R.string.guidanceFor)
-                        + (numberOfIteration + 1)
-                        + AugmentEPFApplication.getAppContext().getString(R.string.guidanceMeters);
-                // Construct the new directionInstruction
-                directionInstruction = trajectoryAllSeg.get(i).getDirectionInstruction() + distance;
+                if (trajectoryAllSeg.get(i).getDirectionInstruction()
+                        .equals(AugmentEPFApplication.getAppContext().getString(R.string.guidanceStraightAhead))) {
+                    // 1 instruction ~= 1m & 1 iteration = 1 instruction
+                    distance = AugmentEPFApplication.getAppContext().getString(R.string.guidanceFor)
+                            + " " + (numberOfIteration + 1)
+                            + " " + AugmentEPFApplication.getAppContext().getString(R.string.guidanceMeters);
+                    // Construct the new directionInstruction
+                    directionInstruction = trajectoryAllSeg.get(i).getDirectionInstruction() + " " + distance;
+                } else {
+                    // 1 instruction ~= 1m & 1 iteration = 1 instruction
+                    distance = AugmentEPFApplication.getAppContext().getString(R.string.guidanceIn)
+                            + " " + (numberOfIteration + 1)
+                            + " " + AugmentEPFApplication.getAppContext().getString(R.string.guidanceMeters);
+                    // Construct the new directionInstruction
+                    directionInstruction = trajectoryAllSeg.get(i).getDirectionInstruction() + " " + distance;
+                }
                 // Get the code of the direction instruction
                 oldCode = trajectoryAllSeg.get(i).getCode();
 

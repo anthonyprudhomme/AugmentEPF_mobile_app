@@ -20,8 +20,8 @@
     <string name="guidanceStraightAhead">Straight ahead</string>
     <string name="guidanceProblem">Problem with this direction</string>
     <!--.........................................................................................-->
-    <string name="guidanceFor"> for </string>
-    <string name="guidanceMeters"> meters</string>
+    <string name="guidanceFor">for</string>
+    <string name="guidanceMeters">meters</string>
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
@@ -159,11 +159,11 @@
     <!--.........................................................................................-->
 
     <!-- Texts for toasts -->
-        <!-- Passwords -->
+    <!-- Passwords -->
     <string name="pwChangeOk">Password changed!</string>
     <string name="pwChangeProblemOld">Problem with the old password</string>
     <string name="pwChangeProblemNew">New passwords aren\'t identical</string>
-        <!-- Email addresses -->
+    <!-- Email addresses -->
     <string name="emailChangeOk">Email address changed!</string>
     <string name="emailChangeProblemEmail">Email addresses aren\'t good</string>
     <string name="emailChangeProblemPw">This isn\'t the good password</string>
@@ -183,14 +183,12 @@
     <!-- Different mode of navigation -->
     <string-array name="navigation_array">
         <item>Plan</item>
-        <item>Compass</item>
-        <item>Trajectory</item>
+        <item>Camera</item>
     </string-array>
     <!-- The value of the choice above -->
     <string-array name="navigation_values_array">
         <item>P</item>
         <item>C</item>
-        <item>T</item>
     </string-array>
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
@@ -295,6 +293,10 @@
     <string name="admin_detector_failed">None detected</string>
     <string name="admin_map_error">Map not available</string>
     <string name="zoom">Zoom</string>
+    <string name="permission_not_granted">Sorry!!! You can\'t use this app without granting permission</string>
+    <string name="fullscreen">Fullscreen</string>
+    <string name="destination">Destination :</string>
+    <string name="guidanceIn">in</string>
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 </resources>

@@ -54,9 +54,9 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/disabled_button"
                 android:gravity="center"
+                android:onClick="onNextClassClicked"
                 android:text="@string/go_to_next_class"
-                android:textColor="@color/white"
-                android:onClick="onNextClassClicked"/>
+                android:textColor="@color/white" />
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -4,16 +4,16 @@
 
     <!-- Item to plan a path -->
     <item
-        android:title="Plan a path"
         android:id="@+id/action_plan"
         android:icon="@android:drawable/ic_menu_my_calendar"
-        app:showAsAction="always"/>
+        android:title="Plan a path"
+        app:showAsAction="always" />
 
     <!-- Item of settings -->
     <item
-        android:title="Settings"
         android:id="@+id/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
-        app:showAsAction="ifRoom"/>
+        android:title="Settings"
+        app:showAsAction="ifRoom" />
 
 </menu>

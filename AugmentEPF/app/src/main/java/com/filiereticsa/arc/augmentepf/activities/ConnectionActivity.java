@@ -16,7 +16,6 @@ import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,11 +25,6 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
 
     public static final String CONNECTION = "connection.php";
     public static final String SETTINGS = "getSettings.php";
-    private static final String NAME = "name";
-    private static final String PASSWORD = "password";
-    private static final String TAG = "Ici";
-    private static final String ERROR = "Error";
-    private static final String MESSAGE = "message";
     public static final String SUCCESS = "Success";
     public static final String ID_USER = "idUser";
     public static final String TOKEN = "token";
@@ -45,11 +39,15 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
     public static final String TYPE = "type";
     public static final String ICAL = "ical";
     public static final String TYPE_USER = "type_user";
-    private EditText login;
-    private EditText password;
-
+    private static final String NAME = "name";
+    private static final String PASSWORD = "password";
+    private static final String TAG = "Ici";
+    private static final String ERROR = "Error";
+    private static final String MESSAGE = "message";
     public static int idUser;
     public static String token;
+    private EditText login;
+    private EditText password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +144,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                         HomePageActivity.isUserConnected = true;
                         idUser = jsonObject.getInt(ID_USER);
                         token = jsonObject.getString(TOKEN);
-                        Log.d(TAG, "onRequestDone: "+idUser + " "+ token);
+                        Log.d(TAG, "onRequestDone: " + idUser + " " + token);
                         checkForNewAccountSettings();
                         Intent intent = new Intent(this, com.filiereticsa.arc.augmentepf.activities.HomePageActivity.class);
                         startActivity(intent);
@@ -182,29 +180,29 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                         boolean elevator = false;
                         boolean soundGuidance = false;
                         for (int i = 0; i < attributes.length; i++) {
-                            if(attributes[i].equals("soundGuidance")){
+                            if (attributes[i].equals("soundGuidance")) {
                                 soundGuidance = true;
                             }
-                            if (attributes[i].equals("elevator")){
+                            if (attributes[i].equals("elevator")) {
                                 elevator = true;
                             }
                         }
                         String specificAttributeValue = "0";
-                        if (elevator && soundGuidance){
+                        if (elevator && soundGuidance) {
                             specificAttributeValue = "VA";
-                        }else if (elevator){
+                        } else if (elevator) {
                             specificAttributeValue = "A";
-                        }else if (soundGuidance){
+                        } else if (soundGuidance) {
                             specificAttributeValue = "V";
                         }
 
-                        prefEditor.putString("specific_attribute_user",specificAttributeValue);
+                        prefEditor.putString("specific_attribute_user", specificAttributeValue);
 
 
                         // Update user type in SharedPreferences
                         String userType = jsonObject.getString(TYPE);
                         String userTypeValue = "S";
-                        switch (userType){
+                        switch (userType) {
 
                             case "Student":
                                 userTypeValue = "S";
@@ -227,11 +225,11 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                                 break;
                         }
 
-                        prefEditor.putString(TYPE_USER,userTypeValue);
+                        prefEditor.putString(TYPE_USER, userTypeValue);
 
-                        // Update user ical link
-                        String icalLink = jsonObject.getString(ICAL);
-                        prefEditor.putString(ICAL,icalLink);
+                        // Update user iCal link
+                        String iCalLink = jsonObject.getString(ICAL);
+                        prefEditor.putString(ICAL, iCalLink);
 
                         prefEditor.apply();
 

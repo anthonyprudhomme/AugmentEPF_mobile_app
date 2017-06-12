@@ -46,10 +46,10 @@ import static com.filiereticsa.arc.augmentepf.activities.HomePageActivity.STATE;
 
 public class CalendarActivity extends AppCompatActivity implements HTTPRequestInterface {
 
-    private static final String TAG = "Ici";
     public static final int HOUR_DELTA = 7;
     public static final String TOKEN = "token";
     public static final String ID = "id";
+    private static final String TAG = "Ici";
     private static final String YES = "y";
     private HorizontalScrollView horizontalScrollView;
     private int columnWidth;
@@ -61,6 +61,12 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
     private int rowNumber = 14;
     private Calendar calendar = Calendar.getInstance();
     private TextView currentWeek;
+
+    public static Calendar toCalendar(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -305,14 +311,14 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
 
                     // Set the style of the dialog box
                     builder.setTitle(R.string.define_path)
-                            .setMessage(getString(R.string.go_to) +" "+ currentClassName + " ?")
+                            .setMessage(getString(R.string.go_to) + " " + currentClassName + " ?")
                             // If the user click on "OK"
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
 
                                     GAFrameworkUserTracker.sharedTracker().setTarget(
-                                            new Pair<>(38,10),1);
-                                    Intent intent = new Intent(CalendarActivity.this,HomePageActivity.class);
+                                            new Pair<>(38, 10), 1);
+                                    Intent intent = new Intent(CalendarActivity.this, HomePageActivity.class);
                                     startActivity(intent);
                                 }
                             })
@@ -447,12 +453,6 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
             gridLayout.removeViewAt(i);
         }
         dynamicIndex = 0;
-    }
-
-    public static Calendar toCalendar(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return cal;
     }
 
     private int getDaysAfterMondayFor(String weekDay) {

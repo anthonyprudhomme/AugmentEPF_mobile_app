@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="5dp">
 
     <ImageView
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/path_icon"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/path_icon" />
 
     <!--============================================================================================
                                        When the path is plan
     =============================================================================================-->
     <!-- The title -->
     <TextView
-        android:text="@string/text_when"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:text="@string/text_when"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="16sp" />
 
     <!-- The field for the user (date & hour) -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dip"
-        android:layout_gravity="center_horizontal">
+        android:orientation="horizontal">
 
         <!-- Button to choose a date -->
         <Button
@@ -61,12 +61,12 @@
     =============================================================================================-->
     <!-- The title -->
     <TextView
-        android:text="@string/text_classroom"
-        android:layout_marginTop="20dip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dip"
+        android:text="@string/text_classroom"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
     <!-- The autocompletion fiel to search a classroom like destination -->
     <AutoCompleteTextView
@@ -74,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dip"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
     <!--=========================================================================================-->
 
 
@@ -86,46 +86,46 @@
     _____________________________________________________________________________________________-->
     <!-- The field for the switch button -->
     <LinearLayout
-        android:layout_marginTop="20dip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="20dip"
+        android:orientation="horizontal"
         android:textSize="16sp">
 
         <!-- The title -->
         <TextView
-            android:text="@string/text_warning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/text_warning"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <!-- The switch button -->
         <Switch
-            android:layout_gravity="right"
-            android:layout_weight="1"
             android:id="@+id/switch_warning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="setWarningDisplay"/>
+            android:layout_gravity="right"
+            android:layout_weight="1"
+            android:onClick="setWarningDisplay" />
     </LinearLayout>
 
     <!-- The field for the switch button -->
     <LinearLayout
         android:id="@+id/warningLayout"
-        android:layout_marginTop="20dip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center_vertical">
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="20dip"
+        android:orientation="vertical">
 
         <!-- The field for the user (date & hour) -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
 
             <!-- Visibility, enabled -->
 
@@ -157,28 +157,28 @@
 
         <!-- The field for the switch button -->
         <LinearLayout
-            android:layout_marginTop="20dip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="20dip"
+            android:orientation="vertical">
 
             <!-- The title -->
             <TextView
-                android:text="@string/text_warning_alerts"
-                android:textColor="@color/colorPrimaryDark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:textSize="16sp"/>
+                android:text="@string/text_warning_alerts"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp" />
 
             <!-- The list of different alerts -->
             <Spinner
                 android:id="@+id/warningAlerts"
-                android:layout_marginTop="10dip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/alerts"/>
+                android:layout_marginTop="10dip"
+                android:entries="@array/alerts" />
         </LinearLayout>
     </LinearLayout>
     <!--_________________________________________________________________________________________-->
@@ -189,11 +189,11 @@
                                        Button to validate
     =============================================================================================-->
     <LinearLayout
-        android:layout_marginTop="20dip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="right">
+        android:layout_gravity="right"
+        android:layout_marginTop="20dip"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/button_send"
@@ -204,9 +204,9 @@
             android:layout_weight="1"
             android:background="@drawable/red_button"
             android:onClick="sendThePath"
-            android:textColor="@color/white"
             android:text="@string/text_validate"
-            android:textSize="16sp"/>
+            android:textColor="@color/white"
+            android:textSize="16sp" />
     </LinearLayout>
     <!--=========================================================================================-->
 </LinearLayout>

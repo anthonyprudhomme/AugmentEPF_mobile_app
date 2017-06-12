@@ -50,7 +50,7 @@ public class UserOrientationView extends android.support.v7.widget.AppCompatImag
     }
 
     private void drawUserOrientation(Canvas canvas, int radius, double heading) {
-        heading-=90;
+        heading -= 90;
         paint.setColor(Color.parseColor("#4286f4"));
         paint.setStyle(Paint.Style.FILL);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -62,11 +62,11 @@ public class UserOrientationView extends android.support.v7.widget.AppCompatImag
         path.reset();
         path.setFillType(Path.FillType.EVEN_ODD);
         int triangleSize = 20;
-        int triangleHeight = (int) Math.sqrt((Math.pow(triangleSize,2)-Math.pow(triangleSize/2,2)));
+        int triangleHeight = (int) Math.sqrt((Math.pow(triangleSize, 2) - Math.pow(triangleSize / 2, 2)));
         Point center = new Point(
                 (int) (userCoordinates.second + Math.cos((heading / 180) * Math.PI) * radius * 1.5),
                 (int) (userCoordinates.first + Math.sin((heading / 180) * Math.PI) * radius * 1.5));
-        Point a = new Point(center.x - triangleHeight/2,center.y-triangleSize/2 );
+        Point a = new Point(center.x - triangleHeight / 2, center.y - triangleSize / 2);
         Point b = new Point(a.x, triangleSize + a.y);
         Point c = new Point((int) ((Math.cos((60 / 180) * Math.PI) * triangleSize) + a.x), triangleSize / 2 + a.y);
         path.setFillType(Path.FillType.EVEN_ODD);
@@ -89,11 +89,11 @@ public class UserOrientationView extends android.support.v7.widget.AppCompatImag
         this.heading = heading;
     }
 
-    public void setUserCoordinates(Pair<Integer, Integer> userCoordinates) {
-        this.userCoordinates = userCoordinates;
-    }
-
     public Pair<Integer, Integer> getUserCoordinates() {
         return userCoordinates;
+    }
+
+    public void setUserCoordinates(Pair<Integer, Integer> userCoordinates) {
+        this.userCoordinates = userCoordinates;
     }
 }

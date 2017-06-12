@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
+import com.filiereticsa.arc.augmentepf.fragments.CameraFragment;
 import com.filiereticsa.arc.augmentepf.localization.LocalizationFragment;
 import com.filiereticsa.arc.augmentepf.models.Place;
 
@@ -49,6 +50,7 @@ public class SearchListAdapter extends ArrayAdapter<Place> implements SharedPref
                 public void onClick(View v) {
                     HomePageActivity.destinationSelectedInterface.onDestinationSelected(place);
                     LocalizationFragment.destinationSelectedInterface.onDestinationSelected(place);
+                    CameraFragment.destinationSelectedInterface.onDestinationSelected(place);
                 }
             });
         }

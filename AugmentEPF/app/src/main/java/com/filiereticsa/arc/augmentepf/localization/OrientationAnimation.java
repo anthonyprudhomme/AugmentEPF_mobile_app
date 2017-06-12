@@ -4,7 +4,6 @@ package com.filiereticsa.arc.augmentepf.localization;
  * Created by ARC Team for AugmentEPF project on 11/06/2017.
  */
 
-import android.util.Log;
 import android.util.Pair;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;

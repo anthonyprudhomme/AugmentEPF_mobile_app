@@ -1,6 +1,5 @@
 package com.filiereticsa.arc.augmentepf.localization;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -9,20 +8,19 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.Pair;
-import android.view.Display;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.interfaces.DestinationSelectedInterface;
 import com.filiereticsa.arc.augmentepf.interfaces.HomePageInterface;
@@ -37,7 +35,12 @@ import java.util.HashMap;
  * Copyright © 2016 Granite Apps. All rights reserved.
  */
 
-public class LocalizationFragment extends Fragment implements GAFrameworkUserTrackerObserver, HomePageInterface, DestinationSelectedInterface {
+public class LocalizationFragment
+        extends Fragment
+        implements
+        GAFrameworkUserTrackerObserver,
+        HomePageInterface,
+        DestinationSelectedInterface {
 
     public static final float DEFAULT_ZOOM = 0.4f;
     private static final String TAG = "Ici";
@@ -58,8 +61,6 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     private ScaleGestureDetector mScaleDetector;
     private GestureDetector gestureDetector;
     private int numberOfFingerTouchingTheScreen = 0;
-    private int screenWidth;
-    private int screenHeight;
     private Pair<Integer, Integer> oldPosition;
     private Pair<Integer, Integer> oldUserPosition;
     private boolean isUserMovingTheMap = false;
@@ -84,14 +85,15 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         return mScaleDetector;
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_localization, container, false);
         setRetainInstance(true);
         homePageInterface = this;
         destinationSelectedInterface = this;
-        new GAFrameworkUserTracker(getActivity());
         GAFrameworkUserTracker.sharedTracker().registerObserver(this);
-        GAFrameworkUserTracker.sharedTracker().startTrackingUser();
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         RelativeLayout indoorLayout = (RelativeLayout) rootView.findViewById(R.id.indoorLayout);
         indoorLayout.setVisibility(View.VISIBLE);
@@ -106,8 +108,14 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                     Point middle = middlePoint(finger1, finger2);
                     if (event.getAction() != 3) {
                         effectiveScale = mScale;
-                        mapContainer.setTranslationX(mapContainer.getTranslationX() + (mapContainer.getPivotX() - middle.x) * (1 - mapContainer.getScaleX()));
-                        mapContainer.setTranslationY(mapContainer.getTranslationY() + (mapContainer.getPivotY() - middle.y) * (1 - mapContainer.getScaleY()));
+                        mapContainer.setTranslationX(
+                                mapContainer.getTranslationX()
+                                        + (mapContainer.getPivotX() - middle.x)
+                                        * (1 - mapContainer.getScaleX()));
+                        mapContainer.setTranslationY(
+                                mapContainer.getTranslationY()
+                                        + (mapContainer.getPivotY() - middle.y)
+                                        * (1 - mapContainer.getScaleY()));
                         mapContainer.setPivotX(middle.x);
                         mapContainer.setPivotY(middle.y);
                         mapContainer.setScaleX(1 / effectiveScale);
@@ -118,27 +126,28 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             }
         });
         gestureDetector = new GestureDetector(getContext(), new GestureListener());
-        mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        mScaleDetector = new ScaleGestureDetector(getContext(),
+                new ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
-            @Override
-            public boolean onScale(ScaleGestureDetector detector) {
-                if (numberOfFingerTouchingTheScreen == 2) {
-                    if (!isUserMovingTheMap && fullScreenModeEnabled) {
-                        floatingActionButton.setVisibility(View.VISIBLE);
+                    @Override
+                    public boolean onScale(ScaleGestureDetector detector) {
+                        if (numberOfFingerTouchingTheScreen == 2) {
+                            if (!isUserMovingTheMap && fullScreenModeEnabled) {
+                                floatingActionButton.setVisibility(View.VISIBLE);
+                            }
+                            isUserMovingTheMap = true;
+                            float scale = 1 - detector.getScaleFactor();
+                            mScale += scale;
+
+                            if (mScale < 0.1f) // Minimum scale condition:
+                                mScale = 0.1f;
+
+                            if (mScale > 1f) // Maximum scale condition:
+                                mScale = 1f;
+                        }
+                        return true;
                     }
-                    isUserMovingTheMap = true;
-                    float scale = 1 - detector.getScaleFactor();
-                    mScale += scale;
-
-                    if (mScale < 0.1f) // Minimum scale condition:
-                        mScale = 0.1f;
-
-                    if (mScale > 1f) // Maximum scale condition:
-                        mScale = 1f;
-                }
-                return true;
-            }
-        });
+                });
         floatingActionButton.setVisibility(View.GONE);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,7 +157,9 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                     userMovedToIndexPath(oldUserPosition, 0, 0, "");
                     floatingActionButton.setVisibility(View.GONE);
                 } else {
-                    Toast.makeText(getContext(), R.string.not_localized, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),
+                            R.string.not_localized,
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -177,25 +188,19 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                         int height = mapBitmap.getHeight();
                         int width = mapBitmap.getWidth();
                         double pictureRatio = ((float) height) / ((float) width);
-                        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-                        Display display = wm.getDefaultDisplay();
-                        Point size = new Point();
-                        display.getSize(size);
-                        screenWidth = size.x;
-                        screenHeight = size.y;
                         final FrameLayout.LayoutParams imageParams = new FrameLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                                 RelativeLayout.LayoutParams.WRAP_CONTENT);
                         float imageHeight;
                         float imageWidth;
-                        float heightRatio = height / screenHeight;
-                        float widthRatio = width / screenWidth;
+                        float heightRatio = height / AppUtils.screenHeight;
+                        float widthRatio = width / AppUtils.screenWidth;
                         if (heightRatio > widthRatio) {
-                            imageHeight = screenHeight;
-                            imageWidth = (float) (screenHeight / pictureRatio);
+                            imageHeight = AppUtils.screenHeight;
+                            imageWidth = (float) (AppUtils.screenHeight / pictureRatio);
                         } else {
-                            imageHeight = (float) ((screenWidth * pictureRatio));
-                            imageWidth = (screenWidth);
+                            imageHeight = (float) ((AppUtils.screenWidth * pictureRatio));
+                            imageWidth = (AppUtils.screenWidth);
                         }
                         imageParams.height = (int) imageHeight;
                         imageParams.width = (int) imageWidth;
@@ -219,18 +224,30 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
     }
 
     @Override
-    public void userMovedToIndexPath(Pair<Integer, Integer> position, double heading, double magneticHeading, String direction) {
+    public void userMovedToIndexPath(
+            Pair<Integer, Integer> position,
+            double heading,
+            double magneticHeading,
+            String direction) {
+
         if (!isInAdminMode) {
             oldUserPosition = position;
-            if ((userAndPathView == null || userAndPathView.getWidth() == 0 || userAndPathView.getHeight() == 0)
-                    && currentMapHeight != 0 && currentMapWidth != 0) {
+            if ((userAndPathView == null
+                    || userAndPathView.getWidth() == 0
+                    || userAndPathView.getHeight() == 0)
+                    && currentMapHeight != 0
+                    && currentMapWidth != 0) {
                 if (isAdded()) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
-                            userAndPathView = new UserAndPathView(getContext(), currentMapHeight, currentMapWidth);
-                            LinearLayout.LayoutParams userAndPathLayoutParams = new LinearLayout.LayoutParams(
+                            userAndPathView = new UserAndPathView(
+                                    getContext(),
+                                    currentMapHeight,
+                                    currentMapWidth);
+                            LinearLayout.LayoutParams userAndPathLayoutParams
+                                    = new LinearLayout.LayoutParams(
                                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                                     RelativeLayout.LayoutParams.WRAP_CONTENT);
                             userAndPathView.requestLayout();
@@ -238,17 +255,22 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                             userAndPathLayoutParams.height = currentMapHeight;
                             userAndPathView.setLayoutParams(userAndPathLayoutParams);
                             if (userAndPathView.getParent() != null) {
-                                ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
+                                ((ViewGroup) userAndPathView
+                                        .getParent())
+                                        .removeView(userAndPathView);
                             }
                             if (userAndPathView.getParent() != null) {
-                                ((ViewGroup) userAndPathView.getParent()).removeView(userAndPathView);
+                                ((ViewGroup) userAndPathView
+                                        .getParent())
+                                        .removeView(userAndPathView);
                             }
                             mapContainer.addView(userAndPathView);
                             userAndPathView.bringToFront();
                             userAndPathView.setScaleType(ImageView.ScaleType.FIT_XY);
 
                             userOrientationView = new UserOrientationView(getContext());
-                            LinearLayout.LayoutParams userOrientationLayoutParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams userOrientationLayoutParams
+                                    = new LinearLayout.LayoutParams(
                                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                                     RelativeLayout.LayoutParams.WRAP_CONTENT);
                             userOrientationView.requestLayout();
@@ -256,10 +278,14 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                             userOrientationLayoutParams.height = currentMapHeight;
                             userOrientationView.setLayoutParams(userOrientationLayoutParams);
                             if (userOrientationView.getParent() != null) {
-                                ((ViewGroup) userOrientationView.getParent()).removeView(userOrientationView);
+                                ((ViewGroup) userOrientationView
+                                        .getParent())
+                                        .removeView(userOrientationView);
                             }
                             if (userOrientationView.getParent() != null) {
-                                ((ViewGroup) userOrientationView.getParent()).removeView(userOrientationView);
+                                ((ViewGroup) userOrientationView
+                                        .getParent())
+                                        .removeView(userOrientationView);
                             }
                             mapContainer.addView(userOrientationView);
                             userOrientationView.bringToFront();
@@ -270,8 +296,11 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             }
             if (currentMapWidth != 0 && currentMapHeight != 0) {
                 if (userAndPathView != null) {
-                    userAndPathView.dimensionChanged(gridDimensions, currentMapHeight, currentMapWidth);
-                    final PositionAnimation userPositionAnimation = new PositionAnimation(userAndPathView, position);
+                    userAndPathView.dimensionChanged(gridDimensions,
+                            currentMapHeight,
+                            currentMapWidth);
+                    final PositionAnimation userPositionAnimation =
+                            new PositionAnimation(userAndPathView, position);
                     userPositionAnimation.setDuration(500);
                     if (isAdded()) {
                         getActivity().runOnUiThread(new Runnable() {
@@ -287,7 +316,10 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                     userAndPathView.setDirection(direction);
 
                     if (userOrientationView != null) {
-                        final OrientationAnimation userOrientationAnimation = new OrientationAnimation(userOrientationView, userAndPathView.getCoordinatesFromIndexPath(position));
+                        final OrientationAnimation userOrientationAnimation =
+                                new OrientationAnimation(
+                                        userOrientationView,
+                                        userAndPathView.getCoordinatesFromIndexPath(position));
                         userOrientationAnimation.setDuration(500);
                         if (isAdded()) {
                             getActivity().runOnUiThread(new Runnable() {
@@ -305,8 +337,15 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
                 if (oldPosition == null) {
                     oldPosition = new Pair<>(0, 0);
                 }
-                Pair<Integer, Integer> positionCoordinates = getCoordinatesFromIndexPath(gridDimensions, position);
-                final MapAnimation mapAnimation = new MapAnimation(mapContainer, positionCoordinates, oldPosition, mScale, screenWidth, screenHeight);
+                Pair<Integer, Integer> positionCoordinates =
+                        getCoordinatesFromIndexPath(gridDimensions, position);
+                final MapAnimation mapAnimation = new MapAnimation(
+                        mapContainer,
+                        positionCoordinates,
+                        oldPosition,
+                        mScale,
+                        AppUtils.screenWidth,
+                        AppUtils.screenHeight);
                 mScale = DEFAULT_ZOOM;
                 oldPosition = positionCoordinates;
                 mapAnimation.setDuration(500);
@@ -322,30 +361,34 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         }
     }
 
-    public Pair<Integer, Integer> getCoordinatesFromIndexPath(Pair<Integer, Integer> gridDimension, Pair<Integer, Integer> position) {
+    public Pair<Integer, Integer> getCoordinatesFromIndexPath(
+            Pair<Integer, Integer> gridDimension,
+            Pair<Integer, Integer> position) {
         if (gridDimension != null) {
             int nbRow = gridDimension.first;
             int nbCol = gridDimension.second;
-            return new Pair<>((int) ((position.second) * (currentMapHeight / nbRow)), (int) ((position.first) * (currentMapWidth / nbCol)));
+            return new Pair<>(
+                    ((position.second) * (currentMapHeight / nbRow)),
+                    ((position.first) * (currentMapWidth / nbCol)));
         }
         return null;
     }
 
     @Override
-    public void userMovedToIndexPath(Pair<Integer, Integer> indexPath, ArrayList<Pair<Integer, Integer>> candidates) {
+    public void userMovedToIndexPath(Pair<Integer, Integer> indexPath,
+                                     ArrayList<Pair<Integer, Integer>> candidates) {
 
     }
 
     @Override
     public void userChangedDirection(Pair<Integer, Integer> newDirection) {
-//        Log.e("user changed direction "+ newDirection.first + " "+ newDirection.second);
-//        scrollLayout.setPivotX(userAndPathView.getUserCoordinates().first);
-//        scrollLayout.setPivotY(userAndPathView.getUserCoordinates().second);
-//        scrollLayout.setRotation((float) (Math.atan2(newDirection.second,newDirection.first)*180/Math.PI));
     }
 
     @Override
-    public void onPathChanged(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path, FloorAccess.FloorAccessType floorAccessType) {
+    public void onPathChanged(
+            Pair<ArrayList<Pair<Integer, Integer>>,
+                    Integer> path,
+            FloorAccess.FloorAccessType floorAccessType) {
         if (!isInAdminMode) {
             if (userAndPathView != null) {
                 userAndPathView.setCurrentPath(path, floorAccessType);
@@ -381,7 +424,7 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
 
     @Override
     public void onOrientationChange(double currentHeading) {
-        if (isInAdminMode) {
+        if (!isInAdminMode) {
             if (userOrientationView != null) {
                 userOrientationView.setHeading(currentHeading);
                 userOrientationView.invalidate();
@@ -426,6 +469,10 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
         }
     }
 
+    public void setInAdminMode(boolean inAdminMode) {
+        isInAdminMode = inAdminMode;
+    }
+
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
 
@@ -442,20 +489,21 @@ public class LocalizationFragment extends Fragment implements GAFrameworkUserTra
             }
             isUserMovingTheMap = true;
             if (numberOfFingerTouchingTheScreen == 1) {
-                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mapContainer.getLayoutParams();
-                layoutParams.leftMargin = (int) (layoutParams.leftMargin - distanceX);
-                layoutParams.rightMargin = (int) (layoutParams.leftMargin - currentMapWidth * effectiveScale);
-                layoutParams.topMargin = (int) (layoutParams.topMargin - distanceY);
-                layoutParams.bottomMargin = (int) (layoutParams.topMargin - currentMapHeight * effectiveScale);
+                FrameLayout.LayoutParams layoutParams =
+                        (FrameLayout.LayoutParams) mapContainer.getLayoutParams();
+                layoutParams.leftMargin =
+                        (int) (layoutParams.leftMargin - distanceX);
+                layoutParams.rightMargin =
+                        (int) (layoutParams.leftMargin - currentMapWidth * effectiveScale);
+                layoutParams.topMargin =
+                        (int) (layoutParams.topMargin - distanceY);
+                layoutParams.bottomMargin =
+                        (int) (layoutParams.topMargin - currentMapHeight * effectiveScale);
                 mapContainer.setLayoutParams(layoutParams);
             }
 
             return true;
         }
-    }
-
-    public void setInAdminMode(boolean inAdminMode) {
-        isInAdminMode = inAdminMode;
     }
 }
 

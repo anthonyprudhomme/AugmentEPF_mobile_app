@@ -31,19 +31,17 @@ public class CreateAccountActivity extends AppCompatActivity implements HTTPRequ
     public static final String PASSWORD = "password";
     public static final String TYPE = "type";
     public static final String NAME = "name";
-
-    // TODO change this code
-    private static final String ADMIN_CODE = "admin";
-
     public static final String SOUND_GUIDANCE = "soundGuidance";
     public static final String ELEVATOR = "elevator";
-    private static final String TAG = "Ici";
     public static final String MESSAGE = "message";
-    private static final String VALIDATE = "validate";
-    private static final String YES = "y";
     public static final String ERROR = "Error";
     public static final String CREDENTIALS_JSON = "credentials.json";
     public static final String NONE = "none";
+    // TODO change this code
+    private static final String ADMIN_CODE = "admin";
+    private static final String TAG = "Ici";
+    private static final String VALIDATE = "validate";
+    private static final String YES = "y";
     private EditText login;
     private EditText email;
     private EditText password;

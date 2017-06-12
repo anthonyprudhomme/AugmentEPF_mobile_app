@@ -5,13 +5,16 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,7 +28,9 @@ import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
 
+import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.R;
+import com.filiereticsa.arc.augmentepf.fragments.CameraFragment;
 import com.filiereticsa.arc.augmentepf.fragments.OptionsFragment;
 import com.filiereticsa.arc.augmentepf.fragments.SearchFragment;
 import com.filiereticsa.arc.augmentepf.interfaces.DestinationSelectedInterface;
@@ -46,11 +51,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class HomePageActivity extends AppCompatActivity implements HTTPRequestInterface, DestinationSelectedInterface {
-    private static final String TAG = "Ici";
-    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
-    private static final String VALIDATE = "validate";
-    private static final String YES = "y";
+public class HomePageActivity
+        extends AppCompatActivity
+        implements
+        HTTPRequestInterface,
+        DestinationSelectedInterface,
+        SharedPreferences.OnSharedPreferenceChangeListener {
+
     public static final String ERROR = "Error";
     public static final String STATE = "state";
     public static final String TRUE = "true";
@@ -58,37 +65,92 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
     public static final String ID = "id";
     public static final String TOKEN = "token";
     public static final String GET_ROOMS_PHP = "getRooms.php";
+    public static final String NAVIGATION_MODE = "navigation_mode";
+    private static final String TAG = "Ici";
+    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+    private static final String VALIDATE = "validate";
+    private static final String YES = "y";
     public static HTTPRequestInterface httpRequestInterface;
+    public static DestinationSelectedInterface destinationSelectedInterface;
+    public static boolean isUserConnected = false;
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
     private SlidingDrawer leftSlidingDrawer;
     private SlidingDrawer rightSlidingDrawer;
     private boolean isShowingSlidingDrawer = true;
     private boolean touchedEditText = false;
     private boolean canMapBeMoved = true;
-    public static DestinationSelectedInterface destinationSelectedInterface;
     private ImageButton drawerHandle;
     private SearchFragment searchFragment;
     private OptionsFragment optionsFragment;
     private LocalizationFragment localizationFragment;
-
-    public static boolean isUserConnected = false;
+    private CameraFragment cameraFragment;
     private View rootView;
     private Class nextClass;
+
+    public static boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) AugmentEPFApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        HTTPRequestManager.checkEPFWiFi(httpRequestInterface, HTTPRequestManager.WIFI_CHECK);
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (GAFrameworkUserTracker.sharedTracker() == null) {
+            new GAFrameworkUserTracker(this);
+            GAFrameworkUserTracker.sharedTracker().startTrackingUser();
+        }
         setContentView(R.layout.activity_home_page);
         destinationSelectedInterface = this;
         httpRequestInterface = this;
         rootView = findViewById(R.id.rootview);
+        AppUtils.setScreenSize(this);
         loadBeaconsAndMaps();
+
         initFragments();
+        showPreferredNavigationMode();
         askForPermission();
         setUpSlidingDrawers();
         setUpEditText();
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
         //postRequestExample();
+    }
+
+    private void showPreferredNavigationMode() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String navigationMode = sharedPreferences.getString(NAVIGATION_MODE, "P");
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        switch (navigationMode) {
+            case "P":
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .hide(cameraFragment)
+                        .commit();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .show(localizationFragment)
+                        .commit();
+                if (localizationFragment.getView() != null) {
+                    localizationFragment.getView().setAlpha(1);
+                }
+                break;
+
+            case "C":
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .show(cameraFragment)
+                        .commit();
+//                fragmentManager.beginTransaction()
+//                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+//                        .hide(localizationFragment)
+//                        .commit();
+                if (localizationFragment.getView() != null) {
+                    localizationFragment.getView().setAlpha(0.5f);
+                }
+                break;
+        }
     }
 
     private void loadBeaconsAndMaps() {
@@ -105,6 +167,7 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         searchFragment = (SearchFragment) getSupportFragmentManager().findFragmentById(R.id.search_fragment);
         optionsFragment = (OptionsFragment) getSupportFragmentManager().findFragmentById(R.id.options_fragment);
         localizationFragment = (LocalizationFragment) getSupportFragmentManager().findFragmentById(R.id.localization_fragment);
+        cameraFragment = (CameraFragment) getSupportFragmentManager().findFragmentById(R.id.camera_fragment);
     }
 
     private void postRequestExample() {
@@ -194,7 +257,6 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
             public void onScrollStarted() {
                 canMapBeMoved = false;
                 rightSlidingDrawer.close();
-                rightSlidingDrawer.setVisibility(View.GONE);
                 drawerHandle.setBackgroundResource(R.drawable.nav_left_bar_close);
                 floatingActionButton.setVisibility(View.GONE);
             }
@@ -202,6 +264,9 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
             @Override
             public void onScrollEnded() {
                 canMapBeMoved = true;
+                if (!leftSlidingDrawer.isOpened()) {
+                    rightSlidingDrawer.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -244,7 +309,6 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
             public void onScrollStarted() {
                 canMapBeMoved = false;
                 leftSlidingDrawer.close();
-                leftSlidingDrawer.setVisibility(View.GONE);
                 floatingActionButton.setVisibility(View.GONE);
 
             }
@@ -252,6 +316,9 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
             @Override
             public void onScrollEnded() {
                 canMapBeMoved = true;
+                if (!rightSlidingDrawer.isOpened()) {
+                    leftSlidingDrawer.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -311,8 +378,8 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         BeaconDetector.sharedBeaconDetector().setActivity(this);
         if (beaconManager.isBound(BeaconDetector.sharedBeaconDetector().getBeaconConsumer()))
             beaconManager.setBackgroundMode(false);
+        showPreferredNavigationMode();
     }
-
 
     @Override
     protected void onDestroy() {
@@ -321,14 +388,12 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
         beaconManager.unbind(BeaconDetector.sharedBeaconDetector.getBeaconConsumer());
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
         if (beaconManager.isBound(BeaconDetector.sharedBeaconDetector.getBeaconConsumer()))
             beaconManager.setBackgroundMode(true);
     }
-
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
@@ -464,7 +529,6 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                 break;
 
             case HTTPRequestManager.NEXT_COURSE:
-                Log.d(TAG, "onRequestDone: next course");
                 if (result.equals("Error")) {
                     // TODO remove this (this is only to test)
                     changeButtonColor();
@@ -504,14 +568,6 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
                 place.getPosition().getFloor());
     }
 
-    public static boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) AugmentEPFApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        HTTPRequestManager.checkEPFWiFi(httpRequestInterface, HTTPRequestManager.WIFI_CHECK);
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
     public void onNextClassClicked(View view) {
         if (nextClass != null) {
             Position nextClassPosition = nextClass.getClassRoom().getPosition();
@@ -524,6 +580,11 @@ public class HomePageActivity extends AppCompatActivity implements HTTPRequestIn
             Toast.makeText(this, R.string.no_next_class_found, Toast.LENGTH_SHORT).show();
             askForNextCourse();
         }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        showPreferredNavigationMode();
     }
 }
 

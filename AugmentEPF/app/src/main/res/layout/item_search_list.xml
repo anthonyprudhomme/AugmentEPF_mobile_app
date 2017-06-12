@@ -8,8 +8,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal">
 
         <!--<ImageView-->
         <!--android:id="@+id/avatar"-->
@@ -19,17 +19,17 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="right"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:gravity="right"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/room_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
                 android:layout_marginLeft="10dp"
+                android:textColor="@android:color/black"
                 android:textSize="16dp"
                 tools:text="Room name" />
 
@@ -59,7 +59,6 @@
             android:textSize="16dp" />
 
     </LinearLayout>
-
 
 
 </RelativeLayout>

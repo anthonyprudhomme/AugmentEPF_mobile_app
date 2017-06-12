@@ -94,16 +94,6 @@ public class AdminItemView extends android.support.v7.widget.AppCompatImageView 
         }
     }
 
-    public enum ItemType {
-        EMPTY,
-        PATH,
-        BEACON,
-        ROOM,
-        POI,
-        FLOOR_ACCESS
-    }
-
-
     public void highlight() {
         this.mustBeHighlighted = true;
         invalidate();
@@ -124,5 +114,14 @@ public class AdminItemView extends android.support.v7.widget.AppCompatImageView 
 
     public int getyPos() {
         return yPos;
+    }
+
+    public enum ItemType {
+        EMPTY,
+        PATH,
+        BEACON,
+        ROOM,
+        POI,
+        FLOOR_ACCESS
     }
 }

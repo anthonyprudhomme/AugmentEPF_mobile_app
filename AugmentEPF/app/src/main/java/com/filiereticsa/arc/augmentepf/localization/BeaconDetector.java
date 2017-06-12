@@ -216,10 +216,10 @@ public class BeaconDetector implements BeaconConsumer {
                 beaconsFound.add(currentBeacon);
             }
         }
-        if(GAFrameworkUserTracker.sharedTracker()!=null) {
+        if (GAFrameworkUserTracker.sharedTracker() != null) {
             GAFrameworkUserTracker.sharedTracker().rangedBeacons(beaconsFound);
         }
-        if (AdminActivity.beaconDetectorInterface!=null){
+        if (AdminActivity.beaconDetectorInterface != null) {
             AdminActivity.beaconDetectorInterface.rangedBeacons(beaconsFound);
         }
     }

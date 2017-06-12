@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">AugmentEPF</string>
 
-    <string name="hello_blank_fragment" >Bonjour</string>
+    <string name="hello_blank_fragment">Bonjour</string>
     <string name="app_need_location">L\'application a besoin d\'accéder à votre localisation</string>
     <string name="app_need_location_message">Donnez accès à la localisation pour que l\'application puisse détecter les beacons en arrière plan</string>
     <string name="title_activity_main">MainActivity</string>
@@ -139,11 +139,11 @@
     <!--.........................................................................................-->
 
     <!-- Texts for toasts -->
-        <!-- Passwords -->
+    <!-- Passwords -->
     <string name="pwChangeOk">Mot de passe changé !</string>
     <string name="pwChangeProblemOld">Problème avec l\'ancien mot de passe</string>
     <string name="pwChangeProblemNew">Les nouveaux mots de passe ne sont pas identiques</string>
-        <!-- Email addresses -->
+    <!-- Email addresses -->
     <string name="emailChangeOk">Adresse email changée !</string>
     <string name="emailChangeProblemEmail">Les adresses email ne sont pas bonnes</string>
     <string name="emailChangeProblemPw">Ce n\'est pas le bon mot de passe</string>
@@ -163,14 +163,7 @@
     <!-- Différents modes de navigation -->
     <string-array name="navigation_array">
         <item>Plan</item>
-        <item>Compas</item>
-        <item>Trajectoire</item>
-    </string-array>
-    <!-- Valeurs associées -->
-    <string-array name="navigation_values_array">
-        <item>P</item>
-        <item>C</item>
-        <item>T</item>
+        <item>Caméra</item>
     </string-array>
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
@@ -199,12 +192,13 @@
     <string name="failed_connect_calendar">Échec de chargement du calendrier. Vérifiez que vous êtes connecté au Wi-Fi de l\'EPF.</string>
     <string name="enter_ical">Saisissez votre lien iCal</string>
     <string name="friday">Vendredi</string>
-    <string name="guidanceFor">\" pendant \"</string>
-    <string name="guidanceMeters">" mètres"</string>
+    <string name="guidanceFor">pendant</string>
+    <string name="guidanceIn">dans</string>
+    <string name="guidanceMeters">mètres</string>
     <string name="guidanceProblem">Problème avec la direction</string>
     <string name="guidanceStraightAhead">Tout droit</string>
     <string name="guidanceTurnLeft">Tournez à gauche</string>
-    <string name="guidanceTurnRight">Tounez à droite</string>
+    <string name="guidanceTurnRight">Tournez à droite</string>
     <string name="ical">iCal</string>
     <string name="monday">Lundi</string>
     <string name="next"><![CDATA[>>]]></string>
@@ -238,5 +232,11 @@
     <string name="admin_update">Mettre à jour ?</string>
     <string name="admin_save_new">Enregistrer nouveau ?</string>
     <string name="admin_map_error">Carte non disponible</string>
+    <string name="define_path">Définir un trajet</string>
+    <string name="go_to">"Voulez-vous allez en "</string>
+    <string name="go_to_next_class">Prochain cours</string>
+    <string name="no_next_class_found">Pas de prochain cours trouvé. Désolé...</string>
+    <string name="permission_not_granted">Désolé!!! Vous ne pouvez pas utiliser cette application sans autoriser l\'accès aux ressources du téléphone.</string>
+    <string name="zoom">Zoom</string>
 
 </resources>

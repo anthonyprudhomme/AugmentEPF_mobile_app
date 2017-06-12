@@ -17,12 +17,12 @@ public class Place {
         return name;
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Position getPosition() {
+        return position;
     }
 
     public void setPosition(Position position) {
