@@ -293,10 +293,39 @@
     <string name="admin_detector_failed">None detected</string>
     <string name="admin_map_error">Map not available</string>
     <string name="zoom">Zoom</string>
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+    <!--============================================================================================
+                                           Contact menu
+    =============================================================================================-->
+
+    <string name="description">This application was implemented by the ARC team in relation to the
+     AugmentEPF project 2017</string>
+    <string name="partner_with">In partnership with</string>
+    <string name="contacts_info">Contacts information</string>
+    <string name="contacts_mails_left">
+        Anthony Prudhomme \n anthony.prudhomme@epfedu.fr \n \n
+        Cécile Tran \n cecile.tran@epfedu.fr \n \n
+        Hugo Ruiz \n hugo.ruiz@epfedu.fr \n \n
+        Guilhem Pequillat \n guilhem.pequillat@epfedu.fr
+
+    </string>
+    <string name="contacts_mails_right">
+        Coline Patris \n coline.patris@epfedu.fr \n \n
+        Jeremy Duong \n jeremy.duong@epfedu.fr\n \n
+        Antoine Goubin \n antoine.goubin@epfedu.fr
+    </string>
+
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
+
     <string name="permission_not_granted">Sorry!!! You can\'t use this app without granting permission</string>
     <string name="fullscreen">Fullscreen</string>
     <string name="destination">Destination :</string>
     <string name="guidanceIn">in</string>
-    <!--_________________________________________________________________________________________-->
-    <!--=========================================================================================-->
+    <string name="starting_guidance">Starting guidance</string>
+
+
 </resources>

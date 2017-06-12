@@ -168,6 +168,30 @@
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
+    <!--============================================================================================
+                                       Contact Menu
+   =============================================================================================-->
+
+    <string name="description">Cette application a été créée par l"'"équipe ARC dans le cadre
+    du projet AugmentEPF 2017</string>
+    <string name="partner_with">En partenariat avec</string>
+    <string name="contacts_info">Informations et contacts</string>
+    <string name="contacts_mails_left">
+        Anthony Prudhomme \n anthony.prudhomme@epfedu.fr \n \n
+        Cécile Tran \n cecile.tran@epfedu.fr \n \n
+        Hugo Ruiz \n hugo.ruiz@epfedu.fr \n \n
+        Guilhem Pequillat \n guilhem.pequillat@epfedu.fr
+
+    </string>
+    <string name="contacts_mails_right">
+        Coline Patris \n coline.patris@epfedu.fr \n \n
+        Jeremy Duong \n jeremy.duong@epfedu.fr\n \n
+        Antoine Goubin \n antoine.goubin@epfedu.fr
+    </string>
+
+    <!--_________________________________________________________________________________________-->
+    <!--=========================================================================================-->
+
     <string name="nearby_points_of_interest">Points d"'"interêt alentours</string>
     <string name="available_classrooms">Salles libres</string>
     <string name="fullscreen">Plein écran</string>

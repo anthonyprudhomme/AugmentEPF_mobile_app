@@ -3,7 +3,9 @@ package com.filiereticsa.arc.augmentepf.localization;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,13 +24,17 @@ import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.R;
+import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
 import com.filiereticsa.arc.augmentepf.interfaces.DestinationSelectedInterface;
 import com.filiereticsa.arc.augmentepf.interfaces.HomePageInterface;
 import com.filiereticsa.arc.augmentepf.localization.guidage.Guidance;
+import com.filiereticsa.arc.augmentepf.localization.guidage.TrajectorySegment;
+import com.filiereticsa.arc.augmentepf.models.CustomSnackBar;
 import com.filiereticsa.arc.augmentepf.models.Place;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by anthonyprudhomme on 20/10/16.
@@ -70,6 +76,9 @@ public class LocalizationFragment
     private Guidance guidance;
     private int index;
     private boolean isInAdminMode = false;
+    private CustomSnackBar customSnackBar;
+
+    private TextToSpeech textToSpeech;
 
     private HashMap<Integer, Bitmap> mapDict = new HashMap<>();
 
@@ -160,6 +169,26 @@ public class LocalizationFragment
                     Toast.makeText(getContext(),
                             R.string.not_localized,
                             Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        //Init Text to speech
+
+        textToSpeech = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    // Set the language
+                    Locale locale;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        locale = getContext().getResources().getConfiguration().getLocales().get(0);
+                    } else {
+                        locale = getContext().getResources().getConfiguration().locale;
+                    }
+                    textToSpeech.setLanguage(locale);
+                    // Set the speech rate
+                    textToSpeech.setSpeechRate(1.0f);
                 }
             }
         });
@@ -385,40 +414,53 @@ public class LocalizationFragment
     }
 
     @Override
-    public void onPathChanged(
-            Pair<ArrayList<Pair<Integer, Integer>>,
-                    Integer> path,
-            FloorAccess.FloorAccessType floorAccessType) {
-        if (!isInAdminMode) {
-            if (userAndPathView != null) {
-                userAndPathView.setCurrentPath(path, floorAccessType);
-                if (isAdded()) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            userAndPathView.invalidate();
-                        }
-                    });
-                }
-            }
+    public void onPathChanged(Pair<ArrayList<Pair<Integer, Integer>>, Integer> path,
+                              FloorAccess.FloorAccessType floorAccessType) {
 
-//        if (guidance == null && path != null) {
-//            guidance = new Guidance(path.first);
-//        }
-//
-//        if (guidance != null) {
-//            ArrayList<TrajectorySegment> trajectory = guidance.getTrajectory();
-//            // TODO do something about that
-//            index = guidance.getCurrentSegment(oldUserPosition, index);
-//            if (index == -1) {
-//                index = 0;
-//                if (path != null) {
-//                    guidance.setPath(path.first);
-//                }
-//            } else {
-//                Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
-//            }
-//        }
+        if (userAndPathView != null) {
+            userAndPathView.setCurrentPath(path, floorAccessType);
+        }
+
+        if (guidance == null && path != null) {
+            // Launching the snackbar for guidance
+            customSnackBar = CustomSnackBar.make((ViewGroup) HomePageActivity.rootView, CustomSnackBar.LENGTH_INDEFINITE);
+            customSnackBar.show();
+
+            guidance = new Guidance(path.first);
+        }
+
+        // There is a trajectory with instructions and it's not finished yet
+        if (guidance != null && index != Integer.MAX_VALUE) {
+            ArrayList<TrajectorySegment> trajectory = guidance.getTrajectory();
+
+            // Get the index in the segment which correspond at the position
+            index = guidance.getCurrentSegment(oldUserPosition, index);
+            if (index == -1) { // Error with the position
+
+                index = 0;
+                if (path != null) { // There is a path defined previously
+                    guidance.setPath(path.first);
+                }
+            } else if (index == Integer.MAX_VALUE) { // The end of the path
+
+                Log.d(TAG, "onPathChanged: " + "Congrats, you arrive at the destination!");
+                // TODO Save the path on the DB, display that it's the end of the path
+                // Dismiss guidance snackbar at the end of the path
+                customSnackBar.dismiss();
+            } else {
+
+                customSnackBar.setText(trajectory.get(index).getDirectionInstruction());
+
+                String toSpeak = trajectory.get(index).getDirectionInstruction();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null,null);
+                } else {
+                    textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                }
+
+                Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
+            }
         }
     }
 

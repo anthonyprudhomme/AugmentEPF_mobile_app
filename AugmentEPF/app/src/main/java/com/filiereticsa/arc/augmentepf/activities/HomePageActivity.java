@@ -84,7 +84,7 @@ public class HomePageActivity
     private OptionsFragment optionsFragment;
     private LocalizationFragment localizationFragment;
     private CameraFragment cameraFragment;
-    private View rootView;
+    public static View rootView;
     private Class nextClass;
 
     public static boolean isNetworkAvailable() {
@@ -449,6 +449,8 @@ public class HomePageActivity
     }
 
     public void onContactClick(View view) {
+        Intent intent = new Intent(this, ContactActivity.class);
+        startActivity(intent);
     }
 
     public void onFullScreenClick(View view) {
