@@ -1,5 +1,7 @@
 package com.filiereticsa.arc.augmentepf.models;
 
+import android.util.Log;
+
 import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.activities.AugmentEPFApplication;
@@ -20,15 +22,16 @@ import java.util.ArrayList;
 public class PointOfInterest extends Place {
 
     public static final String FLOOR = "floor";
-    public static final String POS_X = "posX";
-    public static final String POS_Y = "posY";
-    public static final String URL = "getElementAdministration.php";
+    public static final String POS_X = "x";
+    public static final String POS_Y = "y";
+    public static final String URL = "getElement.php";
     public static final String CONTENT_TYPE = "contentType";
     private static final String TAG = "Ici";
     private static final String POI_JSON = "poi.json";
-    private static final String POINT_OF_INTEREST = "pointOfInterest";
+    private static final String POINT_OF_INTEREST = "poi";
     private static final String NAME = "name";
     private static final String INFORMATION = "information";
+    public static final String RESULT = "result";
     private static ArrayList<PointOfInterest> pointOfInterests;
     private static ArrayList<Place> surroundingPoi = new ArrayList<>();
 
@@ -73,66 +76,8 @@ public class PointOfInterest extends Place {
         return surroundingPoi;
     }
 
-//    public static ArrayList<Place> getSurroundingPoi() {
-//        if (surroundingPoi == null) {
-//            surroundingPoi = new ArrayList<>();
-//        } else {
-//            surroundingPoi.clear();
-//        }
-//        for (int i = 0; i < pointOfInterests.size(); i++) {
-//            surroundingPoi.add(pointOfInterests.get(i));
-//        }
-//        ArrayList<Pair<Place, Integer>> poiWithDistances = new ArrayList<>();
-//        if (GAFrameworkUserTracker.sharedTracker() != null
-//                && GAFrameworkUserTracker.sharedTracker().getCurrentUserLocation() != null) {
-//            Pair<Integer, Integer> currentPosition = GAFrameworkUserTracker.sharedTracker().getCurrentUserLocation().indexPath;
-//
-//            if (currentPosition != null) {
-//                GABeaconMapHelper mapHelper = GAFrameworkUserTracker.sharedTracker().getMapHelper();
-//                ArrayList<Place> poisToRemove = new ArrayList<>();
-//                for (int i = 0; i < surroundingPoi.size(); i++) {
-//                    Place currentPoi = surroundingPoi.get(i);
-//                    if (currentPoi.getPosition().getFloor() == mapHelper.getMapFloor()) {
-//                        poisToRemove.add(currentPoi);
-//                        poiWithDistances.add(
-//                                new Pair<>(
-//                                        currentPoi,
-//                                        mapHelper.pathFrom(currentPosition,
-//                                                new Pair<>(
-//                                                        currentPoi.getPosition().getPositionX(),
-//                                                        currentPoi.getPosition().getPositionY())
-//                                        ).second));
-//                    }
-//                }
-//                surroundingPoi.removeAll(poisToRemove);
-//                Collections.sort(poiWithDistances, new Comparator<Pair<Place, Integer>>() {
-//                    public int compare(Pair<Place, Integer> o1, Pair<Place, Integer> o2) {
-//                        if (o1.second < o2.second) {
-//                            return -1;
-//                        } else {
-//                            if (o1.second.equals(o2.second)) {
-//                                return 0;
-//                            } else {
-//                                return 1;
-//                            }
-//                        }
-//                    }
-//                });
-//                for (int i = poiWithDistances.size() - 1; i >= 0; i--) {
-//                    surroundingPoi.add(0, poiWithDistances.get(i).first);
-//                    Log.d(TAG, "surroundPOI: " + poiWithDistances.get(i).second);
-//                }
-//            }
-//        }
-//        return surroundingPoi;
-//    }
-
     public static ArrayList<PointOfInterest> getPointOfInterests() {
         return pointOfInterests;
-    }
-
-    public static void setPointOfInterests(ArrayList<PointOfInterest> pointOfInterests) {
-        PointOfInterest.pointOfInterests = pointOfInterests;
     }
 
     public static JSONObject getJsonFromPOIs() {
@@ -165,20 +110,14 @@ public class PointOfInterest extends Place {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
-            JSONArray poiJsonArray = jsonObject.getJSONArray(POINT_OF_INTEREST);
+            JSONArray poiJsonArray = jsonObject.getJSONArray(RESULT);
             if (pointOfInterests == null) {
                 pointOfInterests = new ArrayList<>();
             }
             pointOfInterests.clear();
             for (int i = 0; i < poiJsonArray.length(); i++) {
                 JSONObject currentPoi = poiJsonArray.getJSONObject(i);
-                String name = currentPoi.getString(NAME);
-                String information = currentPoi.getString(INFORMATION);
-                int posX = currentPoi.getInt(POS_X);
-                int posY = currentPoi.getInt(POS_Y);
-                int floor = currentPoi.getInt(FLOOR);
-                pointOfInterests.add(
-                        new PointOfInterest(name, new Position(posX, posY, floor), information));
+                pointOfInterests.add(new PointOfInterest(currentPoi));
             }
             PointOfInterest.savePoiToFile();
         } catch (JSONException e) {

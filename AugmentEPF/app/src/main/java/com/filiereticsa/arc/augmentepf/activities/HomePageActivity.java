@@ -18,7 +18,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -40,16 +39,33 @@ import com.filiereticsa.arc.augmentepf.localization.GABeacon;
 import com.filiereticsa.arc.augmentepf.localization.GABeaconMap;
 import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
 import com.filiereticsa.arc.augmentepf.localization.LocalizationFragment;
+import com.filiereticsa.arc.augmentepf.managers.FileManager;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.models.Class;
 import com.filiereticsa.arc.augmentepf.models.ICalTimeTable;
 import com.filiereticsa.arc.augmentepf.models.Place;
-import com.filiereticsa.arc.augmentepf.models.Position;
 
 import org.altbeacon.beacon.BeaconManager;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.ATTRIBUTE;
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.CONNECTION;
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.GET_ATTRIBUTE;
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.GET_EMAIL;
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.GET_ICAL;
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.GET_TYPE;
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.ICAL;
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.ID_USER;
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.SAVE_CRED;
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.SETTINGS;
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.SUCCESS;
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.TYPE;
+import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.TYPE_USER;
+import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.CREDENTIALS_JSON;
+import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.MESSAGE;
+import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.NAME;
+import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.PASSWORD;
 
 public class HomePageActivity
         extends AppCompatActivity
@@ -70,9 +86,11 @@ public class HomePageActivity
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     private static final String VALIDATE = "validate";
     private static final String YES = "y";
+    public static final String FALSE = "false";
     public static HTTPRequestInterface httpRequestInterface;
     public static DestinationSelectedInterface destinationSelectedInterface;
     public static boolean isUserConnected = false;
+    private static boolean snackBarShown = false;
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
     private SlidingDrawer leftSlidingDrawer;
     private SlidingDrawer rightSlidingDrawer;
@@ -87,14 +105,6 @@ public class HomePageActivity
     public static View rootView;
     private Class nextClass;
 
-    public static boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) AugmentEPFApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        HTTPRequestManager.checkEPFWiFi(httpRequestInterface, HTTPRequestManager.WIFI_CHECK);
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,26 +112,68 @@ public class HomePageActivity
             new GAFrameworkUserTracker(this);
             GAFrameworkUserTracker.sharedTracker().startTrackingUser();
         }
-        httpRequestInterface = this;
         setContentView(R.layout.activity_home_page);
-        destinationSelectedInterface = this;
-
         rootView = findViewById(R.id.rootview);
-        AppUtils.setScreenSize(this);
-        loadBeaconsAndMaps();
+        httpRequestInterface = this;
+        logInIfNecessary();
 
+        destinationSelectedInterface = this;
+        AppUtils.setScreenSize(this);
+        //loadBeaconsAndMaps();
         initFragments();
         showPreferredNavigationMode();
         askForPermission();
         setUpSlidingDrawers();
         setUpEditText();
-        GAFrameworkUserTracker.sharedTracker().startTrackingUser();
-        //postRequestExample();
-        if (ConnectionActivity.userTypeValue.equals("A")){
+        showAdminButtonOrNot();
+    }
+
+    private void showAdminButtonOrNot() {
+        if (ConnectionActivity.userTypeValue.equals("A")) {
             ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
             adminButton.setVisibility(View.VISIBLE);
             adminButton.setClickable(true);
         }
+    }
+
+    private void logInIfNecessary() {
+        if (!isUserConnected) {
+            final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean saveCred = sharedPreferences.getBoolean(SAVE_CRED, false);
+            if (saveCred) {
+                connectToServer();
+            }
+        }
+    }
+
+    private void connectToServer() {
+        JSONObject credentials = loadCredentials();
+        try {
+            String name = credentials.getString(NAME);
+            String password = credentials.getString(PASSWORD);
+            JSONObject jsonRequestData = new JSONObject();
+            try {
+                jsonRequestData.put(NAME, name);
+                jsonRequestData.put(PASSWORD, password);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            HTTPRequestManager.doPostRequest(CONNECTION, jsonRequestData.toString(),
+                    this, HTTPRequestManager.CONNECTION);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private JSONObject loadCredentials() {
+        FileManager fileManager = new FileManager(null, CREDENTIALS_JSON);
+        JSONObject jsonDataRead = null;
+        try {
+            jsonDataRead = new JSONObject(fileManager.readFile());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonDataRead;
     }
 
     private void showPreferredNavigationMode() {
@@ -178,38 +230,6 @@ public class HomePageActivity
                 getSupportFragmentManager().findFragmentById(R.id.localization_fragment);
         cameraFragment = (CameraFragment)
                 getSupportFragmentManager().findFragmentById(R.id.camera_fragment);
-    }
-
-    private void postRequestExample() {
-        // Create the JSONObject that will be sent in the request
-        JSONObject jsonObject = new JSONObject();
-        try {
-            // Add the different element in the JSONObject with the method put
-            // The first parameter is the key and the second one is the value
-            // The first parameter has to be a constant in order to change it easily
-            // The second parameter shouldn't be hardcoded in most cases
-            jsonObject.put("name", "Anthony");
-            jsonObject.put("type", "Student");
-            jsonObject.put("password", "Lol1234");
-            jsonObject.put("email", "anthony.prudhomme@epfedu.fr");
-            // If you need to add an array in the JSONObject do as the 3 next lines shows
-            JSONArray jsonArray = new JSONArray();
-            jsonArray.put("elevator");
-            jsonArray.put("biggerText");
-            jsonObject.put("specificAttributes", jsonArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        // Start the post request method that takes 4 parameters :
-        // - The name of the method in the server (given by Guilhem)
-        // - The data of the request : the JSONObject you've just created as a string
-        // - A reference to the listener : see the implementation in the class declaration above
-        // - An id for the request used to retrieve your request, use the constant for this parameter
-        //   There is an HTTPRequestInterface that contains a method called onRequestDone
-        //   This method will be executed when the request is done and will give the result as a String
-        //   You have to put the result in a JSONObject to use it. See the example below (onRequestDone)
-        HTTPRequestManager.doPostRequest("accountCreation.php", jsonObject.toString(),
-                this, HTTPRequestManager.ACCOUNT_CREATION);
     }
 
     private void askForPermission() {
@@ -276,6 +296,7 @@ public class HomePageActivity
                 canMapBeMoved = true;
                 if (!leftSlidingDrawer.isOpened()) {
                     rightSlidingDrawer.setVisibility(View.VISIBLE);
+                    floatingActionButton.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -285,7 +306,6 @@ public class HomePageActivity
             @Override
             public void onDrawerClosed() {
                 canMapBeMoved = true;
-                Log.d(TAG, "onDrawerClosed: ");
                 rightSlidingDrawer.setVisibility(View.VISIBLE);
                 drawerHandle.setBackgroundResource(R.drawable.nav_left_bar_open);
                 floatingActionButton.setVisibility(View.VISIBLE);
@@ -328,6 +348,7 @@ public class HomePageActivity
                 canMapBeMoved = true;
                 if (!rightSlidingDrawer.isOpened()) {
                     leftSlidingDrawer.setVisibility(View.VISIBLE);
+                    floatingActionButton.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -382,7 +403,7 @@ public class HomePageActivity
     protected void onResume() {
         super.onResume();
         if (isUserConnected) {
-            if (ConnectionActivity.userTypeValue.equals("A")){
+            if (ConnectionActivity.userTypeValue.equals("A")) {
                 ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
                 adminButton.setVisibility(View.VISIBLE);
                 adminButton.setClickable(true);
@@ -440,8 +461,8 @@ public class HomePageActivity
             isUserConnected = false;
             optionsFragment.changeLoginButtonText();
             ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
-                adminButton.setVisibility(View.INVISIBLE);
-                adminButton.setClickable(false);
+            adminButton.setVisibility(View.INVISIBLE);
+            adminButton.setClickable(false);
         }
     }
 
@@ -488,17 +509,6 @@ public class HomePageActivity
         // Do the action corresponding to the request you did
         // You can retrieve your request thanks to the requestId
         switch (requestId) {
-            case HTTPRequestManager.ACCOUNT_CREATION:
-                try {
-                    // Put the result in a JSONObject to use it.
-                    JSONObject jsonObject = new JSONObject(result);
-                    // Show in the log the message given by the result : it will give error or success information
-                    Log.d(TAG, "onRequestDone: " + jsonObject.getString("message"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                break;
-
             case HTTPRequestManager.BEACONS:
                 if (result.equals(ERROR)) {
                     GABeacon.loadBeaconsFromFile();
@@ -523,34 +533,21 @@ public class HomePageActivity
                 } else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(VALIDATE);
-                        if (success.equals(YES)) {
-                            GABeaconMap.onMapsRequestDone(result);
-                        } else {
-                            GABeaconMap.loadMapsFromFile();
-                        }
+//                        String success = jsonObject.getString(VALIDATE);
+//                        if (success.equals(YES)) {
+                        GABeaconMap.onMapsRequestDone(result);
+//                        } else {
+//                            GABeaconMap.loadMapsFromFile();
+//                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
                 break;
 
-            /*case HTTPRequestManager.WIFI_CHECK:
-                //Log.d(TAG, "onRequestDone: " + result);
-                if (result.equals("false")) {
-                    Snackbar.make(rootView, R.string.fail_epf_wifi, Snackbar.LENGTH_LONG)
-                            .show();
-                } else {
-                    Snackbar.make(rootView, R.string.success_epf_wifi, Snackbar.LENGTH_LONG)
-                            .show();
-                }
-
-                break;*/
-
             case HTTPRequestManager.NEXT_COURSE:
-                if (result.equals("Error")) {
-                    // TODO remove this (this is only to test)
-                    changeButtonColor();
+                if (result.equals(ERROR)) {
+
                 }
                 try {
                     JSONObject jsonObject = new JSONObject(result);
@@ -569,6 +566,138 @@ public class HomePageActivity
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                break;
+
+            case HTTPRequestManager.CONNECTION:
+                if (result.equals(ERROR)) {
+                    Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
+                }
+                try {
+                    // Put the result in a JSONObject to use it.
+                    JSONObject jsonObject = new JSONObject(result);
+                    // Show in the log the message given by the result:
+                    // it will give error or success information
+                    Log.d(TAG, "onRequestDone: " + jsonObject.getString(MESSAGE));
+                    String success = jsonObject.getString(MESSAGE);
+                    if (success.equals(SUCCESS)) {
+                        Toast.makeText(this, R.string.connected, Toast.LENGTH_SHORT).show();
+                        HomePageActivity.isUserConnected = true;
+                        ConnectionActivity.idUser = jsonObject.getInt(ID_USER);
+                        ConnectionActivity.token = jsonObject.getString(TOKEN);
+                        Log.d(TAG, "onRequestDone: " + ConnectionActivity.idUser + " " + ConnectionActivity.token);
+                        checkForNewAccountSettings();
+                    } else {
+                        // If request failed, shows the message from the server
+                        String message = jsonObject.getString(MESSAGE);
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        HomePageActivity.isUserConnected = false;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case HTTPRequestManager.SETTINGS:
+                if (result.equals(ERROR)) {
+                    Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
+                }
+                try {
+                    // Put the result in a JSONObject to use it.
+                    JSONObject jsonObject = new JSONObject(result);
+                    // Show in the log the message given by the result : it will give error or success information
+                    String success = jsonObject.getString(STATE);
+                    if (success.equals(TRUE)) {
+
+                        // Get sharedPreferences
+                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                        SharedPreferences.Editor prefEditor = sharedPreferences.edit();
+
+                        // Update user specific attributes in SharedPreferences
+                        String attribute = jsonObject.getString(ATTRIBUTE);
+                        String[] attributes = attribute.split("/");
+                        boolean elevator = false;
+                        boolean soundGuidance = false;
+                        for (int i = 0; i < attributes.length; i++) {
+                            if (attributes[i].equals("soundGuidance")) {
+                                soundGuidance = true;
+                            }
+                            if (attributes[i].equals("elevator")) {
+                                elevator = true;
+                            }
+                        }
+                        String specificAttributeValue = "0";
+                        if (elevator && soundGuidance) {
+                            specificAttributeValue = "VA";
+                        } else if (elevator) {
+                            specificAttributeValue = "A";
+                        } else if (soundGuidance) {
+                            specificAttributeValue = "V";
+                        }
+
+                        prefEditor.putString("specific_attribute_user", specificAttributeValue);
+
+
+                        // Update user type in SharedPreferences
+                        String userType = jsonObject.getString(TYPE);
+                        String userTypeValue = "S";
+                        switch (userType) {
+
+                            case "Student":
+                                userTypeValue = "S";
+                                break;
+
+                            case "Teacher":
+                                userTypeValue = "T";
+                                break;
+
+                            case "Contributor":
+                                userTypeValue = "C";
+                                break;
+
+                            case "Visitor":
+                                userTypeValue = "V";
+                                break;
+
+                            case "Administrator":
+                                userTypeValue = "A";
+                                break;
+                        }
+
+                        prefEditor.putString(TYPE_USER, userTypeValue);
+
+                        // Update user iCal link
+                        String iCalLink = jsonObject.getString(ICAL);
+                        prefEditor.putString(ICAL, iCalLink);
+
+                        prefEditor.apply();
+
+                    } else {
+                        // If request failed, shows the message from the server
+                        String message = jsonObject.getString(MESSAGE);
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case HTTPRequestManager.PATH:
+                Log.d(TAG, "onRequestDone: path " + result);
+                if (result.equals(ERROR)) {
+
+                }
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    String state = jsonObject.getString(STATE);
+                    if (state.equals(TRUE)) {
+
+                    } else {
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+
         }
     }
 
@@ -584,19 +713,12 @@ public class HomePageActivity
     @Override
     public void onDestinationSelected(Place place) {
         rightSlidingDrawer.close();
-        GAFrameworkUserTracker.sharedTracker().setTarget(
-                new Pair<>(place.getPosition().getPositionX(), place.getPosition().getPositionY()),
-                place.getPosition().getFloor());
+        GAFrameworkUserTracker.sharedTracker().setTarget(place);
     }
 
     public void onNextClassClicked(View view) {
         if (nextClass != null) {
-            Position nextClassPosition = nextClass.getClassRoom().getPosition();
-            Pair<Integer, Integer> arrivalPoint = new Pair<>(
-                    nextClassPosition.getPositionX(),
-                    nextClassPosition.getPositionY());
-            int floor = nextClassPosition.getFloor();
-            GAFrameworkUserTracker.sharedTracker().setTarget(arrivalPoint, floor);
+            GAFrameworkUserTracker.sharedTracker().setTarget(nextClass.getClassRoom());
         } else {
             Toast.makeText(this, R.string.no_next_class_found, Toast.LENGTH_SHORT).show();
             askForNextCourse();
@@ -607,12 +729,36 @@ public class HomePageActivity
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         showPreferredNavigationMode();
     }
-}
 
-//    public static boolean isNetworkAvailable() {
-//        ConnectivityManager connectivityManager
-//                = (ConnectivityManager) AugmentEPFApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-//        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-//    }
+    private void checkForNewAccountSettings() {
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(ID, ConnectionActivity.idUser);
+            jsonObject.put(TOKEN, ConnectionActivity.token);
+            jsonObject.put(GET_ATTRIBUTE, TRUE);
+            jsonObject.put(GET_EMAIL, TRUE);
+            jsonObject.put(GET_TYPE, TRUE);
+            jsonObject.put(GET_ICAL, TRUE);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        HTTPRequestManager.doPostRequest(SETTINGS, jsonObject.toString(),
+                this, HTTPRequestManager.SETTINGS);
+    }
+
+    public static boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) AugmentEPFApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean connected = activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        if (!snackBarShown && !connected) {
+            Snackbar.make(rootView, R.string.no_internet, Snackbar.LENGTH_LONG)
+                    .show();
+            snackBarShown = true;
+        }
+        return connected;
+    }
+}
 

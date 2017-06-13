@@ -241,9 +241,8 @@
     <string name="error_server">Something went wrong with the server</string>
     <string name="need_internet_account">You need internet connection to create an account</string>
     <string name="connected">Authentication successful</string>
+    <string name="no_internet">You are not connected to internet</string>
     <string name="logout">Log out</string>
-    <string name="fail_epf_wifi">Please use EPF Wi-Fi to use this app</string>
-    <string name="success_epf_wifi">Successfully connected to EPF Wi-Fi</string>
     <!--TODO Manage following input-->
     <string name="title_change_mail">Change your mail</string>
     <string name="title_reset_pw">Reset password</string>
@@ -339,5 +338,7 @@
     <string name="destination">Destination :</string>
     <string name="guidanceIn">in</string>
     <string name="starting_guidance">Starting guidance</string>
+    <string name="save_cred">Save login and password</string>
+    <string name="log_in_automatically">Log in automatically</string>
 
 </resources>

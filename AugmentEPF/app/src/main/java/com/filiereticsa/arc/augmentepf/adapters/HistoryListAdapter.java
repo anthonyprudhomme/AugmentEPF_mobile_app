@@ -12,7 +12,6 @@ import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.models.Path;
 import com.filiereticsa.arc.augmentepf.models.Place;
 import com.filiereticsa.arc.augmentepf.models.PlannedPath;
-import com.filiereticsa.arc.augmentepf.models.Position;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,12 +62,17 @@ public class HistoryListAdapter extends ArrayAdapter<Path> {
             }
 
             // Get the departure and the arrival places from the path
-            Position departure = path.getDeparture();
+            Place closestDeparturePlace = path.getClosestDeparturePlace();
             Place arrival = path.getArrival();
 
             // Set the texts in the view
-            // TODO /!\ departureName.setText(departure.getName());
-            arrivalName.setText(arrival.getName());
+            if (closestDeparturePlace != null) {
+                departureName.setText(closestDeparturePlace.getName());
+            }
+            if (arrival != null) {
+                arrivalName.setText(arrival.getName());
+            }
+
 
             // Set the time format
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm a");

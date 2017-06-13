@@ -11,6 +11,9 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.util.Pair;
 
+import com.filiereticsa.arc.augmentepf.AppUtils;
+import com.filiereticsa.arc.augmentepf.models.Path;
+import com.filiereticsa.arc.augmentepf.models.Place;
 import com.filiereticsa.arc.augmentepf.models.SpecificAttribute;
 
 import java.util.ArrayList;
@@ -39,8 +42,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     private long alarmForAccelerometer = 0;
     private long alarmForGyroscope = 0;
 
-    private Pair<Integer, Integer> target;
-    private Integer floorTarget = null;
+    private Place target;
     private SpecificAttribute currentSpecificAttribute = SpecificAttribute.NONE;
 
     private double stepsPerMapItem = 1.5;
@@ -154,14 +156,6 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
         }
     }
 
-    public void setUserLocationHistorySize(int newHistorySize) {
-        if (userLocationHistorySize < userLocationHistory.size()) {
-            for (int i = 0; i < userLocationHistory.size() - userLocationHistorySize; i++) {
-                userLocationHistory.remove(0);
-            }
-        }
-    }
-
     public UserIndoorLocationCandidate getCurrentUserLocation() {
         if (userLocationHistory.size() != 0) {
             return userLocationHistory.get(userLocationHistory.size() - 1);
@@ -181,7 +175,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                 observers.get(i).userMovedToIndexPath(newUserLocation.indexPath, headingGyro, currentHeading, direction);
             }
             this.currentUserLocation = newUserLocation;
-            this.definePathTo(currentUserLocation.indexPath, target, floorTarget);
+            this.definePathTo(currentUserLocation.indexPath, target);
         }
     }
 
@@ -835,18 +829,21 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 
     }
 
-    public void definePathTo(Pair<Integer, Integer> currentPosition, Pair<Integer, Integer> target, Integer floorTarget) {
+    public void definePathTo(Pair<Integer, Integer> currentPosition, Place target) {
         if (target == null) {
             for (int i = 0; i < observers.size(); i++) {
                 observers.get(i).onPathChanged(null, null);
             }
             return;
         }
+        int floorTarget = target.getPosition().getFloor();
+        Pair<Integer, Integer> targetPosition
+                = new Pair<>(target.getPosition().getPositionX(), target.getPosition().getPositionY());
         // If the target is on the same floor
-        if (floorTarget != null && currentMap.getFloor() == floorTarget) {
-            Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = this.mapHelper.pathFrom(currentPosition, target);
+        if (floorTarget != Integer.MAX_VALUE && currentMap.getFloor() == floorTarget) {
+            Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = this.mapHelper.pathFrom(currentPosition, targetPosition);
             if (path != null && path.first != null) {
-                path.first.add(target);
+                path.first.add(targetPosition);
                 for (int i = 0; i < observers.size(); i++) {
                     observers.get(i).onPathChanged(path, null);
                 }
@@ -859,7 +856,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
             // Get preferences corresponding to specific attributes : will say if we need to take
             // elevator or not
             String specificAttribute = sharedPreferences.getString("specific_attribute_user", "0");
-            currentSpecificAttribute = getCurrentSpecificAttribute(specificAttribute);
+            currentSpecificAttribute = AppUtils.getCurrentSpecificAttribute(specificAttribute);
             // Set default value to floorAccessType
             FloorAccess.FloorAccessType floorAccessType = FloorAccess.FloorAccessType.STAIRS;
             for (int i = 0; i < initialFloorAccesses.size(); i++) {
@@ -913,47 +910,26 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     }
 
     // Method called when the user pick a target
-    public void setTarget(Pair<Integer, Integer> target, int floor) {
-        Pair<Integer, Integer> oldTarget = this.target;
+    public void setTarget(Place target) {
+        Place oldTarget = this.target;
         this.target = target;
-        this.floorTarget = floor;
         if (oldTarget != null || target != null) {
             if (currentUserLocation != null) {
-                this.definePathTo(currentUserLocation.indexPath, target, floorTarget);
+                this.definePathTo(currentUserLocation.indexPath, target);
             }
+        }
+        if (target!= null) {
+            Path.createNewPath(currentUserLocation, target, currentSpecificAttribute);
         }
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         String specificAttribute = sharedPreferences.getString("specific_attribute_values_array", "0");
-        getCurrentSpecificAttribute(specificAttribute);
-        definePathTo(currentUserLocation.indexPath, target, floorTarget);
-    }
-
-    private SpecificAttribute getCurrentSpecificAttribute(String specificAttribute) {
-        switch (specificAttribute) {
-            case "0":
-                currentSpecificAttribute = SpecificAttribute.NONE;
-                break;
-
-            case "V":
-                currentSpecificAttribute = SpecificAttribute.SOUND_GUIDANCE;
-                break;
-
-            case "A":
-                currentSpecificAttribute = SpecificAttribute.ELEVATOR;
-                break;
-
-            case "VA":
-                currentSpecificAttribute = SpecificAttribute.BOTH;
-                break;
-
-            default:
-                currentSpecificAttribute = SpecificAttribute.NONE;
-                break;
+        currentSpecificAttribute = AppUtils.getCurrentSpecificAttribute(specificAttribute);
+        if (currentUserLocation != null) {
+            definePathTo(currentUserLocation.indexPath, target);
         }
-        return currentSpecificAttribute;
     }
 
     public GABeaconMapHelper getMapHelper() {

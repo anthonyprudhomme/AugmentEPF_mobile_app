@@ -49,20 +49,20 @@ public class PathPlanningActivity extends AppCompatActivity
     private int whichDate;
     private int whichHour; // Same for hours
 
-    public static void expand(final View v) {
-        v.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        final int targetHeight = v.getMeasuredHeight();
+    public static void expand(final View view) {
+        view.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = view.getMeasuredHeight();
 
         // Older versions of android (pre API 21) cancel animations for views with a height of 0.
-        v.getLayoutParams().height = 1;
-        v.setVisibility(View.VISIBLE);
-        Animation a = new Animation() {
+        view.getLayoutParams().height = 1;
+        view.setVisibility(View.VISIBLE);
+        Animation animation = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().height = interpolatedTime == 1
+                view.getLayoutParams().height = interpolatedTime == 1
                         ? LinearLayout.LayoutParams.WRAP_CONTENT
                         : (int) (targetHeight * interpolatedTime);
-                v.requestLayout();
+                view.requestLayout();
             }
 
             @Override
@@ -72,21 +72,21 @@ public class PathPlanningActivity extends AppCompatActivity
         };
 
         // 1dp/ms
-        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
-        v.startAnimation(a);
+        animation.setDuration((int) (targetHeight / view.getContext().getResources().getDisplayMetrics().density));
+        view.startAnimation(animation);
     }
 
-    public static void collapse(final View v) {
-        final int initialHeight = v.getMeasuredHeight();
+    public static void collapse(final View view) {
+        final int initialHeight = view.getMeasuredHeight();
 
-        Animation a = new Animation() {
+        Animation animation = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 if (interpolatedTime == 1) {
-                    v.setVisibility(View.GONE);
+                    view.setVisibility(View.GONE);
                 } else {
-                    v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
-                    v.requestLayout();
+                    view.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
+                    view.requestLayout();
                 }
             }
 
@@ -97,8 +97,8 @@ public class PathPlanningActivity extends AppCompatActivity
         };
 
         // 1dp/ms
-        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
-        v.startAnimation(a);
+        animation.setDuration((int) (initialHeight / view.getContext().getResources().getDisplayMetrics().density));
+        view.startAnimation(animation);
     }
 
     @Override
