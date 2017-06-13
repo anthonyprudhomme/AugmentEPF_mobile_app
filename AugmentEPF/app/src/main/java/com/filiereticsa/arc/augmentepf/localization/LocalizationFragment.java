@@ -49,7 +49,7 @@ public class LocalizationFragment
         DestinationSelectedInterface {
 
     public static final float DEFAULT_ZOOM = 0.4f;
-    private static final String TAG = "Ici";
+    private static final String TAG = "Ici (LocalizationFragment)";
     public static HomePageInterface homePageInterface;
     public static DestinationSelectedInterface destinationSelectedInterface;
     private View rootView = null;
@@ -447,8 +447,14 @@ public class LocalizationFragment
 
             // Get the index in the segment which correspond at the position
             index = guidance.getCurrentSegment(oldUserPosition, index);
+
+            /*Log.d(TAG, "onPathChanged: Index:" + index);*/
+            /*Log.d(TAG, "onPathChanged: Trajectory:"
+                    + trajectory.get(index).getDirectionInstruction());*/
+
             if (index == -1) { // Error with the position
                 index = 0;
+                Log.d(TAG, "onPathChanged: path null?:" + (path != null));
                 if (path != null) { // There is a path defined previously
                     guidance.setPath(path.first);
                 } else {
@@ -471,7 +477,7 @@ public class LocalizationFragment
                     } else {
                         textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                     }
-                    Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
+                    Log.d(TAG, "onPathChanged: Instruction display:" + trajectory.get(index).getDirectionInstruction());
                 }
             }
         }

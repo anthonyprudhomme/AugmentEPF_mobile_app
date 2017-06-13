@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.R;
+import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
 import com.filiereticsa.arc.augmentepf.interfaces.DestinationSelectedInterface;
 import com.filiereticsa.arc.augmentepf.localization.FloorAccess;
 import com.filiereticsa.arc.augmentepf.localization.GABeaconMap;
@@ -46,6 +48,7 @@ import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTrackerObserv
 import com.filiereticsa.arc.augmentepf.localization.guidage.Guidance;
 import com.filiereticsa.arc.augmentepf.localization.guidage.TrajectorySegment;
 import com.filiereticsa.arc.augmentepf.models.ClassRoom;
+import com.filiereticsa.arc.augmentepf.models.CustomSnackBar;
 import com.filiereticsa.arc.augmentepf.models.Place;
 import com.filiereticsa.arc.augmentepf.views.GuidanceView;
 
@@ -62,7 +65,7 @@ public class CameraFragment extends Fragment
         implements GAFrameworkUserTrackerObserver, DestinationSelectedInterface {
 
     // constants
-    private static final String TAG = "Ici";
+    private static final String TAG = "Ici (CameraFragment)";
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     private static final int REQUEST_CAMERA_PERMISSION = 200;
     private static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA};
@@ -157,7 +160,7 @@ public class CameraFragment extends Fragment
     };
 
     private void setupCameraIfPossible() {
-        Log.d(TAG, "setupCameraIfPossible: " + cameraOpened + " " + surfaceTextureAvailable + " " + permissionsGranted);
+        // Log.d(TAG, "setupCameraIfPossible: " + cameraOpened + " " + surfaceTextureAvailable + " " + permissionsGranted);
         if (!cameraOpened && surfaceTextureAvailable && permissionsGranted) {
             openCamera(currentCamera);
         }
@@ -190,6 +193,9 @@ public class CameraFragment extends Fragment
     private Guidance guidance;
     private int index;
     private Pair<Integer, Integer> currentPosition;
+    private CustomSnackBar customSnackBar;
+
+    private TextToSpeech textToSpeech;
 
     protected void startBackgroundThread() {
         backgroundThread = new HandlerThread("Camera Background");
@@ -429,6 +435,11 @@ public class CameraFragment extends Fragment
         }
         if (guidance != null && path == null) {
             guidance.setPath(null);
+
+            // Launching the snackbar for guidance
+            /*customSnackBar = CustomSnackBar.make(
+                    (ViewGroup) HomePageActivity.rootView, CustomSnackBar.LENGTH_INDEFINITE);
+            customSnackBar.show();*/
         }
 
         // There is a trajectory with instructions and it's not finished yet
@@ -445,11 +456,29 @@ public class CameraFragment extends Fragment
             } else if (index == Integer.MAX_VALUE) { // The end of the path
                 guidanceView.setInstruction("Congrats, you reached your destination!");
                 guidanceView.setTargetHeading(null);
+                customSnackBar.dismiss();
             } else {
+                Log.d(TAG, "onPathChanged: Instruction:"
+                    + trajectory.get(index).getDirectionInstruction());
                 if (trajectory != null) {
+//                    customSnackBar.setText(trajectory.get(index).getDirectionInstruction());
+
+                    /*String toSpeak = trajectory.get(index).getDirectionInstruction();
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else {
+                        textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                    }*/
+
+                    // Display instruction
+                    Log.d(TAG, "onPathChanged: Instruction:"
+                            + trajectory.get(index).getDirectionInstruction());
+                    Log.d(TAG, "onPathChanged: Direction:"
+                            + trajectory.get(index).getNewDirectionCoordinates());
+
                     guidanceView.setInstruction(trajectory.get(index).getDirectionInstruction());
                     guidanceView.setTargetHeading(trajectory.get(index).getNewDirectionCoordinates());
-                    Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
                 }
             }
         }
