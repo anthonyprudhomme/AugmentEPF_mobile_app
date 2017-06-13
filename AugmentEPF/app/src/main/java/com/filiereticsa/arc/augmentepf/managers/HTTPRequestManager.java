@@ -3,6 +3,7 @@ package com.filiereticsa.arc.augmentepf.managers;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 
 import java.io.IOException;
@@ -37,10 +38,11 @@ public class HTTPRequestManager {
     public static final int ELEMENT = 11;
     public static final int ICAL = 12;
     public static final int NEXT_COURSE = 13;
+    public static final int PATH = 14;
     /*============================================================================================*/
 
     private static final String TAG = "Ici";
-    private static final String serverUrl = "http://192.168.206.106/AugmentEPF/php/";
+    private static final String serverUrl = "http://193.50.54.5/AugmentEPF/php/";
     private static OkHttpClient client = new OkHttpClient();
 
 
@@ -74,10 +76,12 @@ public class HTTPRequestManager {
     // Call this method to do a post request
     public static void doPostRequest(String url, String parameter,
                                      HTTPRequestInterface observer, int requestId) {
-        RequestParameter requestParameter = new RequestParameter(serverUrl + url, RequestType.POST,
-                parameter, observer, requestId);
-        HttpAsyncTask asyncTask = new HttpAsyncTask();
-        asyncTask.execute(requestParameter);
+        if (HomePageActivity.isNetworkAvailable()) {
+            RequestParameter requestParameter = new RequestParameter(serverUrl + url, RequestType.POST,
+                    parameter, observer, requestId);
+            HttpAsyncTask asyncTask = new HttpAsyncTask();
+            asyncTask.execute(requestParameter);
+        }
     }
 
     // Call this method to do a get request
@@ -186,7 +190,6 @@ public class HTTPRequestManager {
 
         @Override
         protected void onPostExecute(String returnedValue) {
-            Log.d(TAG, "onPostExecute: "+requestParameter.requestId);
             requestParameter.observer.onRequestDone(returnedValue, requestParameter.requestId);
         }
 

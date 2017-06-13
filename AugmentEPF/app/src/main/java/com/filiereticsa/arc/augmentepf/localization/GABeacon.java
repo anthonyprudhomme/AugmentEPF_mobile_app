@@ -1,5 +1,6 @@
 package com.filiereticsa.arc.augmentepf.localization;
 
+import android.util.Log;
 import android.util.Pair;
 
 import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
@@ -23,7 +24,7 @@ public class GABeacon {
     public static final String TOKEN = "token";
     public static final String CONTENT_TYPE = "contentType";
     public static final String RESULT = "result";
-    public static final String URL = "getElementAdministration.php";
+    public static final String URL = "getElement.php";
     public static final String EMBCUUID = "699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012";
     private static final String TAG = "Ici";
     private final static double LIMIT_UNKNOWN_IMMEDIATE = 0;
@@ -163,6 +164,7 @@ public class GABeacon {
     }
 
     public static void onBeaconRequestDone(String result) {
+        Log.d(TAG, "onBeaconRequestDone: "+result);
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);

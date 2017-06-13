@@ -1,6 +1,5 @@
 package com.filiereticsa.arc.augmentepf.models;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -12,10 +11,10 @@ public class PlannedPath extends Path {
     private AlarmType alarmType;
     private Date whenToAlarmUser;
 
-    public PlannedPath(Position departure, Place closestDeparturePlace, Place arrival, ArrayList<Position> path,
+    public PlannedPath(Position departure, Place closestDeparturePlace, Place arrival,
                        boolean mustTakeElevator, Date departureDate, Date arrivalDate,
                        AlarmType alarmType, Date whenToAlarmUser) {
-        super(departure, closestDeparturePlace, arrival, path, mustTakeElevator, departureDate, arrivalDate);
+        super(departure, closestDeparturePlace, arrival, mustTakeElevator, departureDate, arrivalDate);
         this.alarmType = alarmType;
         this.whenToAlarmUser = whenToAlarmUser;
     }

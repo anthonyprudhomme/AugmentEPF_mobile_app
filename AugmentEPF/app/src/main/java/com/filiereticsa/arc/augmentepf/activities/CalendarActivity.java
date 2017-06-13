@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +25,7 @@ import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.models.Class;
 import com.filiereticsa.arc.augmentepf.models.ICalTimeTable;
-import com.filiereticsa.arc.augmentepf.models.Position;
+import com.filiereticsa.arc.augmentepf.models.Place;
 import com.filiereticsa.arc.augmentepf.views.CalendarClassView;
 
 import org.json.JSONException;
@@ -231,10 +230,10 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
         } else {
             int today = calendar.get(Calendar.DAY_OF_MONTH);
             addAClass(1, today % columnNumber + HOUR_DELTA, today, today % columnNumber + 2 + HOUR_DELTA, today, "1L");
-            addAClass(2, ((today + 3) % (rowNumber - 2)) + HOUR_DELTA, today, ((today + 3) % (rowNumber - 2)) + 2 + HOUR_DELTA, today + 20, "2L");
-            addAClass(4, ((today + 5) % (rowNumber - 2)) + HOUR_DELTA, today, ((today + 5) % (rowNumber - 2)) + 2 + HOUR_DELTA, today + 10, "3L");
-            addAClass(5, ((today + 2) % (rowNumber - 2)) + HOUR_DELTA, today, ((today + 2) % (rowNumber - 2)) + 2 + HOUR_DELTA, today + 5, "4L");
-            addAClass(6, ((today + 6) % (rowNumber - 2)) + HOUR_DELTA, today, ((today + 6) % (rowNumber - 2)) + 2 + HOUR_DELTA, today - 5, "5L");
+            addAClass(2, ((today + 3) % (rowNumber - 2) + 1) + HOUR_DELTA, today, ((today + 3) % (rowNumber - 2) + 1) + 2 + HOUR_DELTA, today + 20, "2L");
+            addAClass(4, ((today + 5) % (rowNumber - 2) + 1) + HOUR_DELTA, today, ((today + 5) % (rowNumber - 2) + 1) + 2 + HOUR_DELTA, today + 10, "3L");
+            addAClass(5, ((today + 2) % (rowNumber - 2) + 1) + HOUR_DELTA, today, ((today + 2) % (rowNumber - 2) + 1) + 2 + HOUR_DELTA, today + 5, "4L");
+            addAClass(6, ((today + 6) % (rowNumber - 2) + 1) + HOUR_DELTA, today, ((today + 6) % (rowNumber - 2) + 1) + 2 + HOUR_DELTA, today - 5, "5L");
         }
     }
 
@@ -317,7 +316,7 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
                                 public void onClick(DialogInterface dialog, int id) {
 
                                     GAFrameworkUserTracker.sharedTracker().setTarget(
-                                            new Pair<>(38, 10), 1);
+                                            Place.getPlaceFromName(currentClassName));
                                     Intent intent = new Intent(CalendarActivity.this, HomePageActivity.class);
                                     startActivity(intent);
                                 }
@@ -412,13 +411,9 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
                             // If the user click on "OK"
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    Position classPosition = currentClass.getClassRoom().getPosition();
-                                    GAFrameworkUserTracker.sharedTracker().setTarget(
-                                            new Pair<>(
-                                                    classPosition.getPositionX(),
-                                                    classPosition.getPositionY()
-                                            ),
-                                            classPosition.getFloor());
+                                    GAFrameworkUserTracker
+                                            .sharedTracker()
+                                            .setTarget(currentClass.getClassRoom());
 
                                 }
                             })

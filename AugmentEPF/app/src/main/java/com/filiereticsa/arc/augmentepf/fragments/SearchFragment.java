@@ -4,7 +4,6 @@ package com.filiereticsa.arc.augmentepf.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.models.ClassRoom;
 import com.filiereticsa.arc.augmentepf.models.Place;
 import com.filiereticsa.arc.augmentepf.models.PointOfInterest;
-import com.filiereticsa.arc.augmentepf.models.Position;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,21 +43,26 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
     private SearchListAdapter classRoomAdapter;
     private SearchListAdapter pointOfInterestAdapter;
     private AutoCompleteTextView searchInput;
+    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
+        view = inflater.inflate(R.layout.fragment_search, container, false);
         httpRequestInterface = this;
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         initClassRoomsLoading();
         initAvailableClassRoomsRequest();
         initPOILoading();
         initiateLists(view);
         setAutoCompleteSearch(view);
-        return view;
     }
-
 
     private void initPOILoading() {
         if (HomePageActivity.isNetworkAvailable()) {
@@ -73,7 +76,6 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
         if (HomePageActivity.isNetworkAvailable()) {
             ClassRoom.askForClassRooms();
         } else {
-            Log.d(TAG, "initAvailableClassRoomsRequest: no internet");
             ClassRoom.loadClassRoomsFromFile();
         }
     }
@@ -154,7 +156,6 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
                     ClassRoom.loadClassRoomsFromFile();
                 } else {
                     try {
-                        Log.d(TAG, "onRequestDone: "+result);
                         JSONObject jsonObject = new JSONObject(result);
                         String success = jsonObject.getString(STATE);
                         if (success.equals(TRUE)) {
@@ -194,22 +195,7 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
 
     public void onGoClick() {
         String searchedValue = searchInput.getText().toString();
-        ClassRoom searchedClassroom = ClassRoom.getClassRoomCalled(searchedValue);
-        PointOfInterest searchedPoi = PointOfInterest.getPoiCalled(searchedValue);
-        if (searchedClassroom != null) {
-            Position position = searchedClassroom.getPosition();
-            GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(
-                            position.getPositionX(),
-                            position.getPositionY()),
-                    position.getFloor());
-        } else {
-            if (searchedPoi != null) {
-                Position position = searchedPoi.getPosition();
-                GAFrameworkUserTracker.sharedTracker().setTarget(new Pair<>(
-                                position.getPositionX(),
-                                position.getPositionY()),
-                        position.getFloor());
-            }
-        }
+        Place place = Place.getPlaceFromName(searchedValue);
+        GAFrameworkUserTracker.sharedTracker().setTarget(place);
     }
 }

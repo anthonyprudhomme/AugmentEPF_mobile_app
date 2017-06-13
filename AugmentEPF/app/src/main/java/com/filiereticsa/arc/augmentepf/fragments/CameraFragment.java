@@ -157,7 +157,6 @@ public class CameraFragment extends Fragment
     };
 
     private void setupCameraIfPossible() {
-        Log.d(TAG, "setupCameraIfPossible: " + cameraOpened + " " + surfaceTextureAvailable + " " + permissionsGranted);
         if (!cameraOpened && surfaceTextureAvailable && permissionsGranted) {
             openCamera(currentCamera);
         }

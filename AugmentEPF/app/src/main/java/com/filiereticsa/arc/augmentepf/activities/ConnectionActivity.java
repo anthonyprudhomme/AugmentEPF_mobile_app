@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -44,10 +46,15 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
     private static final String TAG = "Ici";
     private static final String ERROR = "Error";
     private static final String MESSAGE = "message";
+    public static final String AUTO_LOG = "autoLog";
+    public static final String SAVE_CRED = "saveCred";
     public static int idUser;
     public static String token;
     private EditText login;
     private EditText password;
+    private CheckBox saveCredential;
+    private CheckBox autoLogIn;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,15 +62,55 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
         setContentView(R.layout.activity_connection);
         login = (EditText) findViewById(R.id.login);
         password = (EditText) findViewById(R.id.password);
-        JSONObject credentials = loadCredentials();
-        if (credentials != null) {
-            try {
-                login.setText(credentials.getString(NAME));
-                password.setText(credentials.getString(PASSWORD));
-            } catch (JSONException e) {
-                e.printStackTrace();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        setUpCheckBoxes();
+        fillFieldsOrNot();
+    }
+
+    private void fillFieldsOrNot() {
+        if (sharedPreferences.getBoolean(SAVE_CRED, false)) {
+            JSONObject credentials = loadCredentials();
+            if (credentials != null) {
+                try {
+                    login.setText(credentials.getString(NAME));
+                    password.setText(credentials.getString(PASSWORD));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
+    }
+
+    private void setUpCheckBoxes() {
+        saveCredential = (CheckBox) findViewById(R.id.saveCredCheckBox);
+        autoLogIn = (CheckBox) findViewById(R.id.autoLogCheckBox);
+
+        boolean saveCred = sharedPreferences.getBoolean(SAVE_CRED, false);
+        boolean autoLog = sharedPreferences.getBoolean(AUTO_LOG, false);
+
+        saveCredential.setChecked(saveCred);
+        autoLogIn.setChecked(autoLog);
+
+        saveCredential.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences.Editor prefEditor = sharedPreferences.edit();
+                prefEditor.putBoolean(SAVE_CRED, isChecked);
+                prefEditor.apply();
+            }
+        });
+
+        autoLogIn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences.Editor prefEditor = sharedPreferences.edit();
+                prefEditor.putBoolean(AUTO_LOG, isChecked);
+                prefEditor.apply();
+                if (isChecked) {
+                    saveCredential.setChecked(true);
+                }
+            }
+        });
     }
 
     private JSONObject loadCredentials() {
@@ -157,7 +204,9 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                     String success = jsonObject.getString(MESSAGE);
                     if (success.equals(SUCCESS)) {
                         Toast.makeText(this, R.string.connected, Toast.LENGTH_SHORT).show();
-                        saveCredentialsToFile();
+                        if (sharedPreferences.getBoolean(SAVE_CRED, false)) {
+                            saveCredentialsToFile();
+                        }
                         HomePageActivity.isUserConnected = true;
                         idUser = jsonObject.getInt(ID_USER);
                         token = jsonObject.getString(TOKEN);

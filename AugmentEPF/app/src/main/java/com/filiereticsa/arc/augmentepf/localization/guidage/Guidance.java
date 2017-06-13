@@ -56,12 +56,12 @@ public class Guidance {
                 trajectoryAllSeg.add(new TrajectorySegment(code));
 //            Log.d(TAG, "trajectory: " + trajectory.get(i - 1).getDirectionInstruction());
             }
-            if (trajectory != null) {
-                for (int i = 0; i < trajectory.size(); i++) {
-                    Log.d(TAG, "computeAllTrajectory: " + trajectory.get(i).getDirectionInstruction());
-                }
-                Log.d(TAG, "computeAllTrajectory: ------------");
-            }
+//            if (trajectory != null) {
+//                for (int i = 0; i < trajectory.size(); i++) {
+//                    Log.d(TAG, "computeAllTrajectory: " + trajectory.get(i).getDirectionInstruction());
+//                }
+//                Log.d(TAG, "computeAllTrajectory: ------------");
+//            }
         }
 
         // Return the trajectory
@@ -113,7 +113,7 @@ public class Guidance {
         if (endPath) {
             index = Integer.MAX_VALUE; // To identify the end of the path
             if (GAFrameworkUserTracker.sharedTracker() != null) {
-                GAFrameworkUserTracker.sharedTracker().setTarget(null, -2);
+                GAFrameworkUserTracker.sharedTracker().setTarget(null);
             }
         }
 

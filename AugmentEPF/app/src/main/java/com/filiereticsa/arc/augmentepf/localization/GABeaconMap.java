@@ -396,34 +396,25 @@ public class GABeaconMap {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
-            String validate = jsonObject.getString(VALIDATE);
-            String message = jsonObject.getString(MESSAGE);
-            switch (validate) {
-                case YES:
-                    JSONArray mapsJsonArray = jsonObject.getJSONArray(MAP);
-                    if (mapsArrayList == null) {
-                        mapsArrayList = new ArrayList<>();
-                    }
-                    if (maps == null) {
-                        maps = new HashMap<>();
-                    }
-                    maps.clear();
-                    mapsArrayList.clear();
-                    for (int i = 0; i < mapsJsonArray.length(); i++) {
-                        GABeaconMap gabeaconMap = new GABeaconMap(mapsJsonArray.getJSONObject(i));
-                        mapsArrayList.add(gabeaconMap);
-                        maps.put(gabeaconMap.getId(), gabeaconMap);
-                    }
-                    GABeaconMap.saveMapsToFile();
-                    break;
-
-                case NO:
-
-                    break;
+            JSONArray mapsJsonArray = jsonObject.getJSONArray(MAP);
+            if (mapsArrayList == null) {
+                mapsArrayList = new ArrayList<>();
             }
+            if (maps == null) {
+                maps = new HashMap<>();
+            }
+            maps.clear();
+            mapsArrayList.clear();
+            for (int i = 0; i < mapsJsonArray.length(); i++) {
+                GABeaconMap gabeaconMap = new GABeaconMap(mapsJsonArray.getJSONObject(i));
+                mapsArrayList.add(gabeaconMap);
+                maps.put(gabeaconMap.getId(), gabeaconMap);
+            }
+            GABeaconMap.saveMapsToFile();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
 
     public static void askForMaps() {

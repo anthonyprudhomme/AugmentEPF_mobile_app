@@ -39,4 +39,13 @@ public class Position {
     public void setFloor(int floor) {
         this.floor = floor;
     }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "positionX=" + positionX +
+                ", positionY=" + positionY +
+                ", floor=" + floor +
+                '}';
+    }
 }
