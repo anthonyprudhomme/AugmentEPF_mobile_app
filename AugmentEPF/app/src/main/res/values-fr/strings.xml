@@ -49,7 +49,7 @@
         <item>Notification</item>
         <item>Vibration</item>
         <item>Sonnerie</item>
-        <item>E-mail</item>
+        <item>Email</item>
     </string-array>
     <!--____________________________________________________________________________________________
     |                                        Validé                                               |
@@ -92,7 +92,15 @@
         <item>Visiteur</item>
         <item>Professeur</item>
         <item>Intervenant</item>
-        <item>Admin</item>
+        <item>Administrateur</item>
+    </string-array>
+
+    <!-- Different new user type -->
+    <string-array name="new_user_type_array">
+        <item>Étudiant</item>
+        <item>Visiteur</item>
+        <item>Professeur</item>
+        <item>Intervenant</item>
     </string-array>
     <!--.........................................................................................-->
 
@@ -195,7 +203,7 @@
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
-    <string name="nearby_points_of_interest">Points d"'"interêt alentours</string>
+    <string name="nearby_points_of_interest">Points d\'interêt alentours</string>
     <string name="available_classrooms">Salles libres</string>
     <string name="fullscreen">Plein écran</string>
     <string name="not_localized">Vous n\'avez pas encore été localisé</string>
@@ -241,7 +249,7 @@
     <string name="tuesday">Mardi</string>
     <string name="wednesday">Mercredi</string>
     <string name="to">au</string>
-    <string name="admin_activity_title">Outil Administratif</string>
+    <string name="admin_activity_title">Outils Administratifs</string>
     <string name="admin_edit_beacons">Éditer balises</string>
     <string name="admin_edit_poi">Éditer points d\'intérêts</string>
     <string name="admin_locate">Balise la plus proche</string>
@@ -265,7 +273,10 @@
     <string name="define_path">Définir un trajet</string>
     <string name="go_to">"Voulez-vous allez en "</string>
     <string name="go_to_next_class">Prochain cours</string>
-    <string name="no_next_class_found">Pas de prochain cours trouvé. Désolé...</string>
+    <string name="no_next_class_found">Pas de prochain cours trouvé. Désolé…</string>
     <string name="permission_not_granted">Désolé !!! Vous ne pouvez pas utiliser cette application sans autoriser l\'accès aux ressources du téléphone.</string>
     <string name="zoom">Zoom</string>
+    <string name="admin_target_missing">Aucune séléctionnée</string>
+    <string name="destination">Destination :</string>
+    <string name="starting_guidance">Début du guidage</string>
 </resources>

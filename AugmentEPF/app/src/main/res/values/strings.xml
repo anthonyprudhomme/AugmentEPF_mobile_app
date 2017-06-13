@@ -85,7 +85,7 @@
     <!-- User type -->
     <string name="type">Type</string>
     <string name="information_user_type">Display information about your user type</string>
-    <string name="typeUser" />
+    <string name="typeUser" translatable="false"/>
 
     <!-- Different user type -->
     <string-array name="user_type_array">
@@ -215,7 +215,7 @@
     <string name="password">Password</string>
     <string name="validate">Sign in</string>
     <string name="no_account">No account yet?</string>
-    <string name="create">Create</string>
+    <string name="create">Register</string>
     <string name="confirm_password">Confirm password:</string>
     <string name="account_created">Account created</string>
     <string name="admin_activity_title">Administrative Tool</string>
@@ -278,7 +278,7 @@
 
     <string name="hello_blank_fragment">Hello</string>
     <string name="go_to_next_class">Go to next class</string>
-    <string name="no_next_class_found">Couldn\'t find your next class. Sorry...</string>
+    <string name="no_next_class_found">Couldn\'t find your next class. Sorry…</string>
 
     <!--____________________________________________________________________________________________
                                         Admin Activity

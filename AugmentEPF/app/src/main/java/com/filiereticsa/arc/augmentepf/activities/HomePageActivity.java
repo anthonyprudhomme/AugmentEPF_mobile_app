@@ -535,7 +535,7 @@ public class HomePageActivity
                 }
                 break;
 
-            case HTTPRequestManager.WIFI_CHECK:
+            /*case HTTPRequestManager.WIFI_CHECK:
                 //Log.d(TAG, "onRequestDone: " + result);
                 if (result.equals("false")) {
                     Snackbar.make(rootView, R.string.fail_epf_wifi, Snackbar.LENGTH_LONG)
@@ -545,7 +545,7 @@ public class HomePageActivity
                             .show();
                 }
 
-                break;
+                break;*/
 
             case HTTPRequestManager.NEXT_COURSE:
                 if (result.equals("Error")) {
