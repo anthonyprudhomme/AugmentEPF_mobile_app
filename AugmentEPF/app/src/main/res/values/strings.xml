@@ -2,10 +2,9 @@
     <string name="app_name">AugmentEPF</string>
 
     <!-- Messages to activate the some configurations -->
-    <string name="app_need_location">This app needs location access</string>
-    <string name="app_need_location_message">Please grant location access so this app can detect
-        beacons in the background.</string>
-
+    <string name="app_need_location">This app needs access to your location</string>
+    <string name="app_need_location_message">Please grant access to your location so this app can
+        detect beacons in the background.</string>
 
     <string name="text_classroom">Pick a classroom</string>
 
@@ -45,7 +44,7 @@
     _____________________________________________________________________________________________-->
     <string name="text_warning">Do you want to be warned?</string>
 
-    <string name="text_warning_alerts">Choose the way to be warned</string>
+    <string name="text_warning_alerts">Choose how to be warned</string>
     <!-- The DB with all alerts -->
     <string-array name="alerts">
         <item>None</item>
@@ -57,7 +56,7 @@
     <!--____________________________________________________________________________________________
     |                                        Validate                                               |
     _____________________________________________________________________________________________-->
-    <string name="text_validate">Save the path</string>
+    <string name="text_validate">Save the route</string>
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
@@ -77,7 +76,7 @@
 
     <!-- Localisation -->
     <string name="localisation">Localisation</string>
-    <string name="loc_user_summary">Enable/disable the localisation of the device</string>
+    <string name="loc_user_summary">Enable/disable the localization of the device</string>
     <!--____________________________________________________________________________________________
                                          User parameters
     _____________________________________________________________________________________________-->
@@ -93,7 +92,7 @@
         <item>Student</item>
         <item>Visitor</item>
         <item>Teacher</item>
-        <item>Contributor</item>
+        <item>Speaker</item>
         <item>Admin</item>
     </string-array>
 
@@ -102,7 +101,7 @@
         <item>Student</item>
         <item>Visitor</item>
         <item>Teacher</item>
-        <item>Contributor</item>
+        <item>Speaker</item>
     </string-array>
 
     <!-- The value of the choice above -->
@@ -139,19 +138,19 @@
 
     <!-- iCal link -->
     <string name="ical_link">iCal link</string>
-    <string name="ical_summary">Permit to edit the link of the account</string>
-    <string name="format_ical">Must be like this: http://edt.epf.fr/pegasus/ical.php?v1=…</string>
+    <string name="ical_summary">Allows to edit the account\'s link</string>
+    <string name="format_ical">Must look like this: http://edt.epf.fr/pegasus/ical.php?v1=…</string>
 
     <!--.........................................................................................-->
 
     <!--Email-->
     <string name="changeEmailButton">changeEmailButton</string>
-    <string name="summaryChangeEmail">If you want to change your actual email</string>
+    <string name="summaryChangeEmail">If you want to change your current email</string>
 
     <string name="titleMailButton">Reset your email</string>
-    <string name="oldChangeMailButton">Enter the old email</string>
-    <string name="newChangeMailButton">Enter the new email</string>
-    <string name="confirmChangeMailButton">Confirm the new email</string>
+    <string name="oldChangeMailButton">Enter old email</string>
+    <string name="newChangeMailButton">Enter new email</string>
+    <string name="confirmChangeMailButton">Confirm new email</string>
     <string name="pwForMail">Enter the password to change</string>
     <string name="emailToastCancelled">Email change cancelled</string>
 
@@ -159,13 +158,13 @@
 
     <!-- Password -->
     <string name="resetPwButton">resetPwButton</string>
-    <string name="summaryChangePw">If you want to change your actual paswword</string>
+    <string name="summaryChangePw">If you want to change your current password</string>
 
     <string name="titleResetPwButton">Reset your password</string>
-    <string name="oldResetPwButton">Enter the old password</string>
-    <string name="newResetPwButton">Enter the new password</string>
-    <string name="confirmNewResetPwButton">Confirm the new password</string>
-    <string name="pwToastCancelled">Paswword change cancelled</string>
+    <string name="oldResetPwButton">Enter old password</string>
+    <string name="newResetPwButton">Enter new password</string>
+    <string name="confirmNewResetPwButton">Confirm new password</string>
+    <string name="pwToastCancelled">Password change cancelled</string>
 
     <!--.........................................................................................-->
 
@@ -173,11 +172,11 @@
     <!-- Passwords -->
     <string name="pwChangeOk">Password changed!</string>
     <string name="pwChangeProblemOld">Problem with the old password</string>
-    <string name="pwChangeProblemNew">New passwords aren\'t identical</string>
+    <string name="pwChangeProblemNew">New passwords are not identical</string>
     <!-- Email addresses -->
     <string name="emailChangeOk">Email address changed!</string>
-    <string name="emailChangeProblemEmail">Email addresses aren\'t good</string>
-    <string name="emailChangeProblemPw">This isn\'t the good password</string>
+    <string name="emailChangeProblemEmail">Email addresses are not good</string>
+    <string name="emailChangeProblemPw">Wrong password</string>
 
     <!-- OK/Cancel -->
     <string name="ok">OK</string>
@@ -205,37 +204,36 @@
     <!--=========================================================================================-->
 
     <string name="title_activity_main">MainActivity</string>
-    <string name="connect">Connect</string>
-    <string name="planned_trajectory">Planned itinerary</string>
-    <string name="plan_trajectory">Plan an itinerary</string>
-    <string name="trajectory_history">Itinerary history</string>
+    <string name="connect">Sign in</string>
+    <string name="planned_trajectory">Planned routes</string>
+    <string name="plan_trajectory">Plan a route</string>
+    <string name="trajectory_history">Routes history</string>
     <string name="contact">Contact us</string>
     <string name="go">Go!</string>
     <string name="login">Login</string>
     <string name="mail">Mail</string>
     <string name="password">Password</string>
-    <string name="validate">Validate</string>
+    <string name="validate">Sign in</string>
     <string name="no_account">No account yet?</string>
     <string name="create">Create</string>
     <string name="confirm_password">Confirm password:</string>
     <string name="account_created">Account created</string>
-    <string name="admin_activity_title">Administrative Tools</string>
+    <string name="admin_activity_title">Administrative Tool</string>
     <string name="nearby_points_of_interest">Nearby points of interest</string>
     <string name="available_classrooms">Available classrooms</string>
-    <string name="not_localized">You haven\'t been localized yet</string>
+    <string name="not_localized">You haven\'t been located yet</string>
 
     <!--Points of interest-->
-    <string name="man_restroom">Man restroom</string>
+    <string name="man_restroom">Men restroom</string>
     <string name="info_restroom_man">Restroom for men.</string>
-    <string name="woman_restroom">Woman restroom</string>
+    <string name="woman_restroom">Women restroom</string>
     <string name="info_restroom_woman">Restroom for women.</string>
     <!--____________________-->
 
     <!--____________________________________________________________________________________________
                                Connection and AccountCreation Activities
     _____________________________________________________________________________________________-->
-    <string name="password_password_confirmation_no_match">Your password confirmation doesn\'t match your password</string>
-    <string name="admin_code">Admin code</string>
+    <string name="password_password_confirmation_no_match">Your password confirmation does not match your password</string>
     <string name="enter_login">Please enter a login</string>
     <string name="enter_email">Please enter an e-mail</string>
     <string name="enter_password">Please enter a password</string>
@@ -243,7 +241,7 @@
     <string name="error_server">Something went wrong with the server</string>
     <string name="need_internet_account">You need internet connection to create an account</string>
     <string name="connected">Authentication successful</string>
-    <string name="logout">Logout</string>
+    <string name="logout">Log out</string>
     <string name="fail_epf_wifi">Please use EPF Wi-Fi to use this app</string>
     <string name="success_epf_wifi">Successfully connected to EPF Wi-Fi</string>
     <!--TODO Manage following input-->
@@ -273,7 +271,7 @@
     <string name="ical">iCal</string>
     <string name="to">to</string>
     <string name="go_to">Do you want to go to</string>
-    <string name="define_path">Define path</string>
+    <string name="define_path">Define route</string>
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
@@ -294,7 +292,6 @@
     <string name="admin_xcoord">X Coordinate:</string>
     <string name="admin_ycoord">Y Coordinate:</string>
     <string name="admin_name">Name:</string>
-    <string name="admin_target">Closest:</string>
     <string name="admin_locate">Closest beacon</string>
     <string name="admin_remove">Remove</string>
     <string name="admin_save">Add</string>
@@ -315,11 +312,11 @@
                                            Contact menu
     =============================================================================================-->
 
-    <string name="description">This application was implemented by the ARC team in relation to the
+    <string name="description">This application was developed by the ARC team as part of the
      AugmentEPF project 2017</string>
     <string name="partner_with">In partnership with</string>
-    <string name="localisation_system">Localisation system by</string>
-    <string name="contacts_info">Contacts information</string>
+    <string name="localisation_system">Localization system by</string>
+    <string name="contacts_info">Contact information</string>
     <string name="contacts_mails_left">
         Anthony Prudhomme \n anthony.prudhomme@epfedu.fr \n \n
         Cécile Tran \n cecile.tran@epfedu.fr \n \n
@@ -329,7 +326,7 @@
     </string>
     <string name="contacts_mails_right">
         Coline Patris \n coline.patris@epfedu.fr \n \n
-        Jeremy Duong \n jeremy.duong@epfedu.fr\n \n
+        Jérémy Duong \n jeremy.duong@epfedu.fr\n \n
         Antoine Goubin \n antoine.goubin@epfedu.fr
     </string>
 
