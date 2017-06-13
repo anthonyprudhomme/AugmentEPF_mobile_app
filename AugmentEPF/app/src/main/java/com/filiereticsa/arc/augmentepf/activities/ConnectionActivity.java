@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -49,10 +50,15 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
     private EditText login;
     private EditText password;
 
+    public static String userTypeValue ="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         login = (EditText) findViewById(R.id.login);
         password = (EditText) findViewById(R.id.password);
         JSONObject credentials = loadCredentials();
@@ -218,7 +224,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
 
                         // Update user type in SharedPreferences
                         String userType = jsonObject.getString(TYPE);
-                        String userTypeValue = "S";
+                        userTypeValue = "S";
                         switch (userType) {
 
                             case "Student":
@@ -278,5 +284,17 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
         }
         HTTPRequestManager.doPostRequest(SETTINGS, jsonObject.toString(),
                 this, HTTPRequestManager.SETTINGS);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

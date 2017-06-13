@@ -205,7 +205,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         poiName = new EditText(this);
         poiName.setImeOptions(EditorInfo.IME_ACTION_DONE);
         poiName.setSingleLine();
-        poiName.setSingleLine();
 
         beaconMajor = new EditText(this);
         beaconMinor = new EditText(this);

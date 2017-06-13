@@ -40,7 +40,7 @@ public class HTTPRequestManager {
     /*============================================================================================*/
 
     private static final String TAG = "Ici";
-    private static final String serverUrl = "http://192.168.206.106/AugmentEPF/php/";
+    private static final String serverUrl = "http://193.50.54.5/AugmentEPF/php/";
     private static OkHttpClient client = new OkHttpClient();
 
 

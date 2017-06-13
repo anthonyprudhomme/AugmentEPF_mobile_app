@@ -117,6 +117,11 @@ public class HomePageActivity
         setUpEditText();
         GAFrameworkUserTracker.sharedTracker().startTrackingUser();
         //postRequestExample();
+        if (ConnectionActivity.userTypeValue.equals("A")){
+            ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
+            adminButton.setVisibility(View.VISIBLE);
+            adminButton.setClickable(true);
+        }
     }
 
     private void showPreferredNavigationMode() {
@@ -377,7 +382,11 @@ public class HomePageActivity
     protected void onResume() {
         super.onResume();
         if (isUserConnected) {
-
+            if (ConnectionActivity.userTypeValue.equals("A")){
+                ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
+                adminButton.setVisibility(View.VISIBLE);
+                adminButton.setClickable(true);
+            }
         }
         BeaconDetector.sharedBeaconDetector().bindBeaconManager();
         BeaconDetector.sharedBeaconDetector().setActivity(this);
@@ -430,6 +439,9 @@ public class HomePageActivity
         } else {
             isUserConnected = false;
             optionsFragment.changeLoginButtonText();
+            ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
+                adminButton.setVisibility(View.INVISIBLE);
+                adminButton.setClickable(false);
         }
     }
 

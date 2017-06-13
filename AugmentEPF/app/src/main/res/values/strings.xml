@@ -87,8 +87,8 @@
     <string name="type">Type</string>
     <string name="information_user_type">Display information about your user type</string>
     <string name="typeUser" />
-<!--
-    &lt;!&ndash; Different user type &ndash;&gt;
+
+    <!-- Different user type -->
     <string-array name="user_type_array">
         <item>Student</item>
         <item>Visitor</item>
@@ -96,14 +96,23 @@
         <item>Contributor</item>
         <item>Admin</item>
     </string-array>
-    &lt;!&ndash; The value of the choice above &ndash;&gt;
+
+    <!-- Different new user type -->
+    <string-array name="new_user_type_array">
+        <item>Student</item>
+        <item>Visitor</item>
+        <item>Teacher</item>
+        <item>Contributor</item>
+    </string-array>
+
+    <!-- The value of the choice above -->
     <string-array name="user_type_values_array">
         <item>S</item>
         <item>V</item>
         <item>T</item>
         <item>C</item>
         <item>A</item>
-    </string-array>-->
+    </string-array>
 
     <!--.........................................................................................-->
 

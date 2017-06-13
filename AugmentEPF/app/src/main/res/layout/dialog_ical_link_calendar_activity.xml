@@ -19,7 +19,9 @@
             android:layout_marginTop="4dp"
             android:fontFamily="sans-serif"
             android:hint="@string/ical_link"
-            android:inputType="textPassword" />
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
+            android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
 
 </LinearLayout>

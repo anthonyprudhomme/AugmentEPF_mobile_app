@@ -133,10 +133,12 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/admin_button"
+            android:clickable="false"
             android:onClick="onAdminClick"
             android:padding="10dp"
             android:scaleType="fitXY"
-            android:src="@drawable/admin_icon" />
+            android:src="@drawable/admin_icon"
+            android:visibility="invisible" />
 
     </LinearLayout>
 
