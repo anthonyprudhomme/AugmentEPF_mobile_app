@@ -275,7 +275,7 @@ public class PathPlanningActivity extends AppCompatActivity
                 "], minute = [" + minute + "]");*/
 
         // Set the date of today
-        calendar.set(Calendar.HOUR, hourOfDay);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
 
         // Set the format of hour
