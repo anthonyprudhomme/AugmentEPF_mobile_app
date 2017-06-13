@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -56,29 +57,15 @@ public class CreateAccountActivity extends AppCompatActivity implements HTTPRequ
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         login = (EditText) findViewById(R.id.login);
         email = (EditText) findViewById(R.id.mail);
         password = (EditText) findViewById(R.id.password);
         passwordConfirmation = (EditText) findViewById(R.id.password_confirmation);
         userType = (Spinner) findViewById(R.id.user_type);
         specificAttribute = (Spinner) findViewById(R.id.specific_attribute);
-        adminLayout = (LinearLayout) findViewById(R.id.admin_layout);
-        adminCode = (EditText) findViewById(R.id.admin_code);
-        userType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (userType.getSelectedItem().toString().equals("Admin")) {
-                    adminLayout.setVisibility(View.VISIBLE);
-                } else {
-                    adminLayout.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                adminLayout.setVisibility(View.GONE);
-            }
-        });
     }
 
     public void onCreateClick(View view) {
@@ -142,10 +129,6 @@ public class CreateAccountActivity extends AppCompatActivity implements HTTPRequ
 
                         case 3:
                             jsonObject.put(TYPE, "Contributor");
-                            break;
-
-                        case 4:
-                            jsonObject.put(TYPE, "Administrator");
                             break;
                     }
 
@@ -279,5 +262,17 @@ public class CreateAccountActivity extends AppCompatActivity implements HTTPRequ
                 break;
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

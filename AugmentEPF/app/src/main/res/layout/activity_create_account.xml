@@ -48,7 +48,9 @@
                 android:id="@+id/login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
                 android:padding="10dp"
+                android:singleLine="true"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -74,7 +76,9 @@
                 android:id="@+id/mail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
                 android:padding="10dp"
+                android:singleLine="true"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -105,6 +109,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
                     android:inputType="textPassword"
                     android:textSize="16sp" />
             </android.support.design.widget.TextInputLayout>
@@ -126,6 +131,7 @@
                     android:id="@+id/password_confirmation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
                     android:inputType="textPassword"
                     android:textSize="18sp" />
             </android.support.design.widget.TextInputLayout>
@@ -144,7 +150,7 @@
                 android:id="@+id/user_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/user_type_array"
+                android:entries="@array/new_user_type_array"
                 android:spinnerMode="dialog" />
 
             <Spinner
@@ -155,34 +161,6 @@
                 android:entries="@array/specific_attribute_array"
                 android:spinnerMode="dialog" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/admin_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_weight="1"
-            android:background="@color/colorLightGrey"
-            android:orientation="vertical"
-            android:padding="10dp"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/admin_code"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/admin_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textSize="16sp" />
         </LinearLayout>
 
         <Button

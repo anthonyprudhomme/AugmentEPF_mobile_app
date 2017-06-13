@@ -1,6 +1,7 @@
 package com.filiereticsa.arc.augmentepf.managers;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 
@@ -39,7 +40,7 @@ public class HTTPRequestManager {
     /*============================================================================================*/
 
     private static final String TAG = "Ici";
-    private static final String serverUrl = "http://192.168.206.106/AugmentEPF/php/";
+    private static final String serverUrl = "http://193.50.54.5/AugmentEPF/php/";
     private static OkHttpClient client = new OkHttpClient();
 
 
@@ -185,6 +186,7 @@ public class HTTPRequestManager {
 
         @Override
         protected void onPostExecute(String returnedValue) {
+            Log.d(TAG, "onPostExecute: "+requestParameter.requestId);
             requestParameter.observer.onRequestDone(returnedValue, requestParameter.requestId);
         }
 

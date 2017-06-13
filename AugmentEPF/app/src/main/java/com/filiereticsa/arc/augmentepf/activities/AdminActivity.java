@@ -51,25 +51,31 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class AdminActivity extends AppCompatActivity implements HTTPRequestInterface, BeaconDetectorInterface {
-    public static final String CONTENT_TYPE = "contentType";
-    public static final String CHANGE_TYPE = "changeType";
-    public static final String CONTENT_INFORMATION = "contentInformation";
-    public static final String ADMIN_MODIFICATION_PHP = "administrationChanges.php";
-    public static final String ERROR = "Error";
-    public static final String STATE = "state";
-    public static final String TRUE = "true";
-    public static final String MESSAGE = "message";
-    public static final String GET_ELEMENT_PHP = "getElement.php";
-    public static final String RESULT = "result";
-    public static final int SECOND_FLOOR = 2;
-    public static final int FIRST_FLOOR = 1;
-    public static final int GROUND_FLOOR = 0;
-    public static final int LOWER_FLOOR = -1;
+    private static final String CONTENT_TYPE = "contentType";
+    private static final String CHANGE_TYPE = "changeType";
+    private static final String CONTENT_INFORMATION = "contentInformation";
+    private static final String ADMIN_MODIFICATION_PHP = "administrationChanges.php";
+    private static final String ERROR = "Error";
+    private static final String STATE = "state";
+    private static final String TRUE = "true";
+    private static final String MESSAGE = "message";
+    private static final String GET_ELEMENT_PHP = "getElement.php";
+    private static final String RESULT = "result";
+    private static final String ID = "idUser";
+    private static final String TOKEN = "token";
+    private static final String NAME = "name";
+    private static final String POSITION = "position";
     private static final String TAG = "Ici";
+    private static final int SECOND_FLOOR = 2;
+    private static final int FIRST_FLOOR = 1;
+    private static final int GROUND_FLOOR = 0;
+    private static final int LOWER_FLOOR = -1;
     private static final int MAX_LENGTH = 5;
+
     public static BeaconDetectorInterface beaconDetectorInterface;
     public boolean gestureEnabled;
-    private boolean editBeacon, existing, editRoom;
+
+    private boolean editBeacon, existing, editRoom,isUserSettingScale;
     private boolean hasUserAskedForClosestBeacon = false;
     private int currentFloor, currentMapHeight, currentMapWidth,
             cellHeight, cellWidth, nbCol, nbRow, itemXCoord, itemYCoord;
@@ -82,13 +88,19 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     private String itemName;
     private LinearLayout nameLayout;
     private JSONObject jsonObject = new JSONObject();
-    private JSONArray jsonArray = new JSONArray();
+    private JSONObject jsonContentInformation = new JSONObject();
     private JSONObject[] jsonObjects;
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
     private Bitmap mapBitmap;
     private GABeaconMap gaBeaconMap;
     private Pair<Integer, Integer> gridDimensions;
     private FrameLayout mapContainer;
+    private GestureDetector gestureDetector;
+    private ScaleGestureDetector scaleDetector;
+    private GridLayout gridLayout;
+    private SeekBar zoomSeekBar;
+    private AdminItemView adminData;
+
     View.OnTouchListener mapTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
@@ -101,8 +113,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     effectiveScale = scale;
                     mapContainer.setTranslationX(mapContainer.getTranslationX() + (mapContainer.getPivotX() - middle.x) * (1 - mapContainer.getScaleX()));
                     mapContainer.setTranslationY(mapContainer.getTranslationY() + (mapContainer.getPivotY() - middle.y) * (1 - mapContainer.getScaleY()));
-                    mapContainer.setPivotX(middle.x);
-                    mapContainer.setPivotY(middle.y);
+                    mapContainer.setPivotX(0f);
+                    mapContainer.setPivotY(0f);
                     mapContainer.setScaleX(1 / effectiveScale);
                     mapContainer.setScaleY(1 / effectiveScale);
                 }
@@ -110,11 +122,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             return true;
         }
     };
-    private GestureDetector gestureDetector;
-    private ScaleGestureDetector scaleDetector;
-    private GridLayout gridLayout;
-    private SeekBar zoomSeekBar;
-    private boolean isUserSettingScale;
     SeekBar.OnSeekBarChangeListener zoomChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -126,12 +133,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             layoutParams.bottomMargin = (int) (layoutParams.topMargin - currentMapHeight * effectiveScale);
             Point middle = new Point(layoutParams.rightMargin - layoutParams.leftMargin,
                     layoutParams.bottomMargin - layoutParams.topMargin);
-            mapContainer.setTranslationX(mapContainer.getTranslationX() + (mapContainer.getPivotX() - middle.x) * (1 - mapContainer.getScaleX()));
-            mapContainer.setTranslationY(mapContainer.getTranslationY() + (mapContainer.getPivotY() - middle.y) * (1 - mapContainer.getScaleY()));
-            mapContainer.setPivotX(middle.x);
-            mapContainer.setPivotY(middle.y);
+            mapContainer.setPivotX(0f);
+            mapContainer.setPivotY(0f);
             mapContainer.setScaleX(1 / effectiveScale);
             mapContainer.setScaleY(1 / effectiveScale);
+            mapContainer.setTranslationX((mapContainer.getPivotX() - middle.x) * (1 - mapContainer.getScaleX()));
         }
 
         @Override
@@ -144,7 +150,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             isUserSettingScale = false;
         }
     };
-    private AdminItemView adminData;
     private View.OnClickListener gridItemListener = new View.OnClickListener() {
         public void onClick(View viewClicked) {
             if (numberOfFingerTouchingTheScreen == 1) {
@@ -199,7 +204,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
 
         poiName = new EditText(this);
         poiName.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        poiName.setSingleLine();
         poiName.setSingleLine();
 
         beaconMajor = new EditText(this);
@@ -625,6 +629,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     }
 
     private void checkForUpdate() {
+        jsonObject = new JSONObject();
         if (editBeacon) {
             try {
                 jsonObject.put(CONTENT_TYPE, "beacon");
@@ -632,16 +637,25 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                 e.printStackTrace();
             }
             HTTPRequestManager.doPostRequest(GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
-        } else
+        } else if (!editRoom) {
             try {
                 jsonObject.put(CONTENT_TYPE, "poi");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        HTTPRequestManager.doPostRequest(GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
+            HTTPRequestManager.doPostRequest(GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
+        } else {
+            try {
+                jsonObject.put(CONTENT_TYPE, "room");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            HTTPRequestManager.doPostRequest(GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
+        }
     }
 
     private void update() {
+        jsonObject = new JSONObject();
         if (editBeacon) {
             itemName = beaconMajor.getText().toString() + "/" + beaconMinor.getText().toString();
         } else {
@@ -652,29 +666,50 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
 
         if (editBeacon) {
             try {
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "beacon");
                 jsonObject.put(CHANGE_TYPE, "update");
-                jsonArray.put(itemXCoord + "/" + itemYCoord + "/" + currentFloor);
-                jsonArray.put(itemName);
-                jsonObject.put(CONTENT_INFORMATION, jsonArray);
+                jsonContentInformation.put(POSITION,itemXCoord + "/" + itemYCoord + "/" + currentFloor);
+                jsonContentInformation.put(NAME,itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonContentInformation);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
-        } else
+        } else if (editRoom) {
             try {
-                jsonObject.put(CONTENT_TYPE, "poi");
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(CONTENT_TYPE, "room");
                 jsonObject.put(CHANGE_TYPE, "update");
-                jsonArray.put(itemXCoord + "/" + itemYCoord + "/" + currentFloor);
-                jsonArray.put(itemName);
-                jsonObject.put(CONTENT_INFORMATION, jsonArray);
+                jsonContentInformation.put(POSITION,itemXCoord + "/" + itemYCoord + "/" + currentFloor);
+                jsonContentInformation.put(NAME,itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonContentInformation);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
+            Log.d(TAG, "update: room " + jsonObject.toString());
+            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.CLASSROOMS);
+        } else {
+            try {
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(CONTENT_TYPE, "poi");
+                jsonObject.put(CHANGE_TYPE, "update");
+                jsonContentInformation.put(POSITION,itemXCoord + "/" + itemYCoord + "/" + currentFloor);
+                jsonContentInformation.put(NAME,itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonContentInformation);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d(TAG, "update: poi " + jsonObject.toString());
+            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
+        }
     }
 
     private void save() {
+        jsonObject = new JSONObject();
         if (editBeacon) {
             itemName = beaconMajor.getText().toString() + "/" + beaconMinor.getText().toString();
         } else {
@@ -685,29 +720,50 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
 
         if (editBeacon) {
             try {
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "beacon");
                 jsonObject.put(CHANGE_TYPE, "add");
-                jsonArray.put(itemXCoord + "/" + itemYCoord + "/" + currentFloor);
-                jsonArray.put(itemName);
-                jsonObject.put(CONTENT_INFORMATION, jsonArray);
+                jsonContentInformation.put(POSITION,itemXCoord + "/" + itemYCoord + "/" + currentFloor);
+                jsonContentInformation.put(NAME,itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonContentInformation);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
-        } else
+        } else if (editRoom) {
             try {
-                jsonObject.put(CONTENT_TYPE, "poi");
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(CONTENT_TYPE, "room");
                 jsonObject.put(CHANGE_TYPE, "add");
-                jsonArray.put(itemXCoord + "/" + itemYCoord + "/" + currentFloor);
-                jsonArray.put(itemName);
-                jsonObject.put(CONTENT_INFORMATION, jsonArray);
+                jsonContentInformation.put(POSITION,itemXCoord + "/" + itemYCoord + "/" + currentFloor);
+                jsonContentInformation.put(NAME,itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonContentInformation);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
+            Log.d(TAG, "save: room " + jsonObject.toString());
+            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.CLASSROOMS);
+        } else {
+            try {
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(CONTENT_TYPE, "poi");
+                jsonObject.put(CHANGE_TYPE, "add");
+                jsonContentInformation.put(POSITION,itemXCoord + "/" + itemYCoord + "/" + currentFloor);
+                jsonContentInformation.put(NAME,itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonContentInformation);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d(TAG, "save: poi " + jsonObject.toString());
+            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
+        }
     }
 
     private void remove() {
+        jsonObject = new JSONObject();
         if (editBeacon) {
             itemName = beaconMajor.getText().toString() + "/" + beaconMinor.getText().toString();
         } else {
@@ -717,30 +773,47 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         itemYCoord = Integer.valueOf(yCoord.getText().toString()) + 1;
         if (editBeacon) {
             try {
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "beacon");
-                jsonObject.put(CHANGE_TYPE, "remove");
-                jsonArray.put("");
-                jsonArray.put(itemName);
-                jsonObject.put(CONTENT_INFORMATION, jsonArray);
+                jsonObject.put(CHANGE_TYPE, "delete");
+                jsonContentInformation.put(NAME,itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonContentInformation);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
-        } else
+        } else if (editRoom) {
             try {
-                jsonObject.put(CONTENT_TYPE, "poi");
-                jsonObject.put(CHANGE_TYPE, "remove");
-                jsonArray.put("");
-                jsonArray.put(itemName);
-                jsonObject.put(CONTENT_INFORMATION, jsonArray);
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(CONTENT_TYPE, "room");
+                jsonObject.put(CHANGE_TYPE, "delete");
+                jsonContentInformation.put(NAME,itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonContentInformation);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
+            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.CLASSROOMS);
+        } else {
+            try {
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(CONTENT_TYPE, "poi");
+                jsonObject.put(CHANGE_TYPE, "delete");
+                jsonContentInformation.put(NAME,itemName);
+                jsonObject.put(CONTENT_INFORMATION, jsonContentInformation);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d(TAG, "remove: poi" + jsonObject.toString());
+            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
+        }
     }
 
     @Override
     public void onRequestDone(String result, int requestId) {
+        Log.d(TAG, "onRequestDone: "+result);
         if (result.equals(ERROR)) {
             Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
         } else
@@ -795,6 +868,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         try {
             // Put the result in a JSONObject to use it.
             JSONObject jsonObject = new JSONObject(result);
+            Log.d(TAG, "getResult: " + result);
             String success = jsonObject.getString(STATE);
             String message = jsonObject.getString(MESSAGE);
             if (success.equals(TRUE)) {

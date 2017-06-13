@@ -103,54 +103,53 @@ public class GuidanceView extends android.support.v7.widget.AppCompatImageView {
         float yOffset = (float) screenHeight / 30;
         float ySeparation = (float) screenHeight / 20;
 
-//        String currentDestination = "";
-//        if (destination != null) {
-//            currentDestination = getContext().getString(R.string.destination) + destination;
-//        }
-//
-//        String currentClosestRoom = "";
-//        if (closestRoom != null) {
-//            currentClosestRoom = "Closest room : " + closestRoom;
-//        }
-//
-//        String currentFloor = "";
-//        if (floor != null) {
-//            currentFloor = "Floor : " + floor;
-//        }
-//
-//        String currentInstruction = "";
-//        if (instruction != null) {
-//            currentInstruction = "" + instruction;
-//        }
-
         String currentDestination = "";
-        currentDestination = "Alpha : " + (int) (currentHeading + targetHeading);
+        if (destination != null) {
+            currentDestination = getContext().getString(R.string.destination) + destination;
+        }
 
         String currentClosestRoom = "";
-        currentClosestRoom = "Current heading : " + (int) currentHeading;
+        if (closestRoom != null) {
+            currentClosestRoom = "Closest room : " + closestRoom;
+        }
 
         String currentFloor = "";
-        if (debugTargetHeading != null) {
-            currentFloor = "coord : " + debugTargetHeading.first + " " + debugTargetHeading.second;
-            Log.d(TAG, "drawNavigationInfo: "+currentFloor);
+        if (floor != null) {
+            currentFloor = "Floor : " + floor;
         }
 
         String currentInstruction = "";
-        currentInstruction = "Destination : " + (int) targetHeading;
+        if (instruction != null) {
+            currentInstruction = "" + instruction;
+        }
 
-        canvas.drawText(currentDestination, xPos, yOffset + ySeparation, paint);
-        canvas.drawText(currentClosestRoom, xPos, yOffset + ySeparation * 2, paint);
-        canvas.drawText(currentFloor, xPos, yOffset + ySeparation * 3, paint);
-        canvas.drawText(currentInstruction, xPos, yOffset + ySeparation * 4, paint);
+//        String currentDestination = "";
+//        currentDestination = "Alpha : " + (int) (currentHeading + targetHeading);
+//
+//        String currentClosestRoom = "";
+//        currentClosestRoom = "Current heading : " + (int) currentHeading;
+//
+//        String currentFloor = "";
+//        if (debugTargetHeading != null) {
+//            currentFloor = "coord : " + debugTargetHeading.first + " " + debugTargetHeading.second;
+//        }
+//
+//        String currentInstruction = "";
+//        currentInstruction = "Destination : " + (int) targetHeading;
+
+//        canvas.drawText(currentDestination, xPos, yOffset + ySeparation, paint);
+//        canvas.drawText(currentClosestRoom, xPos, yOffset + ySeparation * 2, paint);
+//        canvas.drawText(currentFloor, xPos, yOffset + ySeparation * 3, paint);
+//        canvas.drawText(currentInstruction, xPos, yOffset + ySeparation * 4, paint);
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(4);
         paint.setColor(Color.parseColor("#000000"));
 
-        canvas.drawText(currentDestination, xPos, yOffset + ySeparation, paint);
-        canvas.drawText(currentClosestRoom, xPos, yOffset + ySeparation * 2, paint);
-        canvas.drawText(currentFloor, xPos, yOffset + ySeparation * 3, paint);
-        canvas.drawText(currentInstruction, xPos, yOffset + ySeparation * 4, paint);
+//        canvas.drawText(currentDestination, xPos, yOffset + ySeparation, paint);
+//        canvas.drawText(currentClosestRoom, xPos, yOffset + ySeparation * 2, paint);
+//        canvas.drawText(currentFloor, xPos, yOffset + ySeparation * 3, paint);
+//        canvas.drawText(currentInstruction, xPos, yOffset + ySeparation * 4, paint);
     }
 
     public void setCurrentHeading(double currentHeading) {
@@ -177,6 +176,8 @@ public class GuidanceView extends android.support.v7.widget.AppCompatImageView {
         debugTargetHeading = targetHeading;
         if (debugTargetHeading != null) {
             this.targetHeading = ((Math.atan2(-targetHeading.second, targetHeading.first) * 180) / Math.PI) - 90;
+        }else{
+            this.targetHeading = Integer.MAX_VALUE;
         }
     }
 }

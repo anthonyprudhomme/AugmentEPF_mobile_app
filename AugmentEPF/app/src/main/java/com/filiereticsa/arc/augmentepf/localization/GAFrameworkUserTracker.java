@@ -535,7 +535,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                 //this.updateCandidatesWithNearBeacon(nearestBeacon);
                 //this.updateBestCandidatesWithClosestBeacon(nearestBeacon);
                 //TODO uncomment this next line
-                //this.updateCandidatesWithRealDistanceAndClosestBeacon(nearestBeacon);
+                this.updateCandidatesWithRealDistanceAndClosestBeacon(nearestBeacon);
             }
 //            this.updateCandidatesWith2ClosestBeacons(closestBeacons);
         }
@@ -836,6 +836,12 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
     }
 
     public void definePathTo(Pair<Integer, Integer> currentPosition, Pair<Integer, Integer> target, Integer floorTarget) {
+        if (target == null) {
+            for (int i = 0; i < observers.size(); i++) {
+                observers.get(i).onPathChanged(null, null);
+            }
+            return;
+        }
         // If the target is on the same floor
         if (floorTarget != null && currentMap.getFloor() == floorTarget) {
             Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = this.mapHelper.pathFrom(currentPosition, target);
@@ -908,10 +914,13 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
 
     // Method called when the user pick a target
     public void setTarget(Pair<Integer, Integer> target, int floor) {
+        Pair<Integer, Integer> oldTarget = this.target;
         this.target = target;
         this.floorTarget = floor;
-        if (currentUserLocation != null) {
-            this.definePathTo(currentUserLocation.indexPath, target, floorTarget);
+        if (oldTarget != null || target != null) {
+            if (currentUserLocation != null) {
+                this.definePathTo(currentUserLocation.indexPath, target, floorTarget);
+            }
         }
     }
 
