@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,6 +72,9 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         horizontalScrollView = (HorizontalScrollView) findViewById(R.id.gridLayoutContainer);
         currentWeek = (TextView) findViewById(R.id.current_week);
         setCurrentWeekText(calendar);
@@ -229,11 +233,11 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
             }
         } else {
             int today = calendar.get(Calendar.DAY_OF_MONTH);
-            addAClass(1, today % columnNumber + HOUR_DELTA, today, today % columnNumber + 2 + HOUR_DELTA, today, "1L");
-            addAClass(2, ((today + 3) % (rowNumber - 2) + 1) + HOUR_DELTA, today, ((today + 3) % (rowNumber - 2) + 1) + 2 + HOUR_DELTA, today + 20, "2L");
-            addAClass(4, ((today + 5) % (rowNumber - 2) + 1) + HOUR_DELTA, today, ((today + 5) % (rowNumber - 2) + 1) + 2 + HOUR_DELTA, today + 10, "3L");
-            addAClass(5, ((today + 2) % (rowNumber - 2) + 1) + HOUR_DELTA, today, ((today + 2) % (rowNumber - 2) + 1) + 2 + HOUR_DELTA, today + 5, "4L");
-            addAClass(6, ((today + 6) % (rowNumber - 2) + 1) + HOUR_DELTA, today, ((today + 6) % (rowNumber - 2) + 1) + 2 + HOUR_DELTA, today - 5, "5L");
+            addAClass(1, ((today + 1) % (rowNumber - 2)) + HOUR_DELTA, today, ((today + 1) % (rowNumber - 2)) + 2 + HOUR_DELTA, today, "2L");
+            addAClass(2, ((today + 3) % (rowNumber - 2)) + HOUR_DELTA, today, ((today + 3) % (rowNumber - 2)) + 2 + HOUR_DELTA, today + 20, "2L");
+            addAClass(4, ((today + 5) % (rowNumber - 2)) + HOUR_DELTA, today, ((today + 5) % (rowNumber - 2)) + 2 + HOUR_DELTA, today + 10, "3L");
+            addAClass(5, ((today + 2) % (rowNumber - 2)) + HOUR_DELTA, today, ((today + 2) % (rowNumber - 2)) + 2 + HOUR_DELTA, today + 5, "4L");
+            addAClass(6, ((today + 6) % (rowNumber - 2)) + HOUR_DELTA, today, ((today + 6) % (rowNumber - 2)) + 2 + HOUR_DELTA, today - 5, "5L");
         }
     }
 
@@ -611,5 +615,17 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
         calendar.add(Calendar.DAY_OF_YEAR, +7);
         setCurrentWeekText(calendar);
         addClasses(calendar);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

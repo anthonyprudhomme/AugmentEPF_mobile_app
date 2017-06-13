@@ -49,7 +49,7 @@
         <item>Notification</item>
         <item>Vibration</item>
         <item>Sonnerie</item>
-        <item>E-mail</item>
+        <item>Email</item>
     </string-array>
     <!--____________________________________________________________________________________________
     |                                        Validé                                               |
@@ -92,7 +92,15 @@
         <item>Visiteur</item>
         <item>Professeur</item>
         <item>Intervenant</item>
-        <item>Admin</item>
+        <item>Administrateur</item>
+    </string-array>
+
+    <!-- Different new user type -->
+    <string-array name="new_user_type_array">
+        <item>Étudiant</item>
+        <item>Visiteur</item>
+        <item>Professeur</item>
+        <item>Intervenant</item>
     </string-array>
     <!--.........................................................................................-->
 
@@ -195,7 +203,7 @@
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
 
-    <string name="nearby_points_of_interest">Points d"'"interêt alentours</string>
+    <string name="nearby_points_of_interest">Points d\'interêt alentours</string>
     <string name="available_classrooms">Salles libres</string>
     <string name="fullscreen">Plein écran</string>
     <string name="not_localized">Vous n\'avez pas encore été localisé</string>
@@ -204,7 +212,6 @@
     <string name="man_restroom">Toilettes hommes</string>
     <string name="password_password_confirmation_no_match">Votre mot de passe de confirmation n\'est pas le même que votre mot de passe</string>
     <string name="woman_restroom">Toilettes femmes</string>
-    <string name="admin_code">Code admin</string>
     <string name="need_internet_account">Vous avez besoin d\'une connexion internet pour vous créer un compte</string>
     <string name="error_server">Une erreur est survenue avec le serveur</string>
     <string name="enter_email">Veuillez saisir une adresse e-mail</string>
@@ -249,8 +256,6 @@
     <string name="admin_name_missing">Nom requis</string>
     <string name="admin_remove">Supprimer</string>
     <string name="admin_save">Ajouter</string>
-    <string name="admin_target">Le plus proche :</string>
-    <string name="admin_target_missing">Aucun sélectionné(e)</string>
     <string name="admin_xcoord">Coordonnée X :</string>
     <string name="admin_ycoord">Coordonnée Y :</string>
     <string name="confirm">Êtes-vous sûr ?</string>
@@ -260,14 +265,17 @@
     <string name="admin_ground_floor">Rez-de-chaussée</string>
     <string name="admin_lower_floor">Étage inférieur</string>
     <string name="admin_detector_failed">Aucune détectée</string>
-    <string name="admin_edit_rooms">Éditer les salles</string>
+    <string name="admin_edit_rooms">Éditer salles</string>
     <string name="admin_update">Mettre à jour ?</string>
     <string name="admin_save_new">Enregistrer nouveau ?</string>
     <string name="admin_map_error">Carte non disponible</string>
     <string name="define_path">Définir un trajet</string>
     <string name="go_to">"Voulez-vous allez en "</string>
     <string name="go_to_next_class">Prochain cours</string>
-    <string name="no_next_class_found">Pas de prochain cours trouvé. Désolé...</string>
+    <string name="no_next_class_found">Pas de prochain cours trouvé. Désolé…</string>
     <string name="permission_not_granted">Désolé !!! Vous ne pouvez pas utiliser cette application sans autoriser l\'accès aux ressources du téléphone.</string>
     <string name="zoom">Zoom</string>
+    <string name="admin_target_missing">Aucune séléctionnée</string>
+    <string name="destination">Destination :</string>
+    <string name="starting_guidance">Début du guidage</string>
 </resources>

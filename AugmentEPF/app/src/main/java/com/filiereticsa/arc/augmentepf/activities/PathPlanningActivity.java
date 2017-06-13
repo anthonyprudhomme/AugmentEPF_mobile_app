@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -104,6 +105,9 @@ public class PathPlanningActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_path_planning);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         // Get preferences in settings.xml
         settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -275,7 +279,7 @@ public class PathPlanningActivity extends AppCompatActivity
                 "], minute = [" + minute + "]");*/
 
         // Set the date of today
-        calendar.set(Calendar.HOUR, hourOfDay);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
 
         // Set the format of hour
@@ -381,5 +385,17 @@ public class PathPlanningActivity extends AppCompatActivity
         String alarmType = warningAlarmType.toString();
 
         // TODO Post on the DB
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

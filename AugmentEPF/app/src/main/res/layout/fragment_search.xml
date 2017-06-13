@@ -31,7 +31,9 @@
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
                     android:layout_weight="7"
-                    android:background="@color/white" />
+                    android:background="@color/white"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
 
                 <Button
                     android:id="@+id/go_button"

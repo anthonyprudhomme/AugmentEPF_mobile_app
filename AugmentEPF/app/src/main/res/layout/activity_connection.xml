@@ -14,7 +14,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:maxLines="1"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -34,22 +42,25 @@
                 android:layout_margin="20dp"
                 android:layout_weight="1"
                 android:background="@color/colorLightGrey"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLines="1"
                 android:orientation="vertical"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:textSize="16sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/login"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="16sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp" />
 
-                <EditText
-                    android:id="@+id/login"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp" />
-            </LinearLayout>
+            <EditText
+                android:id="@+id/login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -112,13 +123,13 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|center_vertical"
                     android:layout_margin="15dp"
+                    android:layout_weight="1"
                     android:background="@drawable/red_button"
                     android:onClick="onValidateClick"
                     android:padding="10dp"
                     android:text="@string/validate"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:layout_weight="1"/>
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -159,3 +170,5 @@
     </ScrollView>
 
 </LinearLayout>
+
+

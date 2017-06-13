@@ -3,6 +3,7 @@ package com.filiereticsa.arc.augmentepf.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -11,7 +12,6 @@ import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.adapters.HistoryListAdapter;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
-import com.filiereticsa.arc.augmentepf.models.ClassRoom;
 import com.filiereticsa.arc.augmentepf.models.Path;
 
 public class PathConsultationActivity extends AppCompatActivity implements HTTPRequestInterface {
@@ -25,6 +25,9 @@ public class PathConsultationActivity extends AppCompatActivity implements HTTPR
         super.onCreate(savedInstanceState);
         httpRequestInterface = this;
         setContentView(R.layout.activity_path_consultation);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         listView = (ListView) findViewById(R.id.path_history);
 
         HistoryListAdapter listAdapter = new HistoryListAdapter(getApplicationContext(), Path.getPaths());
@@ -46,5 +49,17 @@ public class PathConsultationActivity extends AppCompatActivity implements HTTPR
                 Path.onPathRequestDone(result);
                 break;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

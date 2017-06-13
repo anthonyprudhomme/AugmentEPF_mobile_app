@@ -125,7 +125,15 @@ public class HomePageActivity
         askForPermission();
         setUpSlidingDrawers();
         setUpEditText();
+        showAdminButtonOrNot();
+    }
 
+    private void showAdminButtonOrNot() {
+        if (ConnectionActivity.userTypeValue.equals("A")) {
+            ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
+            adminButton.setVisibility(View.VISIBLE);
+            adminButton.setClickable(true);
+        }
     }
 
     private void logInIfNecessary() {
@@ -395,7 +403,11 @@ public class HomePageActivity
     protected void onResume() {
         super.onResume();
         if (isUserConnected) {
-
+            if (ConnectionActivity.userTypeValue.equals("A")) {
+                ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
+                adminButton.setVisibility(View.VISIBLE);
+                adminButton.setClickable(true);
+            }
         }
         BeaconDetector.sharedBeaconDetector().bindBeaconManager();
         BeaconDetector.sharedBeaconDetector().setActivity(this);
@@ -448,6 +460,9 @@ public class HomePageActivity
         } else {
             isUserConnected = false;
             optionsFragment.changeLoginButtonText();
+            ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
+            adminButton.setVisibility(View.INVISIBLE);
+            adminButton.setClickable(false);
         }
     }
 
@@ -520,7 +535,7 @@ public class HomePageActivity
                         JSONObject jsonObject = new JSONObject(result);
 //                        String success = jsonObject.getString(VALIDATE);
 //                        if (success.equals(YES)) {
-                            GABeaconMap.onMapsRequestDone(result);
+                        GABeaconMap.onMapsRequestDone(result);
 //                        } else {
 //                            GABeaconMap.loadMapsFromFile();
 //                        }
@@ -666,7 +681,7 @@ public class HomePageActivity
                 }
                 break;
             case HTTPRequestManager.PATH:
-                Log.d(TAG, "onRequestDone: path "+ result);
+                Log.d(TAG, "onRequestDone: path " + result);
                 if (result.equals(ERROR)) {
 
                 }
