@@ -51,29 +51,31 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class AdminActivity extends AppCompatActivity implements HTTPRequestInterface, BeaconDetectorInterface {
-    public static final String CONTENT_TYPE = "contentType";
-    public static final String CHANGE_TYPE = "changeType";
-    public static final String CONTENT_INFORMATION = "contentInformation";
-    public static final String ADMIN_MODIFICATION_PHP = "administrationChanges.php";
-    public static final String ERROR = "Error";
-    public static final String STATE = "state";
-    public static final String TRUE = "true";
-    public static final String MESSAGE = "message";
-    public static final String GET_ELEMENT_PHP = "getElement.php";
-    public static final String RESULT = "result";
-    public static final int SECOND_FLOOR = 2;
-    public static final int FIRST_FLOOR = 1;
-    public static final int GROUND_FLOOR = 0;
-    public static final int LOWER_FLOOR = -1;
+    private static final String CONTENT_TYPE = "contentType";
+    private static final String CHANGE_TYPE = "changeType";
+    private static final String CONTENT_INFORMATION = "contentInformation";
+    private static final String ADMIN_MODIFICATION_PHP = "administrationChanges.php";
+    private static final String ERROR = "Error";
+    private static final String STATE = "state";
+    private static final String TRUE = "true";
+    private static final String MESSAGE = "message";
+    private static final String GET_ELEMENT_PHP = "getElement.php";
+    private static final String RESULT = "result";
+    private static final String ID = "idUser";
+    private static final String TOKEN = "token";
+    private static final String NAME = "name";
+    private static final String POSITION = "position";
     private static final String TAG = "Ici";
+    private static final int SECOND_FLOOR = 2;
+    private static final int FIRST_FLOOR = 1;
+    private static final int GROUND_FLOOR = 0;
+    private static final int LOWER_FLOOR = -1;
     private static final int MAX_LENGTH = 5;
-    public static final String ID = "idUser";
-    public static final String TOKEN = "token";
-    public static final String NAME = "name";
-    public static final String POSITION = "position";
+
     public static BeaconDetectorInterface beaconDetectorInterface;
     public boolean gestureEnabled;
-    private boolean editBeacon, existing, editRoom;
+
+    private boolean editBeacon, existing, editRoom,isUserSettingScale;
     private boolean hasUserAskedForClosestBeacon = false;
     private int currentFloor, currentMapHeight, currentMapWidth,
             cellHeight, cellWidth, nbCol, nbRow, itemXCoord, itemYCoord;
@@ -93,6 +95,12 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     private GABeaconMap gaBeaconMap;
     private Pair<Integer, Integer> gridDimensions;
     private FrameLayout mapContainer;
+    private GestureDetector gestureDetector;
+    private ScaleGestureDetector scaleDetector;
+    private GridLayout gridLayout;
+    private SeekBar zoomSeekBar;
+    private AdminItemView adminData;
+
     View.OnTouchListener mapTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
@@ -105,8 +113,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     effectiveScale = scale;
                     mapContainer.setTranslationX(mapContainer.getTranslationX() + (mapContainer.getPivotX() - middle.x) * (1 - mapContainer.getScaleX()));
                     mapContainer.setTranslationY(mapContainer.getTranslationY() + (mapContainer.getPivotY() - middle.y) * (1 - mapContainer.getScaleY()));
-                    mapContainer.setPivotX(middle.x);
-                    mapContainer.setPivotY(middle.y);
+                    mapContainer.setPivotX(0f);
+                    mapContainer.setPivotY(0f);
                     mapContainer.setScaleX(1 / effectiveScale);
                     mapContainer.setScaleY(1 / effectiveScale);
                 }
@@ -114,11 +122,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             return true;
         }
     };
-    private GestureDetector gestureDetector;
-    private ScaleGestureDetector scaleDetector;
-    private GridLayout gridLayout;
-    private SeekBar zoomSeekBar;
-    private boolean isUserSettingScale;
     SeekBar.OnSeekBarChangeListener zoomChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -130,12 +133,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             layoutParams.bottomMargin = (int) (layoutParams.topMargin - currentMapHeight * effectiveScale);
             Point middle = new Point(layoutParams.rightMargin - layoutParams.leftMargin,
                     layoutParams.bottomMargin - layoutParams.topMargin);
-            mapContainer.setTranslationX(mapContainer.getTranslationX() + (mapContainer.getPivotX() - middle.x) * (1 - mapContainer.getScaleX()));
-            mapContainer.setTranslationY(mapContainer.getTranslationY() + (mapContainer.getPivotY() - middle.y) * (1 - mapContainer.getScaleY()));
-            mapContainer.setPivotX(middle.x);
-            mapContainer.setPivotY(middle.y);
+            mapContainer.setPivotX(0f);
+            mapContainer.setPivotY(0f);
             mapContainer.setScaleX(1 / effectiveScale);
             mapContainer.setScaleY(1 / effectiveScale);
+            mapContainer.setTranslationX((mapContainer.getPivotX() - middle.x) * (1 - mapContainer.getScaleX()));
         }
 
         @Override
@@ -148,7 +150,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             isUserSettingScale = false;
         }
     };
-    private AdminItemView adminData;
     private View.OnClickListener gridItemListener = new View.OnClickListener() {
         public void onClick(View viewClicked) {
             if (numberOfFingerTouchingTheScreen == 1) {
