@@ -546,7 +546,9 @@ public class HomePageActivity
                         nextClass = new Class(jsonObject);
                         changeButtonColor();
                     } else {
-                        nextClass = ICalTimeTable.iCalInstance.getNextCourse();
+                        if (ICalTimeTable.iCalInstance != null) {
+                            nextClass = ICalTimeTable.iCalInstance.getNextCourse();
+                        }
                         if (nextClass != null) {
                             changeButtonColor();
                         }

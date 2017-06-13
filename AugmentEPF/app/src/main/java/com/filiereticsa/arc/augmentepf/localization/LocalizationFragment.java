@@ -461,16 +461,18 @@ public class LocalizationFragment
                 // Dismiss guidance snackbar at the end of the path
                 customSnackBar.dismiss();
             } else {
-                customSnackBar.setText(trajectory.get(index).getDirectionInstruction());
+                if (trajectory != null) {
+                    customSnackBar.setText(trajectory.get(index).getDirectionInstruction());
 
-                String toSpeak = trajectory.get(index).getDirectionInstruction();
+                    String toSpeak = trajectory.get(index).getDirectionInstruction();
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
-                } else {
-                    textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
+                    } else {
+                        textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                    }
+                    Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
                 }
-                Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
             }
         }
     }

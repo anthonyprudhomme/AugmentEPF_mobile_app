@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.activities.AugmentEPFApplication;
+import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,6 @@ public class Guidance {
         this.path = path;
 
         pathAnalysis();
-
     }
 
     private ArrayList<TrajectorySegment> computeAllTrajectory() {
@@ -31,36 +31,37 @@ public class Guidance {
         ArrayList<TrajectorySegment> trajectoryAllSeg = new ArrayList<>();
 
         // Size of the path for the limit of for below
-        int pathSize = path.size();
+        if (path != null) {
+            int pathSize = path.size();
 
-        // Creation of variables
-        int xBefore, xAfter, yBefore, yAfter;
-        String code;
+            // Creation of variables
+            int xBefore, xAfter, yBefore, yAfter;
+            String code;
 
+            // Start at 1 because we have i-1 & finish at (size-1) because we have i+1
+            // i-1 & i+1 are for the displacements of the user
+            for (int i = 1; i < pathSize - 1; i++) {
+                // For x values
+                xBefore = path.get(i).first - path.get(i - 1).first; // Before user displacement
+                xAfter = path.get(i + 1).first - path.get(i).first; // The next event in the trajectory
 
-        // Start at 1 because we have i-1 & finish at (size-1) because we have i+1
-        // i-1 & i+1 are for the displacements of the user
-        for (int i = 1; i < pathSize - 1; i++) {
-            // For x values
-            xBefore = path.get(i).first - path.get(i - 1).first; // Before user displacement
-            xAfter = path.get(i + 1).first - path.get(i).first; // The next event in the trajectory
+                // For y values
+                yBefore = path.get(i).second - path.get(i - 1).second;
+                yAfter = path.get(i + 1).second - path.get(i).second;
 
-            // For y values
-            yBefore = path.get(i).second - path.get(i - 1).second;
-            yAfter = path.get(i + 1).second - path.get(i).second;
+                // Method which transform the displacement in an unique code to identify the displacement
+                code = transformationOfValues(xBefore, xAfter, yBefore, yAfter);
 
-            // Method which transform the displacement in an unique code to identify the displacement
-            code = transformationOfValues(xBefore, xAfter, yBefore, yAfter);
-
-            // Add the segment computed with the code computed
-            trajectoryAllSeg.add(new TrajectorySegment(code));
+                // Add the segment computed with the code computed
+                trajectoryAllSeg.add(new TrajectorySegment(code));
 //            Log.d(TAG, "trajectory: " + trajectory.get(i - 1).getDirectionInstruction());
-        }
-        if (trajectory != null) {
-            for (int i = 0; i < trajectory.size(); i++) {
-                Log.d(TAG, "computeAllTrajectory: " + trajectory.get(i).getDirectionInstruction());
             }
-            Log.d(TAG, "computeAllTrajectory: ------------");
+            if (trajectory != null) {
+                for (int i = 0; i < trajectory.size(); i++) {
+                    Log.d(TAG, "computeAllTrajectory: " + trajectory.get(i).getDirectionInstruction());
+                }
+                Log.d(TAG, "computeAllTrajectory: ------------");
+            }
         }
 
         // Return the trajectory
@@ -79,26 +80,30 @@ public class Guidance {
         boolean endPath = false;
 
         // Compare all positions of the index segment with the current
-        for (int i = 0; i < positionsSegment.get(index).size(); i++) {
-            // Create a local position to test it without call it everytime
-            Pair<Integer, Integer> testPosition = positionsSegment.get(index).get(i);
+        if (positionsSegment.size() > index) {
+            for (int i = 0; i < positionsSegment.get(index).size(); i++) {
+                // Create a local position to test it without call it everytime
+                Pair<Integer, Integer> testPosition = positionsSegment.get(index).get(i);
 
-            // Compare the two positions
-            if (testPosition.first.equals(currentPosition.first)
-                    && testPosition.second.equals(currentPosition.second)) {
-                // If it's the last position of the segment & the last segment => end of path
-                if ((i == positionsSegment.get(index).size() - 1) &&
-                        index == positionsSegment.size() - 1) {
-                    endPath = true;
-                }
-                // If the position is the last position of the segment, pass at the next segment
-                else if (i == positionsSegment.get(index).size() - 1) {
-                    index = index + 1;
-                }
+                // Compare the two positions
+                if (testPosition.first.equals(currentPosition.first)
+                        && testPosition.second.equals(currentPosition.second)) {
+                    // If it's the last position of the segment & the last segment => end of path
+                    if ((i == positionsSegment.get(index).size() - 1) &&
+                            index == positionsSegment.size() - 1) {
+                        endPath = true;
+                    }
+                    // If the position is the last position of the segment, pass at the next segment
+                    else if (i == positionsSegment.get(index).size() - 1) {
+                        index = index + 1;
+                    }
 
-                // The algorithm found a position
-                found = true;
+                    // The algorithm found a position
+                    found = true;
+                }
             }
+        } else {
+            endPath = true;
         }
 
         // If the algorithm didn't find the position in the segment
@@ -107,7 +112,11 @@ public class Guidance {
         }
         if (endPath) {
             index = Integer.MAX_VALUE; // To identify the end of the path
+            if (GAFrameworkUserTracker.sharedTracker() != null) {
+                GAFrameworkUserTracker.sharedTracker().setTarget(null, -2);
+            }
         }
+
 
         return index;
     }
@@ -146,77 +155,79 @@ public class Guidance {
 
         // Finish at (size-1) because we compare direction instructions of the current and next
         // segment
-        for (int i = 0; i < trajectoryAllSeg.size() - 1; i++) {
-            // To have independent counter of i
-            // In order to have a list of positions for each segment
-            Pair<Integer, Integer> absolutePosition;
-            ArrayList<Pair<Integer, Integer>> allAbsolutePosition = new ArrayList<>();
+        if (trajectoryAllSeg != null) {
+            for (int i = 0; i < trajectoryAllSeg.size() - 1; i++) {
+                // To have independent counter of i
+                // In order to have a list of positions for each segment
+                Pair<Integer, Integer> absolutePosition;
+                ArrayList<Pair<Integer, Integer>> allAbsolutePosition = new ArrayList<>();
 
-            // One segment which is necessary to have the short trajectory
-            TrajectorySegment trajSegment;
+                // One segment which is necessary to have the short trajectory
+                TrajectorySegment trajSegment;
 
-            // If there is a repetition
-            if (trajectoryAllSeg.get(i).getDirectionInstruction().equals(trajectoryAllSeg.get(i + 1).getDirectionInstruction())) {
-                // Initialization
-                String oldCode, directionInstruction, distance;
-                int numberOfIteration = 0;
+                // If there is a repetition
+                if (trajectoryAllSeg.get(i).getDirectionInstruction().equals(trajectoryAllSeg.get(i + 1).getDirectionInstruction())) {
+                    // Initialization
+                    String oldCode, directionInstruction, distance;
+                    int numberOfIteration = 0;
 
-                // While it's the same direction instruction
-                while (trajectoryAllSeg.get(i).getDirectionInstruction().equals(trajectoryAllSeg.get(i + 1).getDirectionInstruction())
-                        && (i < trajectoryAllSeg.size() - 2)) {
-                    i = i + 1; // Increment i because we want restart after the repetition
-                    numberOfIteration = numberOfIteration + 1; // To count the number of repetition
+                    // While it's the same direction instruction
+                    while (trajectoryAllSeg.get(i).getDirectionInstruction().equals(trajectoryAllSeg.get(i + 1).getDirectionInstruction())
+                            && (i < trajectoryAllSeg.size() - 2)) {
+                        i = i + 1; // Increment i because we want restart after the repetition
+                        numberOfIteration = numberOfIteration + 1; // To count the number of repetition
 
-                    // To have all positions in the segment
+                        // To have all positions in the segment
+                        absolutePosition = path.get(i);
+                        allAbsolutePosition.add(absolutePosition);
+                    }
+
+                    if (trajectoryAllSeg.get(i).getDirectionInstruction()
+                            .equals(AugmentEPFApplication.getAppContext().getString(R.string.guidanceStraightAhead))) {
+                        // 1 instruction ~= 1m & 1 iteration = 1 instruction
+                        distance = AugmentEPFApplication.getAppContext().getString(R.string.guidanceFor)
+                                + " " + (numberOfIteration + 1)
+                                + " " + AugmentEPFApplication.getAppContext().getString(R.string.guidanceMeters);
+                        // Construct the new directionInstruction
+                        directionInstruction = trajectoryAllSeg.get(i).getDirectionInstruction() + " " + distance;
+                    } else {
+                        // 1 instruction ~= 1m & 1 iteration = 1 instruction
+                        distance = AugmentEPFApplication.getAppContext().getString(R.string.guidanceIn)
+                                + " " + (numberOfIteration + 1)
+                                + " " + AugmentEPFApplication.getAppContext().getString(R.string.guidanceMeters);
+                        // Construct the new directionInstruction
+                        directionInstruction = trajectoryAllSeg.get(i).getDirectionInstruction() + " " + distance;
+                    }
+                    // Get the code of the direction instruction
+                    oldCode = trajectoryAllSeg.get(i).getCode();
+
+                    // Create a new segment with without the distance
+                    trajSegment = new TrajectorySegment(oldCode);
+                    // Set the new segment with the new direction instruction
+                    trajSegment.setDirectionInstruction(directionInstruction);
+                } else { // If there isn't a repetition just put the normal segment
+                    String oldCode;
+
+                    // To have the only position of the segment
                     absolutePosition = path.get(i);
                     allAbsolutePosition.add(absolutePosition);
+
+                    oldCode = trajectoryAllSeg.get(i).getCode();
+                    trajSegment = new TrajectorySegment(oldCode);
                 }
+                // List of all positions with the number of the segment.
+                // Form like this : (number of segment, list of all positions)
+                positionsSegment.add(allAbsolutePosition);
 
-                if (trajectoryAllSeg.get(i).getDirectionInstruction()
-                        .equals(AugmentEPFApplication.getAppContext().getString(R.string.guidanceStraightAhead))) {
-                    // 1 instruction ~= 1m & 1 iteration = 1 instruction
-                    distance = AugmentEPFApplication.getAppContext().getString(R.string.guidanceFor)
-                            + " " + (numberOfIteration + 1)
-                            + " " + AugmentEPFApplication.getAppContext().getString(R.string.guidanceMeters);
-                    // Construct the new directionInstruction
-                    directionInstruction = trajectoryAllSeg.get(i).getDirectionInstruction() + " " + distance;
-                } else {
-                    // 1 instruction ~= 1m & 1 iteration = 1 instruction
-                    distance = AugmentEPFApplication.getAppContext().getString(R.string.guidanceIn)
-                            + " " + (numberOfIteration + 1)
-                            + " " + AugmentEPFApplication.getAppContext().getString(R.string.guidanceMeters);
-                    // Construct the new directionInstruction
-                    directionInstruction = trajectoryAllSeg.get(i).getDirectionInstruction() + " " + distance;
-                }
-                // Get the code of the direction instruction
-                oldCode = trajectoryAllSeg.get(i).getCode();
-
-                // Create a new segment with without the distance
-                trajSegment = new TrajectorySegment(oldCode);
-                // Set the new segment with the new direction instruction
-                trajSegment.setDirectionInstruction(directionInstruction);
-            } else { // If there isn't a repetition just put the normal segment
-                String oldCode;
-
-                // To have the only position of the segment
-                absolutePosition = path.get(i);
-                allAbsolutePosition.add(absolutePosition);
-
-                oldCode = trajectoryAllSeg.get(i).getCode();
-                trajSegment = new TrajectorySegment(oldCode);
+                // Finally, we add the new segment in the short trajectory
+                trajectory.add(trajSegment);
             }
-            // List of all positions with the number of the segment.
-            // Form like this : (number of segment, list of all positions)
-            positionsSegment.add(allAbsolutePosition);
 
-            // Finally, we add the new segment in the short trajectory
-            trajectory.add(trajSegment);
-        }
-
-        // To display all instructions of the trajectory
+            // To display all instructions of the trajectory
         /*for (int i = 0; i < trajectory.size(); i++) {
             Log.d(TAG, "trajectory: " + trajectory.get(i).getDirectionInstruction());
         }*/
+        }
 
         return trajectory;
     }

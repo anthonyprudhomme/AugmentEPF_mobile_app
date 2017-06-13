@@ -81,29 +81,31 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(STROKE_WIDTH);
         paint.setShadowLayer(5, 0, 0, Color.parseColor("#4286f4"));
-        if (currentPath.size() != 0) {
-            path.moveTo(userCoordinates.second, userCoordinates.first);
-        }
-        for (int i = 0; i < currentPath.size(); i++) {
-            pathCoordinates = getCoordinatesFromIndexPath(currentPath.get(i));
-            if (i < currentPath.size() - 1) {
-                path.lineTo(pathCoordinates.second, pathCoordinates.first);
-            } else {
-                if (currentFloorAccesType == null) {
-                    canvas.drawCircle(pathCoordinates.second, pathCoordinates.first, (int) (radius / 1.5), paint);
+        if (currentPath != null) {
+            if (currentPath.size() != 0) {
+                path.moveTo(userCoordinates.second, userCoordinates.first);
+            }
+            for (int i = 0; i < currentPath.size(); i++) {
+                pathCoordinates = getCoordinatesFromIndexPath(currentPath.get(i));
+                if (i < currentPath.size() - 1) {
+                    path.lineTo(pathCoordinates.second, pathCoordinates.first);
                 } else {
-                    if (currentFloorAccesType == FloorAccess.FloorAccessType.ELEVATOR) {
-                        drawIcon(paint, R.drawable.elevator_icon, pathCoordinates, radius, canvas);
+                    if (currentFloorAccesType == null) {
+                        canvas.drawCircle(pathCoordinates.second, pathCoordinates.first, (int) (radius / 1.5), paint);
                     } else {
-                        if (currentFloorAccesType == FloorAccess.FloorAccessType.STAIRS) {
-                            drawIcon(paint, R.drawable.stair_icon, pathCoordinates, radius, canvas);
+                        if (currentFloorAccesType == FloorAccess.FloorAccessType.ELEVATOR) {
+                            drawIcon(paint, R.drawable.elevator_icon, pathCoordinates, radius, canvas);
+                        } else {
+                            if (currentFloorAccesType == FloorAccess.FloorAccessType.STAIRS) {
+                                drawIcon(paint, R.drawable.stair_icon, pathCoordinates, radius, canvas);
+                            }
                         }
                     }
-                }
 
+                }
             }
+            canvas.drawPath(path, paint);
         }
-        canvas.drawPath(path, paint);
     }
 
     private void drawIcon(Paint paint, int imageResId, Pair<Integer, Integer> pathCoordinates, int radius, Canvas canvas) {
@@ -203,6 +205,8 @@ public class UserAndPathView extends android.support.v7.widget.AppCompatImageVie
         if (path != null) {
             currentPath = path.first;
             currentFloorAccesType = floorAccessType;
+        } else {
+            currentPath = null;
         }
     }
 

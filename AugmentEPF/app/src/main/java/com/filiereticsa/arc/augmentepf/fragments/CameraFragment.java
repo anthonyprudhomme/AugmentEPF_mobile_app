@@ -21,6 +21,7 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Size;
@@ -64,6 +65,7 @@ public class CameraFragment extends Fragment
     private static final String TAG = "Ici";
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     private static final int REQUEST_CAMERA_PERMISSION = 200;
+    private static final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA};
     public static DestinationSelectedInterface destinationSelectedInterface;
 
     static {
@@ -81,11 +83,61 @@ public class CameraFragment extends Fragment
     private TextureView textureView;
     private String cameraId;
     private Size imageDimension;
+
+    private boolean surfaceTextureAvailable;
+    private boolean permissionsGranted;
+    private boolean cameraOpened;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_android_camera_api, container, false);
+        textureView = (TextureView) view.findViewById(R.id.texture);
+        permissionsGranted = hasCameraPermission();
+        //startBackgroundThread();
+        if (!permissionsGranted) {
+            askForPermission();
+        }
+        assert textureView != null;
+        textureView.setSurfaceTextureListener(textureListener);
+        frameLayout = (FrameLayout) view.findViewById(R.id.camera_layout);
+        GAFrameworkUserTracker.sharedTracker().registerObserver(this);
+        destinationSelectedInterface = this;
+        return view;
+    }
+
+    private boolean hasCameraPermission() {
+        return ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED;
+
+    }
+
+    public void askForPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS
+                    ,
+                    REQUEST_CAMERA_PERMISSION);
+        }
+    }
+
     TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
             //open your camera here
-            openCamera(currentCamera);
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, REQUEST_CAMERA_PERMISSION);
+                return;
+            } else {
+                surfaceTextureAvailable = true;
+                setupCameraIfPossible();
+            }
         }
 
         @Override
@@ -95,6 +147,7 @@ public class CameraFragment extends Fragment
 
         @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+            surfaceTextureAvailable = false;
             return false;
         }
 
@@ -102,6 +155,14 @@ public class CameraFragment extends Fragment
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
         }
     };
+
+    private void setupCameraIfPossible() {
+        Log.d(TAG, "setupCameraIfPossible: " + cameraOpened + " " + surfaceTextureAvailable + " " + permissionsGranted);
+        if (!cameraOpened && surfaceTextureAvailable && permissionsGranted) {
+            openCamera(currentCamera);
+        }
+    }
+
     private ImageReader imageReader;
     private Handler backgroundHandler;
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
@@ -129,21 +190,6 @@ public class CameraFragment extends Fragment
     private Guidance guidance;
     private int index;
     private Pair<Integer, Integer> currentPosition;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_android_camera_api, container, false);
-        textureView = (TextureView) view.findViewById(R.id.texture);
-        assert textureView != null;
-        textureView.setSurfaceTextureListener(textureListener);
-        frameLayout = (FrameLayout) view.findViewById(R.id.camera_layout);
-        GAFrameworkUserTracker.sharedTracker().registerObserver(this);
-        destinationSelectedInterface = this;
-        return view;
-    }
 
     protected void startBackgroundThread() {
         backgroundThread = new HandlerThread("Camera Background");
@@ -194,34 +240,37 @@ public class CameraFragment extends Fragment
     }
 
     private void openCamera(int cameraSelected) {
-        CameraManager manager
-                = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
-        try {
-            cameraId = manager.getCameraIdList()[cameraSelected];
-            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-            StreamConfigurationMap map
-                    = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-            assert map != null;
-            imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
-            // Add permission for camera and let user grant the permission
-            if (ActivityCompat.checkSelfPermission(getContext(),
-                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(getContext(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.CAMERA,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                        },
-                        REQUEST_CAMERA_PERMISSION);
-                return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            CameraManager manager
+                    = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
+            try {
+                cameraId = manager.getCameraIdList()[cameraSelected];
+                CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+                StreamConfigurationMap map
+                        = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                assert map != null;
+                imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
+                // Add permission for camera and let user grant the permission
+                if (ActivityCompat.checkSelfPermission(getContext(),
+                        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.CAMERA
+                            },
+                            REQUEST_CAMERA_PERMISSION);
+                    return;
+                }
+                manager.openCamera(cameraId, stateCallback, null);
+                cameraOpened = true;
+
+
+            } catch (
+                    CameraAccessException e)
+
+            {
+                e.printStackTrace();
             }
-            manager.openCamera(cameraId, stateCallback, null);
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
         }
+
     }
 
     protected void updatePreview() {
@@ -241,6 +290,7 @@ public class CameraFragment extends Fragment
         if (null != cameraDevice) {
             cameraDevice.close();
             cameraDevice = null;
+            cameraOpened = false;
         }
         if (null != imageReader) {
             imageReader.close();
@@ -258,6 +308,9 @@ public class CameraFragment extends Fragment
                         getContext(),
                         R.string.permission_not_granted,
                         Toast.LENGTH_LONG).show();
+            } else {
+                permissionsGranted = true;
+                setupCameraIfPossible();
             }
         }
     }
@@ -267,7 +320,7 @@ public class CameraFragment extends Fragment
         super.onResume();
         startBackgroundThread();
         if (textureView.isAvailable()) {
-            openCamera(currentCamera);
+            setupCameraIfPossible();
         } else {
             textureView.setSurfaceTextureListener(textureListener);
         }
@@ -278,6 +331,18 @@ public class CameraFragment extends Fragment
         closeCamera();
         stopBackgroundThread();
         super.onPause();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        setupCameraIfPossible();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        closeCamera();
     }
 
     @Override
@@ -362,6 +427,9 @@ public class CameraFragment extends Fragment
         if (guidance == null && path != null) {
             guidance = new Guidance(path.first);
         }
+        if (guidance != null && path == null) {
+            guidance.setPath(null);
+        }
 
         // There is a trajectory with instructions and it's not finished yet
         if (guidance != null && index != Integer.MAX_VALUE && guidanceView != null) {
@@ -376,11 +444,13 @@ public class CameraFragment extends Fragment
                 }
             } else if (index == Integer.MAX_VALUE) { // The end of the path
                 guidanceView.setInstruction("Congrats, you reached your destination!");
-                //guidanceView.setTargetHeading(trajectory.get(index).getNewDirectionCoordinates());
+                guidanceView.setTargetHeading(null);
             } else {
-                guidanceView.setInstruction(trajectory.get(index).getDirectionInstruction());
-                guidanceView.setTargetHeading(trajectory.get(index).getNewDirectionCoordinates());
-                Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
+                if (trajectory != null) {
+                    guidanceView.setInstruction(trajectory.get(index).getDirectionInstruction());
+                    guidanceView.setTargetHeading(trajectory.get(index).getNewDirectionCoordinates());
+                    Log.d(TAG, "onPathChanged: " + trajectory.get(index).getDirectionInstruction());
+                }
             }
         }
 

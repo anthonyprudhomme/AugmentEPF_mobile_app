@@ -59,7 +59,7 @@ public class GABeaconMap {
         int nbRow = 20;
         int nbCol = 50;
         int floor = 2;
-        int heading = 210;
+        int heading = 210 - 40;
         int imageResId = R.drawable.plan_epf_etage2;
         int j = 0;
         ArrayList<MapItem> mapItems = new ArrayList<>();
@@ -133,7 +133,7 @@ public class GABeaconMap {
         nbRow = 19;
         nbCol = 48;
         floor = 1;
-        heading = 210;
+        heading = 210 - 40;
         imageResId = R.drawable.plan_epf_etage1;
         mapItems = new ArrayList<>();
 

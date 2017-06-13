@@ -67,6 +67,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
     public static final int LOWER_FLOOR = -1;
     private static final String TAG = "Ici";
     private static final int MAX_LENGTH = 5;
+    public static final String ID = "id";
+    public static final String TOKEN = "token";
     public static BeaconDetectorInterface beaconDetectorInterface;
     public boolean gestureEnabled;
     private boolean editBeacon, existing, editRoom;
@@ -652,6 +654,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
 
         if (editBeacon) {
             try {
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "beacon");
                 jsonObject.put(CHANGE_TYPE, "update");
                 jsonArray.put(itemXCoord + "/" + itemYCoord + "/" + currentFloor);
@@ -663,6 +667,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
         } else
             try {
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "poi");
                 jsonObject.put(CHANGE_TYPE, "update");
                 jsonArray.put(itemXCoord + "/" + itemYCoord + "/" + currentFloor);
@@ -685,6 +691,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
 
         if (editBeacon) {
             try {
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "beacon");
                 jsonObject.put(CHANGE_TYPE, "add");
                 jsonArray.put(itemXCoord + "/" + itemYCoord + "/" + currentFloor);
@@ -696,6 +704,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
         } else
             try {
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "poi");
                 jsonObject.put(CHANGE_TYPE, "add");
                 jsonArray.put(itemXCoord + "/" + itemYCoord + "/" + currentFloor);
@@ -717,8 +727,10 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         itemYCoord = Integer.valueOf(yCoord.getText().toString()) + 1;
         if (editBeacon) {
             try {
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "beacon");
-                jsonObject.put(CHANGE_TYPE, "remove");
+                jsonObject.put(CHANGE_TYPE, "delete");
                 jsonArray.put("");
                 jsonArray.put(itemName);
                 jsonObject.put(CONTENT_INFORMATION, jsonArray);
@@ -728,8 +740,10 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
         } else
             try {
+                jsonObject.put(ID, ConnectionActivity.idUser);
+                jsonObject.put(TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "poi");
-                jsonObject.put(CHANGE_TYPE, "remove");
+                jsonObject.put(CHANGE_TYPE, "delete");
                 jsonArray.put("");
                 jsonArray.put(itemName);
                 jsonObject.put(CONTENT_INFORMATION, jsonArray);
