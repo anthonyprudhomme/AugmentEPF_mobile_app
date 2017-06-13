@@ -102,9 +102,10 @@ public class HomePageActivity
             new GAFrameworkUserTracker(this);
             GAFrameworkUserTracker.sharedTracker().startTrackingUser();
         }
+        httpRequestInterface = this;
         setContentView(R.layout.activity_home_page);
         destinationSelectedInterface = this;
-        httpRequestInterface = this;
+
         rootView = findViewById(R.id.rootview);
         AppUtils.setScreenSize(this);
         loadBeaconsAndMaps();

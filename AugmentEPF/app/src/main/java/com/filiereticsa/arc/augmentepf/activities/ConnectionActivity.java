@@ -77,6 +77,22 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
         return jsonDataRead;
     }
 
+    private void saveCredentialsToFile() {
+        FileManager fileManager = new FileManager(null, CREDENTIALS_JSON);
+        JSONObject jsonToSave = new JSONObject();
+
+        String loginValue = login.getText().toString();
+        String passwordValue = password.getText().toString();
+        try {
+            jsonToSave.put(NAME, loginValue);
+            // TODO hash the password or do something else to protect the password
+            jsonToSave.put(PASSWORD, passwordValue);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        fileManager.saveFile(jsonToSave.toString());
+    }
+
     public void onValidateClick(View view) {
         //Try and connect user with id and password
         Pair<Boolean, String> checkedValues = checkValues();
@@ -141,6 +157,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                     String success = jsonObject.getString(MESSAGE);
                     if (success.equals(SUCCESS)) {
                         Toast.makeText(this, R.string.connected, Toast.LENGTH_SHORT).show();
+                        saveCredentialsToFile();
                         HomePageActivity.isUserConnected = true;
                         idUser = jsonObject.getInt(ID_USER);
                         token = jsonObject.getString(TOKEN);

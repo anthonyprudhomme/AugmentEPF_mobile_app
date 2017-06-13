@@ -52,9 +52,9 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         httpRequestInterface = this;
-        //initClassRoomsLoading();
-        //initAvailableClassRoomsRequest();
-        //initPOILoading();
+        initClassRoomsLoading();
+        initAvailableClassRoomsRequest();
+        initPOILoading();
         initiateLists(view);
         setAutoCompleteSearch(view);
         return view;
@@ -154,6 +154,7 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
                     ClassRoom.loadClassRoomsFromFile();
                 } else {
                     try {
+                        Log.d(TAG, "onRequestDone: "+result);
                         JSONObject jsonObject = new JSONObject(result);
                         String success = jsonObject.getString(STATE);
                         if (success.equals(TRUE)) {

@@ -1,6 +1,7 @@
 package com.filiereticsa.arc.augmentepf.managers;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 
@@ -185,6 +186,7 @@ public class HTTPRequestManager {
 
         @Override
         protected void onPostExecute(String returnedValue) {
+            Log.d(TAG, "onPostExecute: "+requestParameter.requestId);
             requestParameter.observer.onRequestDone(returnedValue, requestParameter.requestId);
         }
 

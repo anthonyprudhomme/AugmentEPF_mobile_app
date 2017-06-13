@@ -27,7 +27,7 @@ public class ClassRoom extends Place {
     public static final String CLASSROOMS_JSON = "classrooms.json";
     public static final String CLASS_ROOMS = "classRooms";
     public static final String GET_ROOMS_PHP = "getRooms.php";
-    public static final String GET_CLASS_ROOMS_PHP = "getElementAdministration.php";
+    public static final String GET_CLASS_ROOMS_PHP = "getElement.php";
     public static final String CONTENT_TYPE = "contentType";
     public static final String RESULT = "result";
     public static final String STATE = "state";
