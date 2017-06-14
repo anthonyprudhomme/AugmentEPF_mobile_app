@@ -85,7 +85,7 @@
     <!-- User type -->
     <string name="type">Type</string>
     <string name="information_user_type">Display information about your user type</string>
-    <string name="typeUser" translatable="false"/>
+    <string name="typeUser" translatable="false" />
 
     <!-- Different user type -->
     <string-array name="user_type_array">
@@ -340,5 +340,7 @@
     <string name="starting_guidance">Starting guidance</string>
     <string name="save_cred">Save login and password</string>
     <string name="log_in_automatically">Log in automatically</string>
+    <string name="filter_title_augmentepf">AugmentEPF</string>
+    <string name="watch_tuto">Would you like to watch the tutorial video ?</string>
 
 </resources>

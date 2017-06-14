@@ -184,19 +184,23 @@ public class ClassRoom extends Place {
         if (result.equals(ERROR)) {
             // if there is a connection timeout
         } else {
-            JSONArray availableClassJsonArray;
             try {
-                availableClassJsonArray = new JSONArray(result);
-                if (availableClassroomList == null) {
-                    availableClassroomList = new ArrayList<>();
-                }
-                availableClassroomList.clear();
-                for (int i = 0; i < availableClassJsonArray.length(); i++) {
-                    ClassRoom classRoomAvailable = ClassRoom.getClassRoomCalled((String) availableClassJsonArray.get(i));
-                    if (classRoomAvailable != null) {
-                        availableClassroomList.add(classRoomAvailable);
+                JSONObject jsonObject = new JSONObject(result);
+                String state = jsonObject.getString(STATE);
+                if (state.equals(TRUE)){
+                    JSONArray availableClassJsonArray = jsonObject.getJSONArray(FREE_ROOMS);
+                    if (availableClassroomList == null) {
+                        availableClassroomList = new ArrayList<>();
+                    }
+                    availableClassroomList.clear();
+                    for (int i = 0; i < availableClassJsonArray.length(); i++) {
+                        ClassRoom classRoomAvailable = ClassRoom.getClassRoomCalled((String) availableClassJsonArray.get(i));
+                        if (classRoomAvailable != null) {
+                            availableClassroomList.add(classRoomAvailable);
+                        }
                     }
                 }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

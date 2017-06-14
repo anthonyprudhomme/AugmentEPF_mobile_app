@@ -25,6 +25,7 @@ import com.filiereticsa.arc.augmentepf.models.ClassRoom;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class PathPlanningActivity extends AppCompatActivity
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
@@ -34,6 +35,8 @@ public class PathPlanningActivity extends AppCompatActivity
     private SharedPreferences settings;
 
     private Calendar calendar;
+    private Calendar startCalendar;
+    private Calendar warnCalendar;
     // Departure buttons
     private Button departureDateButton;
     private Button departureHourButton;
@@ -144,7 +147,7 @@ public class PathPlanningActivity extends AppCompatActivity
                 (AutoCompleteTextView) findViewById(R.id.search_classroom);
 
         // Get the button to validate created in file main.xml
-        Button searchButton = (Button) findViewById(R.id.button_send);
+        Button sendPathButton = (Button) findViewById(R.id.button_send);
 
         // Create an autocompletion list with string array entryUser
         // "simple_dropdown_item_1line" is a display stlye
@@ -155,9 +158,13 @@ public class PathPlanningActivity extends AppCompatActivity
         searchClassroom.setAdapter(adapter);
 
         // Put a listener on the button to validate to display a Toast with the text in the field
-        searchButton.setOnClickListener(new View.OnClickListener() {
+        sendPathButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
+                String roomName = searchClassroom.getText().toString();
+                Date startDate = startCalendar.getTime();
+                Date warnDate = warnCalendar.getTime();
+
                 Toast.makeText(PathPlanningActivity.this, searchClassroom.getText(),
                         Toast.LENGTH_SHORT).show();
             }
@@ -215,6 +222,8 @@ public class PathPlanningActivity extends AppCompatActivity
         switch (whichDate) {
             case 1: // Departure
                 departureDateButton.setText(date);
+                startCalendar.setTime(calendar.getTime());
+
                 break;
             case 2: // Warning
                 int goodDate = comparateDates(date);
@@ -231,6 +240,7 @@ public class PathPlanningActivity extends AppCompatActivity
                         break;
                     case 1:
                         warningDateButton.setText(date);
+                        warnCalendar.setTime(calendar.getTime());
                         break;
                     default:
                         Toast.makeText(PathPlanningActivity.this,

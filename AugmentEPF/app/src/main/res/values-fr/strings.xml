@@ -102,6 +102,14 @@
         <item>Professeur</item>
         <item>Intervenant</item>
     </string-array>
+
+    <!-- The value of the choice above -->
+    <string-array name="user_type_values_array">
+        <item>S</item>
+        <item>V</item>
+        <item>T</item>
+        <item>C</item>
+    </string-array>
     <!--.........................................................................................-->
 
     <!-- Attribut spécifique -->
@@ -114,6 +122,14 @@
         <item>Guidage vocal</item>
         <item>Ascenceur</item>
         <item>Les deux</item>
+    </string-array>
+
+    <!-- The value of the choice above -->
+    <string-array name="specific_attribute_values_array">
+        <item>0</item>
+        <item>V</item>
+        <item>A</item>
+        <item>VA</item>
     </string-array>
 
     <!--.........................................................................................-->
@@ -174,6 +190,12 @@
     <string-array name="navigation_array">
         <item>Plan</item>
         <item>Caméra</item>
+    </string-array>
+
+    <!-- The value of the choice above -->
+    <string-array name="navigation_values_array">
+        <item>P</item>
+        <item>C</item>
     </string-array>
     <!--_________________________________________________________________________________________-->
     <!--=========================================================================================-->
@@ -278,4 +300,8 @@
     <string name="admin_target_missing">Aucune séléctionnée</string>
     <string name="destination">Destination :</string>
     <string name="starting_guidance">Début du guidage</string>
+    <string name="filter_title_augmentepf">AugmentEPF</string>
+    <string name="log_in_automatically">Se connecter automatiquement</string>
+    <string name="save_cred">Enregistrer identifiants</string>
+    <string name="watch_tuto">Voulez-vous visionner la vidéo de tutoriel ?</string>
 </resources>

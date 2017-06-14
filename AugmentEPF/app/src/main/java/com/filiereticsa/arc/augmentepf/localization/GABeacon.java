@@ -97,9 +97,9 @@ public class GABeacon {
 
     GABeacon(JSONObject jsonObject) {
         try {
-            this.uuid = jsonObject.getString(UUID);
-            this.major = jsonObject.getInt(MAJOR);
-            this.minor = jsonObject.getInt(MINOR);
+            this.uuid = EMBCUUID;
+            this.major = Integer.valueOf(jsonObject.getString(MAJOR));
+            this.minor = Integer.valueOf(jsonObject.getString(MINOR));
             this.xCoord = jsonObject.getInt(POS_X);
             this.yCoord = jsonObject.getInt(POS_Y);
             this.setIndexPath(xCoord, yCoord);
@@ -164,7 +164,6 @@ public class GABeacon {
     }
 
     public static void onBeaconRequestDone(String result) {
-        Log.d(TAG, "onBeaconRequestDone: "+result);
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
@@ -175,13 +174,7 @@ public class GABeacon {
             allBeacons.clear();
             for (int i = 0; i < beaconJsonArray.length(); i++) {
                 JSONObject currentBeaconJson = beaconJsonArray.getJSONObject(i);
-                int major = currentBeaconJson.getInt(MAJOR);
-                int minor = currentBeaconJson.getInt(MINOR);
-                int posX = currentBeaconJson.getInt(POS_X);
-                int posY = currentBeaconJson.getInt(POS_Y);
-                int floor = currentBeaconJson.getInt(FLOOR);
-                allBeacons.add(
-                        new GABeacon(EMBCUUID, major, minor, posX, posY, floor));
+                allBeacons.add(new GABeacon(currentBeaconJson));
             }
             GABeacon.saveBeaconsToFile();
         } catch (JSONException e) {

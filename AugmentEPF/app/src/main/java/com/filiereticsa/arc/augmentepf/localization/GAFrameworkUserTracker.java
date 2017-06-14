@@ -843,6 +843,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
         if (floorTarget != Integer.MAX_VALUE && currentMap.getFloor() == floorTarget) {
             Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = this.mapHelper.pathFrom(currentPosition, targetPosition);
             if (path != null && path.first != null) {
+                path.first.add(0,currentPosition);
                 path.first.add(targetPosition);
                 for (int i = 0; i < observers.size(); i++) {
                     observers.get(i).onPathChanged(path, null);
@@ -887,6 +888,9 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                 }
             }
             Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = getFastestPath(possibleFloorAccesses);
+            if(path!= null){
+                path.first.add(currentPosition);
+            }
             for (int i = 0; i < observers.size(); i++) {
                 observers.get(i).onPathChanged(path, floorAccessType);
             }

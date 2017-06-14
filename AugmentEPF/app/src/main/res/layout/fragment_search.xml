@@ -6,10 +6,6 @@
     android:orientation="vertical"
     tools:context="com.filiereticsa.arc.augmentepf.fragments.SearchFragment">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -33,7 +29,7 @@
                     android:layout_weight="7"
                     android:background="@color/white"
                     android:imeOptions="actionDone"
-                    android:singleLine="true" />
+                    android:maxLines="1" />
 
                 <Button
                     android:id="@+id/go_button"
@@ -49,11 +45,12 @@
             <Button
                 android:id="@+id/next_class_button"
                 style="@style/Button"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginEnd="5dp"
-                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="60dp"
                 android:background="@drawable/disabled_button"
                 android:gravity="center"
                 android:onClick="onNextClassClicked"
@@ -70,8 +67,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="10dp"
                     android:text="@string/nearby_points_of_interest"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="20dp" />
@@ -81,7 +78,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_gravity="right"
-                    android:layout_margin="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
                     android:background="@drawable/listview_background"
                     android:dividerHeight="0sp" />
 
@@ -89,8 +88,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="5dp"
                     android:text="@string/available_classrooms"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="20sp" />
@@ -100,13 +99,12 @@
                     android:layout_width="200dp"
                     android:layout_height="150dp"
                     android:layout_gravity="right"
-                    android:layout_margin="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/listview_background"
                     android:dividerHeight="0sp" />
             </LinearLayout>
 
         </LinearLayout>
-
-    </ScrollView>
 
 </FrameLayout>

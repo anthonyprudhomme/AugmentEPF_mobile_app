@@ -270,6 +270,16 @@ public class GABeaconMap {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        switch (id) {
+            case 1:
+                this.imageResId = R.drawable.plan_epf_etage1;
+                break;
+
+            case 2:
+                this.imageResId = R.drawable.plan_epf_etage2;
+                break;
+        }
+        Log.d(TAG, "GABeaconMap: " + id);
         try {
             rows = jsonObject.getInt(ROW);
             nbRow = rows;
@@ -306,6 +316,7 @@ public class GABeaconMap {
             for (int i = 0; i < jsonItems.length(); i++) {
                 JSONObject currentJsonObject = jsonItems.getJSONObject(i);
                 MapItem mapItem = new MapItem(currentJsonObject);
+                Log.d(TAG, "GABeaconMap: " + currentJsonObject.toString());
                 this.itemIdsToMapItems.put(mapItem.getId(), mapItem);
                 this.mapItems.add(mapItem);
             }
@@ -325,7 +336,10 @@ public class GABeaconMap {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        if (maps == null) {
+            maps = new HashMap<>();
+        }
+        maps.put(id,this);
     }
 
     public static JSONObject getJsonFromMaps() {

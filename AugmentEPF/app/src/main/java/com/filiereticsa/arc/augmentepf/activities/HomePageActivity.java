@@ -1,7 +1,6 @@
 package com.filiereticsa.arc.augmentepf.activities;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -87,6 +86,7 @@ public class HomePageActivity
     private static final String VALIDATE = "validate";
     private static final String YES = "y";
     public static final String FALSE = "false";
+    public static final String VIDEO_TUTORIAL = "videoTutorial";
     public static HTTPRequestInterface httpRequestInterface;
     public static DestinationSelectedInterface destinationSelectedInterface;
     public static boolean isUserConnected = false;
@@ -104,6 +104,7 @@ public class HomePageActivity
     private CameraFragment cameraFragment;
     public static View rootView;
     private Class nextClass;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +113,8 @@ public class HomePageActivity
             new GAFrameworkUserTracker(this);
             GAFrameworkUserTracker.sharedTracker().startTrackingUser();
         }
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //showTutorialOrNot();
         setContentView(R.layout.activity_home_page);
         rootView = findViewById(R.id.rootview);
         httpRequestInterface = this;
@@ -128,6 +131,41 @@ public class HomePageActivity
         showAdminButtonOrNot();
     }
 
+    private void showTutorialOrNot() {
+        boolean mustShowTutorial = sharedPreferences.getBoolean(VIDEO_TUTORIAL, true);
+        if (mustShowTutorial) {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            SharedPreferences.Editor positivePrefEditor = sharedPreferences.edit();
+                            positivePrefEditor.putBoolean(VIDEO_TUTORIAL, false);
+                            positivePrefEditor.apply();
+                            Intent intent = new Intent(HomePageActivity.this, TutorialActivity.class);
+                            startActivity(intent);
+                            dialog.dismiss();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            SharedPreferences.Editor negativePrefEditor = sharedPreferences.edit();
+                            negativePrefEditor.putBoolean(VIDEO_TUTORIAL, false);
+                            negativePrefEditor.apply();
+                            dialog.dismiss();
+                            break;
+                    }
+                }
+            };
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.watch_tuto).setPositiveButton(R.string.yes, dialogClickListener)
+                    .setNegativeButton(R.string.cancel, dialogClickListener).show();
+
+        }
+    }
+
     private void showAdminButtonOrNot() {
         if (ConnectionActivity.userTypeValue.equals("A")) {
             ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
@@ -138,7 +176,6 @@ public class HomePageActivity
 
     private void logInIfNecessary() {
         if (!isUserConnected) {
-            final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             boolean saveCred = sharedPreferences.getBoolean(SAVE_CRED, false);
             if (saveCred) {
                 connectToServer();
@@ -241,12 +278,12 @@ public class HomePageActivity
                 builder.setMessage(R.string.app_need_location_message);
                 builder.setPositiveButton(android.R.string.ok, null);
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-
-                    @TargetApi(23)
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                PERMISSION_REQUEST_COARSE_LOCATION);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                    PERMISSION_REQUEST_COARSE_LOCATION);
+                        }
                     }
 
                 });
@@ -528,6 +565,7 @@ public class HomePageActivity
                 break;
 
             case HTTPRequestManager.MAPS:
+                Log.d(TAG, "map: "+result);
                 if (result.equals(ERROR)) {
                     GABeaconMap.loadMapsFromFile();
                 } else {

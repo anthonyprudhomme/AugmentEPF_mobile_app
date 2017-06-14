@@ -120,8 +120,7 @@ public class CameraFragment extends Fragment
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS
-                    ,
+            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS,
                     REQUEST_CAMERA_PERMISSION);
         }
     }

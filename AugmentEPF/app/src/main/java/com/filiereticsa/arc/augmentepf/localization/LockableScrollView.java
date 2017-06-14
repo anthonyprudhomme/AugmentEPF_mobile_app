@@ -10,7 +10,7 @@ import android.widget.HorizontalScrollView;
  * Copyright © 2016 Granite Apps. All rights reserved.
  */
 
-class LockableScrollView extends HorizontalScrollView {
+public class LockableScrollView extends HorizontalScrollView {
 
     // true if we can scroll (not locked)
     // false if we cannot scroll (locked)

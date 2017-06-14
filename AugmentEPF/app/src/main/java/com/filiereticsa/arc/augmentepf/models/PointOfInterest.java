@@ -1,7 +1,5 @@
 package com.filiereticsa.arc.augmentepf.models;
 
-import android.util.Log;
-
 import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.activities.AugmentEPFApplication;
@@ -30,7 +28,7 @@ public class PointOfInterest extends Place {
     private static final String POI_JSON = "poi.json";
     private static final String POINT_OF_INTEREST = "poi";
     private static final String NAME = "name";
-    private static final String INFORMATION = "information";
+    private static final String DESCRIPTION = "description";
     public static final String RESULT = "result";
     private static ArrayList<PointOfInterest> pointOfInterests;
     private static ArrayList<Place> surroundingPoi = new ArrayList<>();
@@ -64,7 +62,7 @@ public class PointOfInterest extends Place {
 
     public PointOfInterest(JSONObject jsonObject) throws JSONException {
         super(jsonObject.getString(NAME), new Position(jsonObject.getInt(POS_X), jsonObject.getInt(POS_Y), jsonObject.getInt(FLOOR)));
-        this.information = jsonObject.getString(INFORMATION);
+        this.information = jsonObject.getString(DESCRIPTION);
     }
 
     public static ArrayList<Place> getSurroundingPoi() {
@@ -91,7 +89,7 @@ public class PointOfInterest extends Place {
                 currentPoiJson.put(FLOOR, currentPoi.getPosition().getFloor());
                 currentPoiJson.put(POS_X, currentPoi.getPosition().getPositionX());
                 currentPoiJson.put(POS_Y, currentPoi.getPosition().getPositionY());
-                currentPoiJson.put(INFORMATION, currentPoi.getInformation());
+                currentPoiJson.put(DESCRIPTION, currentPoi.getInformation());
 
                 poiAsJsonArray.put(currentPoiJson);
             } catch (JSONException e) {
@@ -165,7 +163,7 @@ public class PointOfInterest extends Place {
                 int floor = currentPoiJsonObject.getInt(FLOOR);
                 int positionX = currentPoiJsonObject.getInt(POS_X);
                 int positionY = currentPoiJsonObject.getInt(POS_Y);
-                String information = currentPoiJsonObject.getString(INFORMATION);
+                String information = currentPoiJsonObject.getString(DESCRIPTION);
                 PointOfInterest pointOfInterest = new PointOfInterest(name, new Position(positionX, positionY, floor), information);
                 pointOfInterests.add(pointOfInterest);
             }
