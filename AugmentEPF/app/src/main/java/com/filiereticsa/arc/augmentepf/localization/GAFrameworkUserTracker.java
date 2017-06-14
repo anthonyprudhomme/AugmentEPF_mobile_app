@@ -922,7 +922,7 @@ public class GAFrameworkUserTracker implements BeaconDetectorInterface, SensorEv
                 this.definePathTo(currentUserLocation.indexPath, target);
             }
         }
-        if (target!= null) {
+        if (target != null) {
             Path.createNewPath(currentUserLocation, target, currentSpecificAttribute);
         }
     }

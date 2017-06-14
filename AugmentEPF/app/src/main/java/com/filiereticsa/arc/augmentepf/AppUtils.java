@@ -11,13 +11,14 @@ import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
 import com.filiereticsa.arc.augmentepf.models.Place;
 import com.filiereticsa.arc.augmentepf.models.Position;
 import com.filiereticsa.arc.augmentepf.models.SpecificAttribute;
+import com.filiereticsa.arc.augmentepf.models.UserType;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * Created by Harpe-e on 11/06/2017.
+ * Created by ARC© on 11/06/2017.
  */
 
 public class AppUtils {
@@ -159,6 +160,37 @@ public class AppUtils {
                 break;
         }
         return currentSpecificAttribute;
+    }
+
+    public static UserType getCurrentUserType(String userType) {
+        UserType currentUserType;
+
+        switch (userType) {
+            case "S":
+                currentUserType = UserType.STUDENT;
+                break;
+
+            case "V":
+                currentUserType = UserType.VISITOR;
+                break;
+
+            case "T":
+                currentUserType = UserType.TEACHER;
+                break;
+
+            case "C":
+                currentUserType = UserType.CONTRIBUTOR;
+                break;
+
+            case "A":
+                currentUserType = UserType.ADMINISTRATOR;
+                break;
+
+            default:
+                currentUserType = UserType.VISITOR;
+                break;
+        }
+        return currentUserType;
     }
 
     public static boolean mustTakeElevator(SpecificAttribute specificAttribute) {

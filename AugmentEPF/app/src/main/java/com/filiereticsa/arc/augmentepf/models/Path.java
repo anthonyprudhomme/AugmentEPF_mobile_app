@@ -46,7 +46,7 @@ public class Path {
     public static final String SUCCESS = "success";
     public static final String ERROR = "Error";
     public static final String RECORD_TRIP_PHP = "recordTrip.php";
-    private static final String TAG = "Ici";
+    private static final String TAG = "Ici (Path)";
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
     private Position departure;
     private Place closestDeparturePlace;
@@ -299,7 +299,7 @@ public class Path {
             Place arrival,
             SpecificAttribute specificAttribute) {
         if (departure != null) {
-            Log.d(TAG, "createNewPath() called with: departure = [" + departure.toString() + "], arrival = [" + arrival.toString() + "], specificAttribute = [" + specificAttribute.toString() + "]");
+            Log.d(TAG, "createNewPath() called with: departure = [" + departure.indexPath + "], arrival = [" + arrival.toString() + "], specificAttribute = [" + specificAttribute.toString() + "]");
             ArrayList<Place> sortedPlaces = AppUtils.sortByClosest(Place.getAllPlaces());
             Place closestPlace;
             if (sortedPlaces != null && sortedPlaces.size() > 0) {

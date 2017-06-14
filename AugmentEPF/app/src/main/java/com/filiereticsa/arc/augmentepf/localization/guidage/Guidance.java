@@ -56,12 +56,12 @@ public class Guidance {
                 trajectoryAllSeg.add(new TrajectorySegment(code));
 //            Log.d(TAG, "trajectory: " + trajectory.get(i - 1).getDirectionInstruction());
             }
-//            if (trajectory != null) {
-//                for (int i = 0; i < trajectory.size(); i++) {
-//                    Log.d(TAG, "computeAllTrajectory: " + trajectory.get(i).getDirectionInstruction());
-//                }
-//                Log.d(TAG, "computeAllTrajectory: ------------");
-//            }
+            if (trajectory != null) {
+                for (int i = 0; i < trajectory.size(); i++) {
+                    Log.d(TAG, "computeAllTrajectory: " + trajectory.get(i).getDirectionInstruction());
+                }
+                Log.d(TAG, "computeAllTrajectory: ------------");
+            }
         }
 
         // Return the trajectory
@@ -81,9 +81,13 @@ public class Guidance {
 
         // Compare all positions of the index segment with the current
         if (positionsSegment.size() > index) {
+            Log.d(TAG, "getCurrentSegment: =========================");
             for (int i = 0; i < positionsSegment.get(index).size(); i++) {
                 // Create a local position to test it without call it everytime
                 Pair<Integer, Integer> testPosition = positionsSegment.get(index).get(i);
+
+                Log.d(TAG, "getCurrentSegment: currentPosition:" + currentPosition);
+                Log.d(TAG, "getCurrentSegment: testPosition:" + testPosition);
 
                 // Compare the two positions
                 if (testPosition.first.equals(currentPosition.first)
@@ -102,6 +106,7 @@ public class Guidance {
                     found = true;
                 }
             }
+            Log.d(TAG, "getCurrentSegment: =========================");
         } else {
             endPath = true;
         }
@@ -165,7 +170,7 @@ public class Guidance {
                 // One segment which is necessary to have the short trajectory
                 TrajectorySegment trajSegment;
 
-                // If there is a repetition
+                // If there is a repetition, same instruction 2 blocks in a row
                 if (trajectoryAllSeg.get(i).getDirectionInstruction().equals(trajectoryAllSeg.get(i + 1).getDirectionInstruction())) {
                     // Initialization
                     String oldCode, directionInstruction, distance;

@@ -8,6 +8,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +18,13 @@ import android.widget.Toast;
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
+import com.filiereticsa.arc.augmentepf.models.UserType;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.filiereticsa.arc.augmentepf.AppUtils.getCurrentUserType;
 import static com.filiereticsa.arc.augmentepf.activities.HomePageActivity.ERROR;
 
 public class SettingsActivity
@@ -147,11 +150,15 @@ public class SettingsActivity
         ==========================================================================================*/
         Preference userTypeButton = findPreference(getString(R.string.typeUser));
 
-        if ("".equals(ConnectionActivity.TYPE_USER) == false) {
-            userTypeButton.setSummary(ConnectionActivity.TYPE_USER);
-        } else {
-            userTypeButton.setSummary(R.string.userTypeAnonym);
-        }
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get user type's value
+        String valueUserType = sharedPreferences.getString(ConnectionActivity.TYPE_USER, "V");
+        // Transform it in a real UserType
+        UserType userType = getCurrentUserType(valueUserType);
+        // Set the text in the button with this UserType
+        userTypeButton.setSummary(userType.toString());
+
         /*========================================================================================*/
 
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);

@@ -6,105 +6,105 @@
     android:orientation="vertical"
     tools:context="com.filiereticsa.arc.augmentepf.fragments.SearchFragment">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/red_search_background"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="Enter a Classroom, place..."
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/search_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="7"
+                android:background="@color/white"
+                android:imeOptions="actionDone"
+                android:maxLines="1" />
+
+            <Button
+                android:id="@+id/go_button"
+                style="@android:style/Widget.Holo.Button.Borderless.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onGoClick"
+                android:text="@string/go"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/next_class_button"
+            style="@style/Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="60dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/disabled_button"
+            android:gravity="center"
+            android:onClick="onNextClassClicked"
+            android:text="@string/go_to_next_class"
+            android:textColor="@color/white" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/red_search_background"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:hint="Enter a Classroom, place..."
-                android:orientation="horizontal"
-                android:padding="5dp">
+                android:layout_gravity="right"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/nearby_points_of_interest"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="20dp" />
 
-                <AutoCompleteTextView
-                    android:id="@+id/search_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:layout_weight="7"
-                    android:background="@color/white"
-                    android:imeOptions="actionDone"
-                    android:maxLines="1" />
-
-                <Button
-                    android:id="@+id/go_button"
-                    style="@android:style/Widget.Holo.Button.Borderless.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onGoClick"
-                    android:text="@string/go"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/next_class_button"
-                style="@style/Button"
+            <ListView
+                android:id="@+id/pi_around"
                 android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_gravity="right"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/listview_background"
+                android:dividerHeight="0sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="right"
+                android:layout_marginEnd="20dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginStart="60dp"
-                android:layout_marginEnd="60dp"
-                android:background="@drawable/disabled_button"
-                android:gravity="center"
-                android:onClick="onNextClassClicked"
-                android:text="@string/go_to_next_class"
-                android:textColor="@color/white" />
+                android:text="@string/available_classrooms"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="20sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/nearby_points_of_interest"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="20dp" />
-
-                <ListView
-                    android:id="@+id/pi_around"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_gravity="right"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/listview_background"
-                    android:dividerHeight="0sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/available_classrooms"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="20sp" />
-
-                <ListView
-                    android:id="@+id/available_rooms"
-                    android:layout_width="200dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="right"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/listview_background"
-                    android:dividerHeight="0sp" />
-            </LinearLayout>
-
+            <ListView
+                android:id="@+id/available_rooms"
+                android:layout_width="200dp"
+                android:layout_height="150dp"
+                android:layout_gravity="right"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/listview_background"
+                android:dividerHeight="0sp" />
         </LinearLayout>
 
+    </LinearLayout>
+    
 </FrameLayout>
