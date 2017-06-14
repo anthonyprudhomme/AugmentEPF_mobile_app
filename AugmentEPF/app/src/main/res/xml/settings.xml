@@ -3,6 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Navigation parameters -->
+    <PreferenceCategory android:title="@string/nav_parameters">
+
+        <!-- Navigation mode -->
+        <ListPreference
+            android:entries="@array/navigation_array"
+            android:entryValues="@array/navigation_values_array"
+            android:key="navigation_mode"
+            android:summary="@string/select_nav_mode"
+            android:title="@string/nav_mode" />
+    </PreferenceCategory>
+
     <!-- General parameters -->
     <PreferenceCategory android:title="@string/general">
 
@@ -60,18 +72,6 @@
             android:key="@string/resetPwButton"
             android:summary="@string/summaryChangePw"
             android:title="@string/title_reset_pw" />
-    </PreferenceCategory>
-
-    <!-- Navigation parameters -->
-    <PreferenceCategory android:title="@string/nav_parameters">
-
-        <!-- Navigation mode -->
-        <ListPreference
-            android:entries="@array/navigation_array"
-            android:entryValues="@array/navigation_values_array"
-            android:key="navigation_mode"
-            android:summary="@string/select_nav_mode"
-            android:title="@string/nav_mode" />
     </PreferenceCategory>
 
 </PreferenceScreen>
