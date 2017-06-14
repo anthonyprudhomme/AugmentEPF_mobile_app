@@ -438,7 +438,7 @@ public class LocalizationFragment
             customSnackBar = CustomSnackBar.make((ViewGroup) HomePageActivity.rootView, CustomSnackBar.LENGTH_INDEFINITE);
             customSnackBar.show();
 
-            guidance = new Guidance(path.first);
+            guidance = new Guidance(path.first);//TODO DEBUG Here
         }
 
         // There is a trajectory with instructions and it's not finished yet
@@ -448,7 +448,7 @@ public class LocalizationFragment
             // Get the index in the segment which correspond at the position
             index = guidance.getCurrentSegment(oldUserPosition, index);
 
-            /*Log.d(TAG, "onPathChanged: Index:" + index);*/
+            Log.d(TAG, "onPathChanged: Index:" + index);
             /*Log.d(TAG, "onPathChanged: Trajectory:"
                     + trajectory.get(index).getDirectionInstruction());*/
 
