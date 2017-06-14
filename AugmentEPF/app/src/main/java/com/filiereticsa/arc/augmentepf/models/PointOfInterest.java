@@ -5,6 +5,7 @@ import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.activities.AugmentEPFApplication;
 import com.filiereticsa.arc.augmentepf.fragments.SearchFragment;
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
+import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
 import org.json.JSONArray;
@@ -22,14 +23,12 @@ public class PointOfInterest extends Place {
     public static final String FLOOR = "floor";
     public static final String POS_X = "x";
     public static final String POS_Y = "y";
-    public static final String URL = "getElement.php";
     public static final String CONTENT_TYPE = "contentType";
     private static final String TAG = "Ici";
     private static final String POI_JSON = "poi.json";
     private static final String POINT_OF_INTEREST = "poi";
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
-    public static final String RESULT = "result";
     private static ArrayList<PointOfInterest> pointOfInterests;
     private static ArrayList<Place> surroundingPoi = new ArrayList<>();
 
@@ -108,7 +107,7 @@ public class PointOfInterest extends Place {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
-            JSONArray poiJsonArray = jsonObject.getJSONArray(RESULT);
+            JSONArray poiJsonArray = jsonObject.getJSONArray(HTTP.RESULT);
             if (pointOfInterests == null) {
                 pointOfInterests = new ArrayList<>();
             }
@@ -130,7 +129,7 @@ public class PointOfInterest extends Place {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HTTPRequestManager.doPostRequest(URL, jsonObject.toString(),
+        HTTPRequestManager.doPostRequest(HTTP.GET_ELEMENT_PHP, jsonObject.toString(),
                 SearchFragment.httpRequestInterface, HTTPRequestManager.POI);
     }
 

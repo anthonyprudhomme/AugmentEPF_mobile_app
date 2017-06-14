@@ -7,6 +7,7 @@ import android.util.Pair;
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
+import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
 import org.json.JSONArray;
@@ -30,7 +31,6 @@ public class GABeaconMap {
     public static final String FLOOR_ACCESS_POSSIBILITIES = "floorAccessPossibilities";
     private static final String TAG = "Ici";
     private static final String MAP_JSON = "maps.json";
-    private static final String URL = "getMap.php";
     private static final String MAP = "map";
     private static final String HEADING = "heading";
     private static final String ID = "id";
@@ -40,10 +40,6 @@ public class GABeaconMap {
     private static final String IMAGE_ID = "imageId";
     private static final String MAP_ITEMS = "maptItems";
     private static final String FLOOR_ACCESSES = "floorAccesses";
-    private static final String VALIDATE = "validate";
-    private static final String YES = "y";
-    private static final String NO = "n";
-    private static final String MESSAGE = "message";
     private static final String ITEM_ID = "item_id";
     private static final String ITEM_TYPE = "type";
     private static final String POS_X = "posX";
@@ -194,25 +190,25 @@ public class GABeaconMap {
         // Stairs on the left of the map
         ArrayList<Integer> nextFloors11 = new ArrayList<>();
         nextFloors11.add(2);
-        FloorAccess floorAccess11 = new FloorAccess(new Pair<>(13, 7), FloorAccess.FloorAccessType.STAIRS, nextFloors11);
+        FloorAccess floorAccess11 = new FloorAccess(new Pair<>(15, 8), FloorAccess.FloorAccessType.STAIRS, nextFloors11);
         floorAccesses.add(floorAccess11);
 
         // Stairs on the right of the map
         ArrayList<Integer> nextFloors12 = new ArrayList<>();
         nextFloors12.add(2);
-        FloorAccess floorAccess21 = new FloorAccess(new Pair<>(36, 7), FloorAccess.FloorAccessType.STAIRS, nextFloors12);
+        FloorAccess floorAccess21 = new FloorAccess(new Pair<>(35, 8), FloorAccess.FloorAccessType.STAIRS, nextFloors12);
         floorAccesses.add(floorAccess21);
 
         // Stairs on the left of the map
         ArrayList<Integer> nextFloors14 = new ArrayList<>();
         nextFloors14.add(0);
-        FloorAccess floorAccess14 = new FloorAccess(new Pair<>(15, 8), FloorAccess.FloorAccessType.STAIRS, nextFloors14);
+        FloorAccess floorAccess14 = new FloorAccess(new Pair<>(13, 7), FloorAccess.FloorAccessType.STAIRS, nextFloors14);
         floorAccesses.add(floorAccess14);
 
         // Stairs on the right of the map
         ArrayList<Integer> nextFloors15 = new ArrayList<>();
         nextFloors15.add(0);
-        FloorAccess floorAccess25 = new FloorAccess(new Pair<>(35, 8), FloorAccess.FloorAccessType.STAIRS, nextFloors15);
+        FloorAccess floorAccess25 = new FloorAccess(new Pair<>(36, 7), FloorAccess.FloorAccessType.STAIRS, nextFloors15);
         floorAccesses.add(floorAccess25);
 
         // Elevator
@@ -279,7 +275,6 @@ public class GABeaconMap {
                 this.imageResId = R.drawable.plan_epf_etage2;
                 break;
         }
-        Log.d(TAG, "GABeaconMap: " + id);
         try {
             rows = jsonObject.getInt(ROW);
             nbRow = rows;
@@ -303,11 +298,11 @@ public class GABeaconMap {
             e.printStackTrace();
         }
         dimensions = new Pair<>(rows, columns);
-        try {
-            this.imageResId = jsonObject.getInt(IMAGE_ID);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            this.imageResId = jsonObject.getInt(IMAGE_ID);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
         // Map Items
         JSONArray jsonItems;
         try {
@@ -316,7 +311,6 @@ public class GABeaconMap {
             for (int i = 0; i < jsonItems.length(); i++) {
                 JSONObject currentJsonObject = jsonItems.getJSONObject(i);
                 MapItem mapItem = new MapItem(currentJsonObject);
-                Log.d(TAG, "GABeaconMap: " + currentJsonObject.toString());
                 this.itemIdsToMapItems.put(mapItem.getId(), mapItem);
                 this.mapItems.add(mapItem);
             }
@@ -336,10 +330,6 @@ public class GABeaconMap {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (maps == null) {
-            maps = new HashMap<>();
-        }
-        maps.put(id,this);
     }
 
     public static JSONObject getJsonFromMaps() {
@@ -432,7 +422,7 @@ public class GABeaconMap {
     }
 
     public static void askForMaps() {
-        HTTPRequestManager.doPostRequest(URL, "",
+        HTTPRequestManager.doPostRequest(HTTP.GET_MAP_PHP, "",
                 HomePageActivity.httpRequestInterface, HTTPRequestManager.MAPS);
     }
 

@@ -9,7 +9,6 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -18,6 +17,7 @@ import android.widget.Toast;
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
+import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
 import org.json.JSONArray;
@@ -26,7 +26,6 @@ import org.json.JSONObject;
 
 public class CreateAccountActivity extends AppCompatActivity implements HTTPRequestInterface {
 
-    public static final String ACCOUNT_CREATION_PHP = "accountCreation.php";
     public static final String SPECIFIC_ATTRIBUTES = "specificAttributes";
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
@@ -34,15 +33,11 @@ public class CreateAccountActivity extends AppCompatActivity implements HTTPRequ
     public static final String NAME = "name";
     public static final String SOUND_GUIDANCE = "soundGuidance";
     public static final String ELEVATOR = "elevator";
-    public static final String MESSAGE = "message";
-    public static final String ERROR = "Error";
     public static final String CREDENTIALS_JSON = "credentials.json";
     public static final String NONE = "none";
     // TODO change this code
     private static final String ADMIN_CODE = "admin";
     private static final String TAG = "Ici";
-    private static final String VALIDATE = "validate";
-    private static final String YES = "y";
     private EditText login;
     private EditText email;
     private EditText password;
@@ -159,8 +154,7 @@ public class CreateAccountActivity extends AppCompatActivity implements HTTPRequ
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Log.d(TAG, "sendAccountCreationToServer: " + jsonObject.toString());
-                HTTPRequestManager.doPostRequest(ACCOUNT_CREATION_PHP, jsonObject.toString(),
+                HTTPRequestManager.doPostRequest(HTTP.ACCOUNT_CREATION_PHP, jsonObject.toString(),
                         this, HTTPRequestManager.ACCOUNT_CREATION);
             } else {
                 Toast.makeText(this, R.string.password_password_confirmation_no_match, Toast.LENGTH_SHORT).show();
@@ -190,16 +184,15 @@ public class CreateAccountActivity extends AppCompatActivity implements HTTPRequ
     public void onRequestDone(String result, int requestId) {
         switch (requestId) {
             case HTTPRequestManager.ACCOUNT_CREATION:
-                if (result.equals(ERROR)) {
+                if (result.equals(HTTP.ERROR)) {
                     Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
                 }
                 try {
                     // Put the result in a JSONObject to use it.
                     JSONObject jsonObject = new JSONObject(result);
                     // Show in the log the message given by the result : it will give error or success information
-                    Log.d(TAG, "onRequestDone: " + jsonObject.getString(MESSAGE));
-                    String success = jsonObject.getString(VALIDATE);
-                    if (success.equals(YES)) {
+                    String success = jsonObject.getString(HTTP.VALIDATE);
+                    if (success.equals(HTTP.YES)) {
                         saveCredentialsToFile();
                         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
                         SharedPreferences.Editor prefEditor = sharedPreferences.edit();
@@ -252,7 +245,7 @@ public class CreateAccountActivity extends AppCompatActivity implements HTTPRequ
                         HomePageActivity.isUserConnected = true;
                     } else {
                         // If request failed, shows the message from the server
-                        String message = jsonObject.getString(MESSAGE);
+                        String message = jsonObject.getString(HTTP.MESSAGE);
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                         HomePageActivity.isUserConnected = false;
                     }

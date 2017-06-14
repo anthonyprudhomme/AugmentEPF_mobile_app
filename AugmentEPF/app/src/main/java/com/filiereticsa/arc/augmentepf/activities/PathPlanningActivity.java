@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -20,17 +21,34 @@ import android.widget.Switch;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.R;
+import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
+import com.filiereticsa.arc.augmentepf.managers.HTTP;
+import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
+import com.filiereticsa.arc.augmentepf.models.AlarmType;
 import com.filiereticsa.arc.augmentepf.models.ClassRoom;
+import com.filiereticsa.arc.augmentepf.models.Place;
+import com.filiereticsa.arc.augmentepf.models.PlannedPath;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class PathPlanningActivity extends AppCompatActivity
-        implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private static final String TAG = "PathPlanningActivity";
+public class PathPlanningActivity
+        extends AppCompatActivity
+        implements
+        DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener,
+        HTTPRequestInterface {
+
+    private static final String TAG = "Ici";
+    public static final String SPECIFIC_ATTRIBUTE_USER = "specific_attribute_user";
+    public static HTTPRequestInterface httpRequestInterface;
 
     private SharedPreferences settings;
 
@@ -161,12 +179,62 @@ public class PathPlanningActivity extends AppCompatActivity
         sendPathButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                String roomName = searchClassroom.getText().toString();
-                Date startDate = startCalendar.getTime();
-                Date warnDate = warnCalendar.getTime();
+                Date startDate;
+                Date warnDate;
+                AlarmType alarmType;
+                String placeName;
 
-                Toast.makeText(PathPlanningActivity.this, searchClassroom.getText(),
-                        Toast.LENGTH_SHORT).show();
+                placeName = searchClassroom.getText().toString();
+                Place placeSelected = Place.getPlaceFromName(placeName);
+                if (placeSelected != null) {
+                    if (startCalendar != null) {
+                        startDate = startCalendar.getTime();
+                        String specificAttributeValue = PreferenceManager
+                                .getDefaultSharedPreferences(PathPlanningActivity.this)
+                                .getString(SPECIFIC_ATTRIBUTE_USER, "0");
+                        boolean mustTakeElevator = AppUtils
+                                .mustTakeElevator(
+                                        AppUtils.getCurrentSpecificAttribute(specificAttributeValue));
+                        if (warningSwitch.isChecked()) {
+                            if (warnCalendar != null) {
+                                warnDate = warnCalendar.getTime();
+                                if (warningAlarmType.getSelectedItem() != null) {
+                                    alarmType = AlarmType.getAlarmAtIndex(
+                                            warningAlarmType.getSelectedItemPosition());
+                                    Log.d(TAG, "onClick: " + alarmType.toString());
+                                    PlannedPath plannedPath = new PlannedPath(
+                                            null,
+                                            null,
+                                            Place.getPlaceFromName(placeName),
+                                            mustTakeElevator,
+                                            startDate,
+                                            null,
+                                            alarmType,
+                                            warnDate);
+                                    PlannedPath.addPlannedPath(plannedPath);
+
+                                } else {
+                                    Toast.makeText(PathPlanningActivity.this,
+                                            R.string.path_planning_how_warn,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(PathPlanningActivity.this,
+                                        R.string.path_planning_when_warn,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } else {
+                        Toast.makeText(PathPlanningActivity.this,
+                                R.string.path_planning_choose_date,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(PathPlanningActivity.this,
+                            R.string.path_planning_choose_place,
+                            Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         /*========================================================================================*/
@@ -407,5 +475,44 @@ public class PathPlanningActivity extends AppCompatActivity
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestDone(String result, int requestId) {
+        switch (requestId) {
+            case HTTPRequestManager.PLANNED_PATH:
+                if (!result.equals(HTTP.ERROR)) {
+                    JSONObject jsonObject;
+                    try {
+                        jsonObject = new JSONObject(result);
+
+                        String state = jsonObject.getString(HTTP.STATE);
+                        if (state.equals(HTTP.TRUE)) {
+
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
+            case HTTPRequestManager.PLANNED_PATH_LIST:
+                if (!result.equals(HTTP.ERROR)) {
+                    JSONObject jsonObject;
+                    try {
+                        jsonObject = new JSONObject(result);
+
+                        String state = jsonObject.getString(HTTP.STATE);
+                        if (state.equals(HTTP.TRUE)) {
+
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
     }
 }

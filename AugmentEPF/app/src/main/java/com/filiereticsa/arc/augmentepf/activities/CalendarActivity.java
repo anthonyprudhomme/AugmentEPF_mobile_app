@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
+import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.models.Class;
 import com.filiereticsa.arc.augmentepf.models.ICalTimeTable;
@@ -39,11 +40,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.SUCCESS;
-import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.MESSAGE;
-import static com.filiereticsa.arc.augmentepf.activities.HomePageActivity.ERROR;
-import static com.filiereticsa.arc.augmentepf.activities.HomePageActivity.STATE;
-
 public class CalendarActivity extends AppCompatActivity implements HTTPRequestInterface {
 
     public static final int HOUR_DELTA = 7;
@@ -51,6 +47,7 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
     public static final String ID = "id";
     private static final String TAG = "Ici";
     private static final String YES = "y";
+    private static final String TRUE = "true";
     private HorizontalScrollView horizontalScrollView;
     private int columnWidth;
     private int rowHeight;
@@ -206,28 +203,48 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
     private void addClasses(Calendar calendar) {
         clearGridLayout();
         if (ICalTimeTable.iCalInstance != null) {
-            HashMap<String, ArrayList<Class>> classes = ICalTimeTable.iCalInstance.getClasses();
+            HashMap<Integer, ArrayList<Class>> classes = ICalTimeTable.iCalInstance.getClasses();
             int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
+            int month = calendar.get(Calendar.MONTH) + 1;
             int today = calendar.get(Calendar.DAY_OF_MONTH);
 
             SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
             String weekDay = dayFormat.format(calendar.getTime());
             int daysAfterMonday = getDaysAfterMondayFor(weekDay);
             int indexOfDay = 1;
+            Log.d(TAG, "addClasses: before loop");
             for (int currentDay = today - daysAfterMonday; currentDay < today - daysAfterMonday + 7; currentDay++) {
-                String currentDayString = String.valueOf(year) + String.valueOf(currentDay) + String.valueOf(month);
-                ArrayList<Class> classesForCurrentDay = classes.get(currentDayString);
-                for (int i = 0; i < classesForCurrentDay.size(); i++) {
-                    Class currentClass = classesForCurrentDay.get(i);
-                    Calendar currentStartCalendar = toCalendar(currentClass.getStartDate());
-                    Calendar currentEndCalendar = toCalendar(currentClass.getEndDate());
-                    addAClass(indexOfDay,
-                            currentStartCalendar.get(Calendar.HOUR),
-                            currentStartCalendar.get(Calendar.MINUTE),
-                            currentEndCalendar.get(Calendar.HOUR),
-                            currentEndCalendar.get(Calendar.MINUTE),
-                            currentClass);
+                Log.d(TAG, "addClasses: current day " + currentDay);
+                String fixedDay = String.valueOf(currentDay);
+                if (fixedDay.charAt(0) == '-') {
+                    fixedDay = "0" + fixedDay.charAt(1);
+                }
+                if (fixedDay.length() < 2) {
+                    fixedDay = "0" + fixedDay;
+                }
+                String fixedMonth = String.valueOf(month);
+                if (fixedMonth.length() < 2) {
+                    fixedMonth = "0" + fixedMonth;
+                }
+                String currentDayString = String.valueOf(year) + fixedMonth + fixedDay;
+                ArrayList<Class> classesForCurrentDay = classes.get(Integer.valueOf(currentDayString));
+                Log.d(TAG, "addClasses: current day and size " + currentDayString + " " + classes.size());
+                if (classesForCurrentDay != null) {
+                    Log.d(TAG, "addClasses: size: " + classesForCurrentDay.size());
+                    for (int i = 0; i < classesForCurrentDay.size(); i++) {
+                        Class currentClass = classesForCurrentDay.get(i);
+                        Log.d(TAG, "addClasses: " + currentClass.getName());
+                        Log.d(TAG, "addClasses: " + currentClass.getStartDate());
+                        Log.d(TAG, "addClasses: " + currentClass.getEndDate());
+                        Calendar currentStartCalendar = toCalendar(currentClass.getStartDate());
+                        Calendar currentEndCalendar = toCalendar(currentClass.getEndDate());
+                        addAClass(indexOfDay,
+                                currentStartCalendar.get(Calendar.HOUR),
+                                currentStartCalendar.get(Calendar.MINUTE),
+                                currentEndCalendar.get(Calendar.HOUR),
+                                currentEndCalendar.get(Calendar.MINUTE),
+                                currentClass);
+                    }
                 }
                 indexOfDay++;
             }
@@ -386,52 +403,56 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
             }
         }
         for (int i = 0; i < classViews.size(); i++) {
-            CalendarClassView view = classViews.get(i);
-            GridLayout.LayoutParams param = new GridLayout.LayoutParams();
-            param.height = LinearLayout.LayoutParams.MATCH_PARENT;
-            param.width = LinearLayout.LayoutParams.MATCH_PARENT;
-            param.rightMargin = 3;
-            param.leftMargin = 3;
-            param.topMargin = 0;
-            param.setGravity(Gravity.CENTER);
-            param.columnSpec = GridLayout.spec(dayNumber);
-            param.rowSpec = GridLayout.spec((int) (beginningHour - HOUR_DELTA + i));
-            view.setLayoutParams(param);
-            if (dynamicIndex == 0) {
-                dynamicIndex = staticIndex + dynamicIndex++;
-            } else {
-                dynamicIndex++;
-            }
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Create the dialog box
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-
-                    // Set the style of the dialog box
-                    builder
-                            .setTitle(R.string.define_path)
-                            .setMessage(getString(R.string.go_to) + currentClass.getClassRoom().getName() + " ?")
-                            // If the user click on "OK"
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    GAFrameworkUserTracker
-                                            .sharedTracker()
-                                            .setTarget(currentClass.getClassRoom());
-
-                                }
-                            })
-                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            })
-                            // Display the dialog box
-                            .show();
+            Log.d(TAG, "addAClass: " + dayNumber + " " + (int) (beginningHour + HOUR_DELTA + i));
+            if (dayNumber > 0 && (int) (beginningHour + HOUR_DELTA + i) > 0) {
+                CalendarClassView view = classViews.get(i);
+                GridLayout.LayoutParams param = new GridLayout.LayoutParams();
+                param.height = LinearLayout.LayoutParams.MATCH_PARENT;
+                param.width = LinearLayout.LayoutParams.MATCH_PARENT;
+                param.rightMargin = 3;
+                param.leftMargin = 3;
+                param.topMargin = 0;
+                param.setGravity(Gravity.CENTER);
+                param.columnSpec = GridLayout.spec(dayNumber);
+                param.rowSpec = GridLayout.spec((int) (beginningHour + HOUR_DELTA + i));
+                view.setLayoutParams(param);
+                if (dynamicIndex == 0) {
+                    dynamicIndex = staticIndex + dynamicIndex++;
+                } else {
+                    dynamicIndex++;
                 }
-            });
-            gridLayout.addView(view, dynamicIndex);
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Create the dialog box
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+
+                        // Set the style of the dialog box
+                        if (currentClass != null && currentClass.getClassRoom() != null) {
+                            builder.setTitle(R.string.define_path)
+                                    .setMessage(getString(R.string.go_to) + currentClass.getClassRoom().getName() + " ?")
+                                    // If the user click on "OK"
+                                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            GAFrameworkUserTracker
+                                                    .sharedTracker()
+                                                    .setTarget(currentClass.getClassRoom());
+
+                                        }
+                                    })
+                                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    })
+                                    // Display the dialog box
+                                    .show();
+                        }
+                    }
+                });
+                gridLayout.addView(view, dynamicIndex);
+            }
         }
     }
 
@@ -501,13 +522,14 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
         switch (requestId) {
 
             case HTTPRequestManager.CALENDAR:
-                if (result.equals(ERROR)) {
+                Log.d(TAG, "onRequestDone: " + result);
+                if (result.equals(HTTP.ERROR)) {
                     Toast.makeText(this, R.string.failed_connect_calendar, Toast.LENGTH_SHORT).show();
                 } else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(STATE);
-                        if (success.equals(YES)) {
+                        String success = jsonObject.getString(HTTP.STATE);
+                        if (success.equals(HTTP.YES)) {
                             new ICalTimeTable(jsonObject);
                         } else {
                             ICalTimeTable.loadTimeTableFromFile();
@@ -519,16 +541,16 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
                 break;
 
             case HTTPRequestManager.ICAL:
-                if (result.equals(ERROR)) {
+                if (result.equals(HTTP.ERROR)) {
                     Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
                 }
                 // Put the result in a JSONObject to use it.
                 JSONObject jsonObject;
                 try {
                     jsonObject = new JSONObject(result);
-                    String success = jsonObject.getString(MESSAGE);
+                    String state = jsonObject.getString(HTTP.STATE);
                     // check is the request was a success or not
-                    if (success.equals(SUCCESS)) {
+                    if (state.equals(HTTP.TRUE)) {
                         askForCalendar();
                     }
                 } catch (JSONException e) {
@@ -546,7 +568,9 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
 
         // Get the text in all fields
         final EditText icalEditText = (EditText) rootView.findViewById(R.id.ical_link);
-
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String iCalValue = sharedPreferences.getString("ical", "");
+        icalEditText.setText(iCalValue);
         // Set the style of the dialog box
         builder.setView(rootView)
                 // Set the title of the dialog box
@@ -555,10 +579,10 @@ public class CalendarActivity extends AppCompatActivity implements HTTPRequestIn
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Transform text in fields in String
-                        String ical = icalEditText.getText().toString();
+                        String iCal = icalEditText.getText().toString();
                         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         SharedPreferences.Editor prefEditor = sharedPreferences.edit();
-                        prefEditor.putString("ical", ical);
+                        prefEditor.putString("ical", iCal);
                         prefEditor.apply();
                         sendIcalLink(sharedPreferences);
                     }

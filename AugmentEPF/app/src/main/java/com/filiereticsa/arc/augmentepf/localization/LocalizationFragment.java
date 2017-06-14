@@ -438,37 +438,42 @@ public class LocalizationFragment
             customSnackBar = CustomSnackBar.make((ViewGroup) HomePageActivity.rootView, CustomSnackBar.LENGTH_INDEFINITE);
             customSnackBar.show();
 
-            guidance = new Guidance(path.first);//TODO DEBUG Here
+            guidance = new Guidance(path.first);
         }
 
         // There is a trajectory with instructions and it's not finished yet
         if (guidance != null && index != Integer.MAX_VALUE) {
-            ArrayList<TrajectorySegment> trajectory = guidance.getTrajectory();
+            final ArrayList<TrajectorySegment> trajectory = guidance.getTrajectory();
 
             // Get the index in the segment which correspond at the position
             index = guidance.getCurrentSegment(oldUserPosition, index);
 
-            Log.d(TAG, "onPathChanged: Index:" + index);
+            //Log.d(TAG, "onPathChanged: Index:" + index);
             /*Log.d(TAG, "onPathChanged: Trajectory:"
                     + trajectory.get(index).getDirectionInstruction());*/
 
             if (index == -1) { // Error with the position
                 index = 0;
-                Log.d(TAG, "onPathChanged: path null?:" + (path != null));
+                //Log.d(TAG, "onPathChanged: path null?:" + (path != null));
                 if (path != null) { // There is a path defined previously
                     guidance.setPath(path.first);
                 } else {
                     index = Integer.MAX_VALUE;
-                    Log.d(TAG, "onPathChanged: " + "Congrats fdp!");
                 }
             } else if (index == Integer.MAX_VALUE) { // The end of the path
-                Log.d(TAG, "onPathChanged: " + "Congrats, you arrive at the destination!");
-                // TODO Save the path on the DB, display that it's the end of the path
+                //Log.d(TAG, "onPathChanged: " + "Congrats, you arrive at the destination!");
                 // Dismiss guidance snackbar at the end of the path
                 customSnackBar.dismiss();
             } else {
                 if (trajectory != null) {
-                    customSnackBar.setText(trajectory.get(index).getDirectionInstruction());
+                    if (isAdded()) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                customSnackBar.setText(trajectory.get(index).getDirectionInstruction());
+                            }
+                        });
+                    }
 
                     String toSpeak = trajectory.get(index).getDirectionInstruction();
 
@@ -477,7 +482,7 @@ public class LocalizationFragment
                     } else {
                         textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                     }
-                    Log.d(TAG, "onPathChanged: Instruction display:" + trajectory.get(index).getDirectionInstruction());
+                    //Log.d(TAG, "onPathChanged: Instruction display:" + trajectory.get(index).getDirectionInstruction());
                 }
             }
         }

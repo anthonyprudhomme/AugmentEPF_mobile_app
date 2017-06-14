@@ -38,6 +38,7 @@ import com.filiereticsa.arc.augmentepf.localization.GABeacon;
 import com.filiereticsa.arc.augmentepf.localization.GABeaconMap;
 import com.filiereticsa.arc.augmentepf.localization.LocalizationFragment;
 import com.filiereticsa.arc.augmentepf.localization.MapItem;
+import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.models.ClassRoom;
 import com.filiereticsa.arc.augmentepf.models.PointOfInterest;
@@ -51,18 +52,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class AdminActivity extends AppCompatActivity implements HTTPRequestInterface, BeaconDetectorInterface {
+
     private static final String CONTENT_TYPE = "contentType";
     private static final String CHANGE_TYPE = "changeType";
     private static final String CONTENT_INFORMATION = "contentInformation";
-    private static final String ADMIN_MODIFICATION_PHP = "administrationChanges.php";
-    private static final String ERROR = "Error";
-    private static final String STATE = "state";
-    private static final String TRUE = "true";
-    private static final String MESSAGE = "message";
-    private static final String GET_ELEMENT_PHP = "getElement.php";
-    private static final String RESULT = "result";
-    private static final String ID = "idUser";
-    private static final String TOKEN = "token";
     private static final String NAME = "name";
     private static final String POSITION = "position";
     private static final String TAG = "Ici";
@@ -127,7 +120,6 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             scale = 1 - ((float) progress / 11);
             effectiveScale = scale;
-            Log.d(TAG, "onProgressChanged: " + effectiveScale);
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mapContainer.getLayoutParams();
             layoutParams.rightMargin = (int) (layoutParams.leftMargin - currentMapWidth * effectiveScale);
             layoutParams.bottomMargin = (int) (layoutParams.topMargin - currentMapHeight * effectiveScale);
@@ -636,21 +628,21 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            HTTPRequestManager.doPostRequest(GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
+            HTTPRequestManager.doPostRequest(HTTP.GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
         } else if (!editRoom) {
             try {
                 jsonObject.put(CONTENT_TYPE, "poi");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            HTTPRequestManager.doPostRequest(GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
+            HTTPRequestManager.doPostRequest(HTTP.GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
         } else {
             try {
                 jsonObject.put(CONTENT_TYPE, "room");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            HTTPRequestManager.doPostRequest(GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
+            HTTPRequestManager.doPostRequest(HTTP.GET_ELEMENT_PHP, jsonObject.toString(), this, HTTPRequestManager.ELEMENT);
         }
     }
 
@@ -666,8 +658,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
 
         if (editBeacon) {
             try {
-                jsonObject.put(ID, ConnectionActivity.idUser);
-                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+                jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "beacon");
                 jsonObject.put(CHANGE_TYPE, "update");
                 jsonContentInformation.put(POSITION,itemXCoord + "/" + itemYCoord + "/" + currentFloor);
@@ -676,11 +668,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
+            HTTPRequestManager.doPostRequest(HTTP.ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
         } else if (editRoom) {
             try {
-                jsonObject.put(ID, ConnectionActivity.idUser);
-                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+                jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "room");
                 jsonObject.put(CHANGE_TYPE, "update");
                 jsonContentInformation.put(POSITION,itemXCoord + "/" + itemYCoord + "/" + currentFloor);
@@ -689,12 +681,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.d(TAG, "update: room " + jsonObject.toString());
-            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.CLASSROOMS);
+            HTTPRequestManager.doPostRequest(HTTP.ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.CLASSROOMS);
         } else {
             try {
-                jsonObject.put(ID, ConnectionActivity.idUser);
-                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+                jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "poi");
                 jsonObject.put(CHANGE_TYPE, "update");
                 jsonContentInformation.put(POSITION,itemXCoord + "/" + itemYCoord + "/" + currentFloor);
@@ -703,8 +694,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.d(TAG, "update: poi " + jsonObject.toString());
-            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
+            HTTPRequestManager.doPostRequest(HTTP.ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
         }
     }
 
@@ -720,8 +710,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
 
         if (editBeacon) {
             try {
-                jsonObject.put(ID, ConnectionActivity.idUser);
-                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+                jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "beacon");
                 jsonObject.put(CHANGE_TYPE, "add");
                 jsonContentInformation.put(POSITION,itemXCoord + "/" + itemYCoord + "/" + currentFloor);
@@ -730,11 +720,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
+            HTTPRequestManager.doPostRequest(HTTP.ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
         } else if (editRoom) {
             try {
-                jsonObject.put(ID, ConnectionActivity.idUser);
-                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+                jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "room");
                 jsonObject.put(CHANGE_TYPE, "add");
                 jsonContentInformation.put(POSITION,itemXCoord + "/" + itemYCoord + "/" + currentFloor);
@@ -743,12 +733,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.d(TAG, "save: room " + jsonObject.toString());
-            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.CLASSROOMS);
+            HTTPRequestManager.doPostRequest(HTTP.ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.CLASSROOMS);
         } else {
             try {
-                jsonObject.put(ID, ConnectionActivity.idUser);
-                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+                jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "poi");
                 jsonObject.put(CHANGE_TYPE, "add");
                 jsonContentInformation.put(POSITION,itemXCoord + "/" + itemYCoord + "/" + currentFloor);
@@ -757,8 +746,7 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.d(TAG, "save: poi " + jsonObject.toString());
-            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
+            HTTPRequestManager.doPostRequest(HTTP.ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
         }
     }
 
@@ -773,8 +761,8 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
         itemYCoord = Integer.valueOf(yCoord.getText().toString()) + 1;
         if (editBeacon) {
             try {
-                jsonObject.put(ID, ConnectionActivity.idUser);
-                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+                jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "beacon");
                 jsonObject.put(CHANGE_TYPE, "delete");
                 jsonContentInformation.put(NAME,itemName);
@@ -782,11 +770,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
+            HTTPRequestManager.doPostRequest(HTTP.ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.BEACONS);
         } else if (editRoom) {
             try {
-                jsonObject.put(ID, ConnectionActivity.idUser);
-                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+                jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "room");
                 jsonObject.put(CHANGE_TYPE, "delete");
                 jsonContentInformation.put(NAME,itemName);
@@ -794,11 +782,11 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.CLASSROOMS);
+            HTTPRequestManager.doPostRequest(HTTP.ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.CLASSROOMS);
         } else {
             try {
-                jsonObject.put(ID, ConnectionActivity.idUser);
-                jsonObject.put(TOKEN, ConnectionActivity.token);
+                jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+                jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
                 jsonObject.put(CONTENT_TYPE, "poi");
                 jsonObject.put(CHANGE_TYPE, "delete");
                 jsonContentInformation.put(NAME,itemName);
@@ -806,15 +794,13 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.d(TAG, "remove: poi" + jsonObject.toString());
-            HTTPRequestManager.doPostRequest(ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
+            HTTPRequestManager.doPostRequest(HTTP.ADMIN_MODIFICATION_PHP, jsonObject.toString(), this, HTTPRequestManager.POI);
         }
     }
 
     @Override
     public void onRequestDone(String result, int requestId) {
-        Log.d(TAG, "onRequestDone: "+result);
-        if (result.equals(ERROR)) {
+        if (result.equals(HTTP.ERROR)) {
             Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
         } else
             switch (requestId) {
@@ -822,9 +808,9 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     try {
                         // Put the result in a JSONObject to use it.
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(STATE);
-                        String message = jsonObject.getString(MESSAGE);
-                        if (success.equals(TRUE)) {
+                        String success = jsonObject.getString(HTTP.STATE);
+                        String message = jsonObject.getString(HTTP.MESSAGE);
+                        if (success.equals(HTTP.TRUE)) {
                             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                         } else {
                             // If request failed, shows the message from the server
@@ -838,9 +824,9 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
                     try {
                         // Put the result in a JSONObject to use it.
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(STATE);
-                        String message = jsonObject.getString(MESSAGE);
-                        if (success.equals(TRUE)) {
+                        String success = jsonObject.getString(HTTP.STATE);
+                        String message = jsonObject.getString(HTTP.MESSAGE);
+                        if (success.equals(HTTP.TRUE)) {
                             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                         } else {
                             // If request failed, shows the message from the server
@@ -869,10 +855,10 @@ public class AdminActivity extends AppCompatActivity implements HTTPRequestInter
             // Put the result in a JSONObject to use it.
             JSONObject jsonObject = new JSONObject(result);
             Log.d(TAG, "getResult: " + result);
-            String success = jsonObject.getString(STATE);
-            String message = jsonObject.getString(MESSAGE);
-            if (success.equals(TRUE)) {
-                resultArray = jsonObject.getJSONArray(RESULT);
+            String success = jsonObject.getString(HTTP.STATE);
+            String message = jsonObject.getString(HTTP.MESSAGE);
+            if (success.equals(HTTP.TRUE)) {
+                resultArray = jsonObject.getJSONArray(HTTP.RESULT);
                 jsonObjects = new JSONObject[resultArray.length()];
                 existing = false;
                 int i = 0;

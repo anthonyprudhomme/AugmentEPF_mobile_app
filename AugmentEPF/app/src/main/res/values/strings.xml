@@ -342,5 +342,9 @@
     <string name="log_in_automatically">Log in automatically</string>
     <string name="filter_title_augmentepf">AugmentEPF</string>
     <string name="watch_tuto">Would you like to watch the tutorial video ?</string>
+    <string name="path_planning_choose_date">You must choose when you want to start your path.</string>
+    <string name="path_planning_when_warn">You must choose when you want to be warned.</string>
+    <string name="path_planning_how_warn">You must choose how you want to be warned.</string>
+    <string name="path_planning_choose_place">You didn\'t enter a valid place name.</string>
 
 </resources>

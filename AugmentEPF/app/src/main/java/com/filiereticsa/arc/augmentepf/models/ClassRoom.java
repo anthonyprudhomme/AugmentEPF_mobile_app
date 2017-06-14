@@ -3,6 +3,7 @@ package com.filiereticsa.arc.augmentepf.models;
 import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.fragments.SearchFragment;
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
+import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
 import org.json.JSONArray;
@@ -24,15 +25,9 @@ public class ClassRoom extends Place {
     public static final String AVAILABLE = "available";
     public static final String CLASSROOMS_JSON = "classrooms.json";
     public static final String CLASS_ROOMS = "classRooms";
-    public static final String GET_ROOMS_PHP = "getRooms.php";
-    public static final String GET_CLASS_ROOMS_PHP = "getElement.php";
     public static final String CONTENT_TYPE = "contentType";
-    public static final String RESULT = "result";
-    public static final String STATE = "state";
-    public static final String TRUE = "true";
     private static final String TAG = "Ici";
     public static final String FREE_ROOMS = "freeRooms";
-    public static final String ERROR = "Error";
     private static ArrayList<ClassRoom> classRooms;
     private static ArrayList<Place> availableClassroomList = new ArrayList<>();
 
@@ -165,7 +160,7 @@ public class ClassRoom extends Place {
     }
 
     public static void askForAvailableClassRooms() {
-        HTTPRequestManager.doPostRequest(GET_ROOMS_PHP, "",
+        HTTPRequestManager.doPostRequest(HTTP.GET_ROOMS_PHP, "",
                 SearchFragment.httpRequestInterface, HTTPRequestManager.AVAILABLE_CLASSROOMS);
     }
 
@@ -176,18 +171,18 @@ public class ClassRoom extends Place {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HTTPRequestManager.doPostRequest(GET_CLASS_ROOMS_PHP, jsonObject.toString(),
+        HTTPRequestManager.doPostRequest(HTTP.GET_ELEMENT_PHP, jsonObject.toString(),
                 SearchFragment.httpRequestInterface, HTTPRequestManager.CLASSROOMS);
     }
 
     public static void onAvailableRequestDone(String result) {
-        if (result.equals(ERROR)) {
+        if (result.equals(HTTP.ERROR)) {
             // if there is a connection timeout
         } else {
             try {
                 JSONObject jsonObject = new JSONObject(result);
-                String state = jsonObject.getString(STATE);
-                if (state.equals(TRUE)){
+                String state = jsonObject.getString(HTTP.STATE);
+                if (state.equals(HTTP.TRUE)){
                     JSONArray availableClassJsonArray = jsonObject.getJSONArray(FREE_ROOMS);
                     if (availableClassroomList == null) {
                         availableClassroomList = new ArrayList<>();
@@ -211,7 +206,7 @@ public class ClassRoom extends Place {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(result);
-            JSONArray classRoomsJsonArray = jsonObject.getJSONArray(RESULT);
+            JSONArray classRoomsJsonArray = jsonObject.getJSONArray(HTTP.RESULT);
             if (classRooms == null) {
                 classRooms = new ArrayList<>();
             }
@@ -234,5 +229,13 @@ public class ClassRoom extends Place {
             }
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "ClassRoom{" +
+                "isFree=" + isFree +
+                " name=" + getName() +
+                '}';
     }
 }

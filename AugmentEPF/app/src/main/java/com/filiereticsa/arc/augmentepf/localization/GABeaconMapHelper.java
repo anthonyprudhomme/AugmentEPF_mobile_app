@@ -322,7 +322,11 @@ public class GABeaconMapHelper {
     }
 
     public int getMapFloor() {
-        return this.map.getFloor();
+        if (map != null) {
+            return this.map.getFloor();
+        }else{
+            return Integer.MAX_VALUE;
+        }
     }
 
     private class Edge {

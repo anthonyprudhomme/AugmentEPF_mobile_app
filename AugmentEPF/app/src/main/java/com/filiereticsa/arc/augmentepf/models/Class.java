@@ -26,6 +26,7 @@ public class Class {
     private Date startDate;
     private Date endDate;
     private ClassRoom classRoom;
+    private String classRoomName;
 
     public Class(String name, Date startDate, Date endDate, ClassRoom classRoom) {
         this.name = name;
@@ -38,13 +39,12 @@ public class Class {
         try {
             this.name = jsonObject.getString(CATEGORY);
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm", Locale.FRANCE);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.FRANCE);
 
             // get startDate from string
             String startDateString = jsonObject.getString(DATE_START);
             try {
                 calendar.setTime(sdf.parse(startDateString));
-                Log.d(TAG, "Class: " + calendar.getTime().toString());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -54,17 +54,17 @@ public class Class {
             String endDateString = jsonObject.getString(DATE_END);
             try {
                 calendar.setTime(sdf.parse(endDateString));
-                Log.d(TAG, "Class: " + calendar.getTime().toString());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             this.endDate = calendar.getTime();
 
-            String classRoomName = jsonObject.getString(ROOM);
+            this.classRoomName = jsonObject.getString(ROOM);
             this.classRoom = ClassRoom.getClassRoomCalled(classRoomName);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.d(TAG, "Class: " + this.toString());
     }
 
     public String getName() {
@@ -97,5 +97,19 @@ public class Class {
 
     public void setClassRoom(ClassRoom classRoom) {
         this.classRoom = classRoom;
+    }
+
+    @Override
+    public String toString() {
+        String shortName = name.substring(9, 20);
+        return "Class{" +
+                "name='" + shortName + '\'' +
+                ", " + startDate +
+                ", " + endDate +
+                '}';
+    }
+
+    public String getClassRoomName() {
+        return classRoomName;
     }
 }

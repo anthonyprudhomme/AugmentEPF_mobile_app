@@ -39,6 +39,7 @@ public class CalendarClassView extends android.support.v7.widget.AppCompatButton
                              Class currentClass,
                              int currentPartOfClass, double hourDelta) {
         super(context);
+        Log.d(TAG, "CalendarClassView() called with: context = [" + context + "], height = [" + height + "], width = [" + width + "], classPercentage = [" + classPercentage + "], beginning = [" + beginning + "], currentClass = [" + currentClass + "], currentPartOfClass = [" + currentPartOfClass + "], hourDelta = [" + hourDelta + "]");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setBackgroundColor(getResources().getColor(R.color.transparent, null));
         } else {
@@ -50,7 +51,7 @@ public class CalendarClassView extends android.support.v7.widget.AppCompatButton
         this.width = width;
         this.classPercentage = classPercentage;
         this.beginning = beginning;
-        this.roomName = currentClass.getClassRoom().getName();
+        this.roomName = currentClass.getClassRoomName();
         if (currentPartOfClass == -1) {
             mustDisplayText = true;
         }
@@ -76,7 +77,6 @@ public class CalendarClassView extends android.support.v7.widget.AppCompatButton
                              String currentClassName,
                              int currentPartOfClass, double hourDelta) {
         super(context);
-        Log.d(TAG, "CalendarClassView() called with: context = [" + context + "], height = [" + height + "], width = [" + width + "], classPercentage = [" + classPercentage + "], beginning = [" + beginning + "], currentClassName = [" + currentClassName + "], currentPartOfClass = [" + currentPartOfClass + "], hourDelta = [" + hourDelta + "]");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setBackgroundColor(getResources().getColor(R.color.transparent, null));
         } else {
@@ -98,7 +98,6 @@ public class CalendarClassView extends android.support.v7.widget.AppCompatButton
             }
         }
         if (hourDelta % 2 == 1) {
-            Log.d(TAG, "CalendarClassView: " + (((int)hourDelta / 2) ) + " " + currentPartOfClass);
             if (currentPartOfClass == (((int)hourDelta / 2) )) {
                 mustDisplayText = true;
             }

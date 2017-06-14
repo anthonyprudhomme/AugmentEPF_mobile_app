@@ -39,7 +39,6 @@ import android.widget.Toast;
 
 import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.R;
-import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
 import com.filiereticsa.arc.augmentepf.interfaces.DestinationSelectedInterface;
 import com.filiereticsa.arc.augmentepf.localization.FloorAccess;
 import com.filiereticsa.arc.augmentepf.localization.GABeaconMap;
@@ -455,10 +454,12 @@ public class CameraFragment extends Fragment
             } else if (index == Integer.MAX_VALUE) { // The end of the path
                 guidanceView.setInstruction("Congrats, you reached your destination!");
                 guidanceView.setTargetHeading(null);
-                customSnackBar.dismiss();
+                if (customSnackBar != null) {
+                    customSnackBar.dismiss();
+                }
             } else {
-                Log.d(TAG, "onPathChanged: Instruction:"
-                    + trajectory.get(index).getDirectionInstruction());
+//                Log.d(TAG, "onPathChanged: Instruction:"
+//                        + trajectory.get(index).getDirectionInstruction());
                 if (trajectory != null) {
 //                    customSnackBar.setText(trajectory.get(index).getDirectionInstruction());
 
@@ -471,10 +472,10 @@ public class CameraFragment extends Fragment
                     }*/
 
                     // Display instruction
-                    Log.d(TAG, "onPathChanged: Instruction:"
-                            + trajectory.get(index).getDirectionInstruction());
-                    Log.d(TAG, "onPathChanged: Direction:"
-                            + trajectory.get(index).getNewDirectionCoordinates());
+//                    Log.d(TAG, "onPathChanged: Instruction:"
+//                            + trajectory.get(index).getDirectionInstruction());
+//                    Log.d(TAG, "onPathChanged: Direction:"
+//                            + trajectory.get(index).getNewDirectionCoordinates());
 
                     guidanceView.setInstruction(trajectory.get(index).getDirectionInstruction());
                     guidanceView.setTargetHeading(trajectory.get(index).getNewDirectionCoordinates());

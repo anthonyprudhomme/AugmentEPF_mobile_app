@@ -7,16 +7,16 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.filiereticsa.arc.augmentepf.AppUtils;
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
+import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.models.UserType;
 
@@ -24,19 +24,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.filiereticsa.arc.augmentepf.AppUtils.getCurrentUserType;
-import static com.filiereticsa.arc.augmentepf.activities.HomePageActivity.ERROR;
-
 public class SettingsActivity
         extends PreferenceActivity
         implements HTTPRequestInterface, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = "Ici (Settings)";
-    private static final String MESSAGE = "message";
-    private static final String SUCCESS = "true";
-    // Links
-    public static final String ADD_ICAL_LINK = "addIcalLink.php";
-    public static final String SET_SETTINGS_LINK = "setSettings.php";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -155,7 +147,7 @@ public class SettingsActivity
         // Get user type's value
         String valueUserType = sharedPreferences.getString(ConnectionActivity.TYPE_USER, "V");
         // Transform it in a real UserType
-        UserType userType = getCurrentUserType(valueUserType);
+        UserType userType = AppUtils.getCurrentUserType(valueUserType);
         // Set the text in the button with this UserType
         userTypeButton.setSummary(userType.toString());
 
@@ -228,7 +220,7 @@ public class SettingsActivity
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            HTTPRequestManager.doPostRequest(ADD_ICAL_LINK,
+            HTTPRequestManager.doPostRequest(HTTP.ADD_ICAL_LINK_PHP,
                     jsonObject.toString(), this, HTTPRequestManager.ICAL);
         }
     }
@@ -240,32 +232,31 @@ public class SettingsActivity
 
         switch (requestId) {
             case HTTPRequestManager.ICAL:
-                if (result.equals(ERROR)) {
+                Log.d(TAG, "onRequestDone: " + result);
+                if (result.equals(HTTP.ERROR)) {
                     Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
                 }
                 try {
                     jsonObject = new JSONObject(result);
                     // Show in the log the message given by the result :
                     // it will give error or success information
-                    String success = jsonObject.getString(MESSAGE);
-                    if (success.equals(SUCCESS)) {
-                        // TODO do something when success?
+                    String state = jsonObject.getString(HTTP.STATE);
+                    if (state.equals(HTTP.TRUE)) {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 break;
-            case HTTPRequestManager.SETTINGS:
-                if (result.equals(ERROR)) {
+            case HTTPRequestManager.SET_SETTINGS:
+                if (result.equals(HTTP.ERROR)) {
                     Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
                 }
                 try {
                     jsonObject = new JSONObject(result);
                     // Show in the log the message given by the result :
                     // it will give error or success information
-                    String success = jsonObject.getString(MESSAGE);
-                    if (success.equals(SUCCESS)) {
-                        // TODO do something when success?
+                    String success = jsonObject.getString(HTTP.MESSAGE);
+                    if (success.equals(HTTP.SUCCESS)) {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -354,7 +345,7 @@ public class SettingsActivity
         }
 
         // Send the request to the server
-        HTTPRequestManager.doPostRequest(SET_SETTINGS_LINK,
-                jsonObject.toString(), this, HTTPRequestManager.SETTINGS);
+        HTTPRequestManager.doPostRequest(HTTP.SET_SETTINGS_LINK_PHP,
+                jsonObject.toString(), this, HTTPRequestManager.SET_SETTINGS);
     }
 }

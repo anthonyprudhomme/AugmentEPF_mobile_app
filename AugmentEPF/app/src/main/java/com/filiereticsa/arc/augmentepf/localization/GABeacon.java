@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
+import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
 import org.altbeacon.beacon.Beacon;
@@ -20,11 +21,8 @@ import java.util.ArrayList;
  */
 public class GABeacon {
 
-    public static final String ID_USER = "idUser";
-    public static final String TOKEN = "token";
     public static final String CONTENT_TYPE = "contentType";
     public static final String RESULT = "result";
-    public static final String URL = "getElement.php";
     public static final String EMBCUUID = "699EBC80-E1F3-11E3-9A0F-0CF3EE3BC012";
     private static final String TAG = "Ici";
     private final static double LIMIT_UNKNOWN_IMMEDIATE = 0;
@@ -38,10 +36,6 @@ public class GABeacon {
     private static final String FLOOR = "floor";
     private static final String POS_X = "x";
     private static final String POS_Y = "y";
-    private static final String MESSAGE = "message";
-    private static final String VALIDATE = "validate";
-    private static final String YES = "y";
-    private static final String NO = "n";
     public static ArrayList<GABeacon> allBeacons;
     private static int proximityHistorySize = 3;
 
@@ -191,7 +185,7 @@ public class GABeacon {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HTTPRequestManager.doPostRequest(URL, jsonObject.toString(),
+        HTTPRequestManager.doPostRequest(HTTP.GET_ELEMENT_PHP, jsonObject.toString(),
                 HomePageActivity.httpRequestInterface, HTTPRequestManager.BEACONS);
     }
 

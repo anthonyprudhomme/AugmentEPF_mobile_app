@@ -39,6 +39,7 @@ import com.filiereticsa.arc.augmentepf.localization.GABeaconMap;
 import com.filiereticsa.arc.augmentepf.localization.GAFrameworkUserTracker;
 import com.filiereticsa.arc.augmentepf.localization.LocalizationFragment;
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
+import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.models.Class;
 import com.filiereticsa.arc.augmentepf.models.ICalTimeTable;
@@ -49,20 +50,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.ATTRIBUTE;
-import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.CONNECTION;
 import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.GET_ATTRIBUTE;
 import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.GET_EMAIL;
 import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.GET_ICAL;
 import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.GET_TYPE;
 import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.ICAL;
-import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.ID_USER;
 import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.SAVE_CRED;
-import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.SETTINGS;
-import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.SUCCESS;
 import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.TYPE;
 import static com.filiereticsa.arc.augmentepf.activities.ConnectionActivity.TYPE_USER;
 import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.CREDENTIALS_JSON;
-import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.MESSAGE;
 import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.NAME;
 import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.PASSWORD;
 
@@ -73,20 +69,10 @@ public class HomePageActivity
         DestinationSelectedInterface,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    public static final String ERROR = "Error";
-    public static final String STATE = "state";
-    public static final String TRUE = "true";
-    public static final String GET_NEXT_COURSE_PHP = "getNextCourse.php";
-    public static final String ID = "id";
-    public static final String TOKEN = "token";
-    public static final String GET_ROOMS_PHP = "getRooms.php";
     public static final String NAVIGATION_MODE = "navigation_mode";
     private static final String TAG = "Ici";
-    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
-    private static final String VALIDATE = "validate";
-    private static final String YES = "y";
-    public static final String FALSE = "false";
     public static final String VIDEO_TUTORIAL = "videoTutorial";
+    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     public static HTTPRequestInterface httpRequestInterface;
     public static DestinationSelectedInterface destinationSelectedInterface;
     public static boolean isUserConnected = false;
@@ -167,7 +153,7 @@ public class HomePageActivity
     }
 
     private void showAdminButtonOrNot() {
-        if (ConnectionActivity.userTypeValue.equals("A")) {
+        if (sharedPreferences.getString(TYPE_USER, "V").equals("A")) {
             ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
             adminButton.setVisibility(View.VISIBLE);
             adminButton.setClickable(true);
@@ -195,7 +181,7 @@ public class HomePageActivity
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            HTTPRequestManager.doPostRequest(CONNECTION, jsonRequestData.toString(),
+            HTTPRequestManager.doPostRequest(HTTP.CONNECTION_PHP, jsonRequestData.toString(),
                     this, HTTPRequestManager.CONNECTION);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -406,18 +392,18 @@ public class HomePageActivity
     }
 
     private void askForAvailableRooms() {
-        HTTPRequestManager.doPostRequest(GET_ROOMS_PHP, "", this, HTTPRequestManager.AVAILABLE_CLASSROOMS);
+        HTTPRequestManager.doPostRequest(HTTP.GET_ROOMS_PHP, "", this, HTTPRequestManager.AVAILABLE_CLASSROOMS);
     }
 
     private void askForNextCourse() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(ID, ConnectionActivity.idUser);
-            jsonObject.put(TOKEN, ConnectionActivity.token);
+            jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+            jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HTTPRequestManager.doPostRequest(GET_NEXT_COURSE_PHP, jsonObject.toString(), this, HTTPRequestManager.NEXT_COURSE);
+        HTTPRequestManager.doPostRequest(HTTP.GET_NEXT_COURSE_PHP, jsonObject.toString(), this, HTTPRequestManager.NEXT_COURSE);
     }
 
     public void setUpEditText() {
@@ -439,13 +425,7 @@ public class HomePageActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (isUserConnected) {
-            if (ConnectionActivity.userTypeValue.equals("A")) {
-                ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
-                adminButton.setVisibility(View.VISIBLE);
-                adminButton.setClickable(true);
-            }
-        }
+        showAdminButtonOrNot();
         BeaconDetector.sharedBeaconDetector().bindBeaconManager();
         BeaconDetector.sharedBeaconDetector().setActivity(this);
         if (beaconManager.isBound(BeaconDetector.sharedBeaconDetector().getBeaconConsumer()))
@@ -547,13 +527,13 @@ public class HomePageActivity
         // You can retrieve your request thanks to the requestId
         switch (requestId) {
             case HTTPRequestManager.BEACONS:
-                if (result.equals(ERROR)) {
+                if (result.equals(HTTP.ERROR)) {
                     GABeacon.loadBeaconsFromFile();
                 } else {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        String success = jsonObject.getString(STATE);
-                        if (success.equals(TRUE)) {
+                        String success = jsonObject.getString(HTTP.STATE);
+                        if (success.equals(HTTP.TRUE)) {
                             GABeacon.onBeaconRequestDone(result);
                         } else {
                             GABeacon.loadBeaconsFromFile();
@@ -565,32 +545,21 @@ public class HomePageActivity
                 break;
 
             case HTTPRequestManager.MAPS:
-                Log.d(TAG, "map: "+result);
-                if (result.equals(ERROR)) {
+                if (result.equals(HTTP.ERROR)) {
                     GABeaconMap.loadMapsFromFile();
                 } else {
-                    try {
-                        JSONObject jsonObject = new JSONObject(result);
-//                        String success = jsonObject.getString(VALIDATE);
-//                        if (success.equals(YES)) {
-                        GABeaconMap.onMapsRequestDone(result);
-//                        } else {
-//                            GABeaconMap.loadMapsFromFile();
-//                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    GABeaconMap.onMapsRequestDone(result);
                 }
                 break;
 
             case HTTPRequestManager.NEXT_COURSE:
-                if (result.equals(ERROR)) {
+                if (result.equals(HTTP.ERROR)) {
 
                 }
                 try {
                     JSONObject jsonObject = new JSONObject(result);
-                    String state = jsonObject.getString(STATE);
-                    if (state.equals(TRUE)) {
+                    String state = jsonObject.getString(HTTP.STATE);
+                    if (state.equals(HTTP.TRUE)) {
                         nextClass = new Class(jsonObject);
                         changeButtonColor();
                     } else {
@@ -607,7 +576,7 @@ public class HomePageActivity
                 break;
 
             case HTTPRequestManager.CONNECTION:
-                if (result.equals(ERROR)) {
+                if (result.equals(HTTP.ERROR)) {
                     Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
                 }
                 try {
@@ -615,18 +584,17 @@ public class HomePageActivity
                     JSONObject jsonObject = new JSONObject(result);
                     // Show in the log the message given by the result:
                     // it will give error or success information
-                    Log.d(TAG, "onRequestDone: " + jsonObject.getString(MESSAGE));
-                    String success = jsonObject.getString(MESSAGE);
-                    if (success.equals(SUCCESS)) {
+                    String success = jsonObject.getString(HTTP.MESSAGE);
+                    if (success.equals(HTTP.SUCCESS_MESSAGE)) {
                         Toast.makeText(this, R.string.connected, Toast.LENGTH_SHORT).show();
                         HomePageActivity.isUserConnected = true;
-                        ConnectionActivity.idUser = jsonObject.getInt(ID_USER);
-                        ConnectionActivity.token = jsonObject.getString(TOKEN);
-                        Log.d(TAG, "onRequestDone: " + ConnectionActivity.idUser + " " + ConnectionActivity.token);
+                        ConnectionActivity.idUser = jsonObject.getInt(HTTP.ID_USER);
+                        ConnectionActivity.token = jsonObject.getString(HTTP.TOKEN);
+                        optionsFragment.changeLoginButtonText();
                         checkForNewAccountSettings();
                     } else {
                         // If request failed, shows the message from the server
-                        String message = jsonObject.getString(MESSAGE);
+                        String message = jsonObject.getString(HTTP.MESSAGE);
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                         HomePageActivity.isUserConnected = false;
                     }
@@ -635,16 +603,17 @@ public class HomePageActivity
                 }
                 break;
 
-            case HTTPRequestManager.SETTINGS:
-                if (result.equals(ERROR)) {
+            case HTTPRequestManager.GET_SETTINGS:
+                Log.d(TAG, "onRequestDone: setting "+result);
+                if (result.equals(HTTP.ERROR)) {
                     Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
                 }
                 try {
                     // Put the result in a JSONObject to use it.
                     JSONObject jsonObject = new JSONObject(result);
                     // Show in the log the message given by the result : it will give error or success information
-                    String success = jsonObject.getString(STATE);
-                    if (success.equals(TRUE)) {
+                    String success = jsonObject.getString(HTTP.STATE);
+                    if (success.equals(HTTP.TRUE)) {
 
                         // Get sharedPreferences
                         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -711,7 +680,7 @@ public class HomePageActivity
 
                     } else {
                         // If request failed, shows the message from the server
-                        String message = jsonObject.getString(MESSAGE);
+                        String message = jsonObject.getString(HTTP.MESSAGE);
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -719,14 +688,13 @@ public class HomePageActivity
                 }
                 break;
             case HTTPRequestManager.PATH:
-                Log.d(TAG, "onRequestDone: path " + result);
-                if (result.equals(ERROR)) {
+                if (result.equals(HTTP.ERROR)) {
 
                 }
                 try {
                     JSONObject jsonObject = new JSONObject(result);
-                    String state = jsonObject.getString(STATE);
-                    if (state.equals(TRUE)) {
+                    String state = jsonObject.getString(HTTP.STATE);
+                    if (state.equals(HTTP.TRUE)) {
 
                     } else {
 
@@ -772,18 +740,18 @@ public class HomePageActivity
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(ID, ConnectionActivity.idUser);
-            jsonObject.put(TOKEN, ConnectionActivity.token);
-            jsonObject.put(GET_ATTRIBUTE, TRUE);
-            jsonObject.put(GET_EMAIL, TRUE);
-            jsonObject.put(GET_TYPE, TRUE);
-            jsonObject.put(GET_ICAL, TRUE);
+            jsonObject.put(HTTP.ID, ConnectionActivity.idUser);
+            jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
+            jsonObject.put(GET_ATTRIBUTE, HTTP.TRUE);
+            jsonObject.put(GET_EMAIL, HTTP.TRUE);
+            jsonObject.put(GET_TYPE, HTTP.TRUE);
+            jsonObject.put(GET_ICAL, HTTP.TRUE);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HTTPRequestManager.doPostRequest(SETTINGS, jsonObject.toString(),
-                this, HTTPRequestManager.SETTINGS);
+        HTTPRequestManager.doPostRequest(HTTP.SETTINGS_PHP, jsonObject.toString(),
+                this, HTTPRequestManager.GET_SETTINGS);
     }
 
     public static boolean isNetworkAvailable() {

@@ -8,6 +8,7 @@ import com.filiereticsa.arc.augmentepf.activities.HomePageActivity;
 import com.filiereticsa.arc.augmentepf.activities.PathConsultationActivity;
 import com.filiereticsa.arc.augmentepf.localization.UserIndoorLocationCandidate;
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
+import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
 import org.json.JSONArray;
@@ -20,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import static com.filiereticsa.arc.augmentepf.models.ClassRoom.TRUE;
 
 /**
  * Created by ARC© Team for AugmentEPF project on 07/05/2017.
@@ -40,12 +39,6 @@ public class Path {
     public static final String MUST_TAKE_ELEVATOR = "mustTakeElevator";
     public static final String CLOSEST_DEPARTURE_PLACE = "closestDeparturePlace";
     public static final String PATHS_JSON = "paths.json";
-    public static final String ID_USER = "idUser";
-    public static final String TOKEN = "token";
-    public static final String GET_RECORD_PHP = "getRecord.php";
-    public static final String SUCCESS = "success";
-    public static final String ERROR = "Error";
-    public static final String RECORD_TRIP_PHP = "recordTrip.php";
     private static final String TAG = "Ici (Path)";
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
     private Position departure;
@@ -113,8 +106,8 @@ public class Path {
             int floor = jsonObject.getInt(FLOOR_BEGIN);
             this.departure = new Position(xBegin, yBegin, floor);
 
-//            String closestDeparturePlaceName = jsonObject.getString(CLOSEST_DEPARTURE_PLACE);
-//            this.closestDeparturePlace = Place.getPlaceFromName(closestDeparturePlaceName);
+            String closestDeparturePlaceName = jsonObject.getString(CLOSEST_DEPARTURE_PLACE);
+            this.closestDeparturePlace = Place.getPlaceFromName(closestDeparturePlaceName);
 
             String arrivalPlaceName = jsonObject.getString(DESTINATION_NAME);
             this.arrival = Place.getPlaceFromName(arrivalPlaceName);
@@ -191,7 +184,11 @@ public class Path {
         String departureDateString = simpleDateFormat.format(departureDate);
         try {
             pathAsJson.put(THE_DATE, departureDateString);
-            pathAsJson.put(CLOSEST_DEPARTURE_PLACE, this.closestDeparturePlace.getName());
+            if(this.closestDeparturePlace!= null) {
+                pathAsJson.put(CLOSEST_DEPARTURE_PLACE, this.closestDeparturePlace.getName());
+            }else{
+                pathAsJson.put(CLOSEST_DEPARTURE_PLACE, "Undefined");
+            }
             pathAsJson.put(DESTINATION_NAME, this.getArrival().getName());
             pathAsJson.put(MUST_TAKE_ELEVATOR, this.isMustTakeElevator());
             pathAsJson.put(X_BEGIN, this.departure.getPositionX());
@@ -222,12 +219,24 @@ public class Path {
 
     private static void loadPathsFromJson(JSONObject jsonObject) {
         Log.d(TAG, "loadPathsFromJson: "+jsonObject.toString());
+        if (paths!= null){
+            paths.clear();
+        }
         try {
-            JSONArray jsonArray = jsonObject.getJSONArray(RECORD_LIST);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject currentPathJson = jsonArray.getJSONObject(i);
-                Path path = new Path(currentPathJson);
-                getPaths().add(path);
+            String recordList = jsonObject.getString(RECORD_LIST);
+            if (!recordList.equals("null")) {
+                JSONArray jsonArray = jsonObject.getJSONArray(RECORD_LIST);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject currentPathJson = jsonArray.getJSONObject(i);
+                    Log.d(TAG, "loadPathsFromJson: "+currentPathJson.toString());
+                    Path path = new Path(currentPathJson);
+                    if (paths==null){
+                        paths = new ArrayList<>();
+                    }
+                    paths.add(path);
+                }
+            }else{
+                loadPathsFromFile();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -253,37 +262,37 @@ public class Path {
         JSONObject jsonObject = this.getJsonFromPath();
         try {
             jsonObject.put(DESTINATION_TYPE, this.getArrival().getType());
-            jsonObject.put(ID_USER, ConnectionActivity.idUser);
-            jsonObject.put(TOKEN, ConnectionActivity.token);
+            jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+            jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         Log.d(TAG, "sendPathToServer: "+jsonObject.toString());
-        HTTPRequestManager.doPostRequest(RECORD_TRIP_PHP, jsonObject.toString(), HomePageActivity.httpRequestInterface, HTTPRequestManager.PATH);
+        HTTPRequestManager.doPostRequest(HTTP.RECORD_TRIP_PHP, jsonObject.toString(), HomePageActivity.httpRequestInterface, HTTPRequestManager.PATH);
     }
 
     public static void askForPaths() {
         JSONObject jsonObject = new JSONObject();
 
         try {
-            jsonObject.put(ID_USER, ConnectionActivity.idUser);
-            jsonObject.put(TOKEN, ConnectionActivity.token);
+            jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+            jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HTTPRequestManager.doPostRequest(GET_RECORD_PHP, jsonObject.toString(), PathConsultationActivity.httpRequestInterface, HTTPRequestManager.PATH_HISTORY);
+        HTTPRequestManager.doPostRequest(HTTP.GET_RECORD_PHP, jsonObject.toString(), PathConsultationActivity.httpRequestInterface, HTTPRequestManager.PATH_HISTORY);
     }
 
     public static void onPathRequestDone(String result) {
         Log.d(TAG, "onPathRequestDone: " + result);
-        if (result.equals(ERROR)) {
+        if (result.equals(HTTP.ERROR)) {
             loadPathsFromFile();
         } else {
             JSONObject jsonObject;
             try {
                 jsonObject = new JSONObject(result);
-                String state = jsonObject.getString(SUCCESS);
-                if (state.equals(TRUE)) {
+                String state = jsonObject.getString(HTTP.SUCCESS);
+                if (state.equals(HTTP.TRUE)) {
                     loadPathsFromJson(new JSONObject(result));
                 } else {
                     loadPathsFromFile();

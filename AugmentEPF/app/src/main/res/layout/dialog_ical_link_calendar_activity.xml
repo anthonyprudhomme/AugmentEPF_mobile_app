@@ -20,8 +20,8 @@
             android:fontFamily="sans-serif"
             android:hint="@string/ical_link"
             android:imeOptions="actionDone"
-            android:inputType="textPassword"
-            android:singleLine="true" />
+            android:inputType="textUri"
+            android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
 
 </LinearLayout>

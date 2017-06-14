@@ -170,7 +170,6 @@ public class SearchFragment extends Fragment implements HTTPRequestInterface {
                 break;
 
             case HTTPRequestManager.POI:
-                Log.d(TAG, "onRequestDone: "+result);
                 if (result.equals(ERROR)) {
                     PointOfInterest.loadPOIFromFile();
                 } else {

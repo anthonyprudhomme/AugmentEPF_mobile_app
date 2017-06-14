@@ -48,9 +48,10 @@
                 android:id="@+id/login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
                 android:padding="10dp"
-                android:singleLine="true"
+                android:maxLines="1"
+                android:inputType="text"
+                android:imeOptions="actionNext"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -77,8 +78,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
                 android:padding="10dp"
-                android:singleLine="true"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -131,9 +133,10 @@
                     android:id="@+id/password_confirmation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
                     android:inputType="textPassword"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:maxLines="1"
+                    android:imeOptions="actionDone"/>
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>

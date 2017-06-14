@@ -58,14 +58,14 @@ public class AppUtils {
                     Place currentPlace = listToSort.get(i);
                     if (currentPlace.getPosition().getFloor() == mapHelper.getMapFloor()) {
                         placesToRemove.add(currentPlace);
-                        placeWithDistances.add(
+                        Pair<ArrayList<Pair<Integer, Integer>>, Integer> path = mapHelper.pathFrom(currentPosition,
                                 new Pair<>(
-                                        currentPlace,
-                                        mapHelper.pathFrom(currentPosition,
-                                                new Pair<>(
-                                                        currentPlace.getPosition().getPositionX(),
-                                                        currentPlace.getPosition().getPositionY())
-                                        ).second));
+                                        currentPlace.getPosition().getPositionX(),
+                                        currentPlace.getPosition().getPositionY())
+                        );
+                        if (path != null) {
+                            placeWithDistances.add(new Pair<>(currentPlace, path.second));
+                        }
                     }
                 }
                 listToSort.removeAll(placesToRemove);

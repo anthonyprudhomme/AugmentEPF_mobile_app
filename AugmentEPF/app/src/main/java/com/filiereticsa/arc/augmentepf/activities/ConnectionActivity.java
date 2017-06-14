@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.filiereticsa.arc.augmentepf.R;
 import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
+import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
 import org.json.JSONException;
@@ -26,18 +27,12 @@ import static com.filiereticsa.arc.augmentepf.activities.CreateAccountActivity.C
 
 public class ConnectionActivity extends AppCompatActivity implements HTTPRequestInterface {
 
-    public static final String CONNECTION = "connection.php";
-    public static final String SETTINGS = "getSettings.php";
     public static final String SUCCESS = "Success";
-    public static final String ID_USER = "idUser";
-    public static final String TOKEN = "token";
     public static final String ID = "id";
     public static final String GET_ATTRIBUTE = "getAttribute";
     public static final String GET_EMAIL = "getEmail";
     public static final String GET_TYPE = "getType";
     public static final String GET_ICAL = "getIcal";
-    public static final String TRUE = "true";
-    public static final String STATE = "state";
     public static final String ATTRIBUTE = "attribute";
     public static final String TYPE = "type";
     public static final String ICAL = "ical";
@@ -45,8 +40,6 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
     private static final String NAME = "name";
     private static final String PASSWORD = "password";
     private static final String TAG = "Ici";
-    private static final String ERROR = "Error";
-    private static final String MESSAGE = "message";
     public static final String AUTO_LOG = "autoLog";
     public static final String SAVE_CRED = "saveCred";
     public static int idUser;
@@ -56,8 +49,6 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
     private CheckBox saveCredential;
     private CheckBox autoLogIn;
     private SharedPreferences sharedPreferences;
-
-    public static String userTypeValue ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,7 +175,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
             e.printStackTrace();
         }
         //Log.d(TAG, "sendAccountCreationToServer: " + jsonObject.toString());
-        HTTPRequestManager.doPostRequest(CONNECTION, jsonObject.toString(),
+        HTTPRequestManager.doPostRequest(HTTP.CONNECTION_PHP, jsonObject.toString(),
                 this, HTTPRequestManager.CONNECTION);
     }
 
@@ -198,7 +189,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
         //Log.d(TAG, "onConnectionRequestDone: "+result);
         switch (requestId) {
             case HTTPRequestManager.CONNECTION:
-                if (result.equals(ERROR)) {
+                if (result.equals(HTTP.ERROR)) {
                     Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
                 }
                 try {
@@ -206,23 +197,22 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                     JSONObject jsonObject = new JSONObject(result);
                     // Show in the log the message given by the result:
                     // it will give error or success information
-                    Log.d(TAG, "onRequestDone: " + jsonObject.getString(MESSAGE));
-                    String success = jsonObject.getString(MESSAGE);
+                    String success = jsonObject.getString(HTTP.MESSAGE);
                     if (success.equals(SUCCESS)) {
                         Toast.makeText(this, R.string.connected, Toast.LENGTH_SHORT).show();
                         if (sharedPreferences.getBoolean(SAVE_CRED, false)) {
                             saveCredentialsToFile();
                         }
                         HomePageActivity.isUserConnected = true;
-                        idUser = jsonObject.getInt(ID_USER);
-                        token = jsonObject.getString(TOKEN);
-                        Log.d(TAG, "onRequestDone: " + idUser + " " + token);
+                        idUser = jsonObject.getInt(HTTP.ID_USER);
+                        token = jsonObject.getString(HTTP.TOKEN);
+                        //Log.d(TAG, "onRequestDone: " + idUser + " " + token);
                         checkForNewAccountSettings();
                         Intent intent = new Intent(this, com.filiereticsa.arc.augmentepf.activities.HomePageActivity.class);
                         startActivity(intent);
                     } else {
                         // If request failed, shows the message from the server
-                        String message = jsonObject.getString(MESSAGE);
+                        String message = jsonObject.getString(HTTP.MESSAGE);
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                         HomePageActivity.isUserConnected = false;
                     }
@@ -231,16 +221,16 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                 }
                 break;
 
-            case HTTPRequestManager.SETTINGS:
-                if (result.equals(ERROR)) {
+            case HTTPRequestManager.GET_SETTINGS:
+                if (result.equals(HTTP.ERROR)) {
                     Toast.makeText(this, R.string.error_server, Toast.LENGTH_SHORT).show();
                 }
                 try {
                     // Put the result in a JSONObject to use it.
                     JSONObject jsonObject = new JSONObject(result);
                     // Show in the log the message given by the result : it will give error or success information
-                    String success = jsonObject.getString(STATE);
-                    if (success.equals(TRUE)) {
+                    String success = jsonObject.getString(HTTP.STATE);
+                    if (success.equals(HTTP.TRUE)) {
 
                         // Get sharedPreferences
                         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -273,7 +263,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
 
                         // Update user type in SharedPreferences
                         String userType = jsonObject.getString(TYPE);
-                        userTypeValue = "S";
+                        String userTypeValue;
                         switch (userType) {
 
                             case "Student":
@@ -295,6 +285,8 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
                             case "Administrator":
                                 userTypeValue = "A";
                                 break;
+                            default:
+                                userTypeValue = "V";
                         }
 
                         prefEditor.putString(TYPE_USER, userTypeValue);
@@ -307,7 +299,7 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
 
                     } else {
                         // If request failed, shows the message from the server
-                        String message = jsonObject.getString(MESSAGE);
+                        String message = jsonObject.getString(HTTP.MESSAGE);
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -321,18 +313,18 @@ public class ConnectionActivity extends AppCompatActivity implements HTTPRequest
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(ID, idUser);
-            jsonObject.put(TOKEN, token);
-            jsonObject.put(GET_ATTRIBUTE, TRUE);
-            jsonObject.put(GET_EMAIL, TRUE);
-            jsonObject.put(GET_TYPE, TRUE);
-            jsonObject.put(GET_ICAL, TRUE);
+            jsonObject.put(HTTP.ID, idUser);
+            jsonObject.put(HTTP.TOKEN, token);
+            jsonObject.put(GET_ATTRIBUTE, HTTP.TRUE);
+            jsonObject.put(GET_EMAIL, HTTP.TRUE);
+            jsonObject.put(GET_TYPE, HTTP.TRUE);
+            jsonObject.put(GET_ICAL, HTTP.TRUE);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HTTPRequestManager.doPostRequest(SETTINGS, jsonObject.toString(),
-                this, HTTPRequestManager.SETTINGS);
+        HTTPRequestManager.doPostRequest(HTTP.SETTINGS_PHP, jsonObject.toString(),
+                this, HTTPRequestManager.GET_SETTINGS);
     }
 
     @Override

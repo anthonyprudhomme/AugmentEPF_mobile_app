@@ -1,5 +1,7 @@
 package com.filiereticsa.arc.augmentepf.models;
 
+import android.util.Log;
+
 import com.filiereticsa.arc.augmentepf.managers.FileManager;
 
 import org.json.JSONArray;
@@ -19,12 +21,14 @@ public class ICalTimeTable {
     public static final String DATE = "date";
     public static final String TAB = "tab";
     public static final String TIME_TABLE = "timeTable";
+    private static final String TAG = "Ici";
+    public static final String DAY = "day";
     public static ICalTimeTable iCalInstance;
-    private HashMap<String, ArrayList<Class>> classes;
+    private HashMap<Integer, ArrayList<Class>> classes;
     private Class nextClass = null;
     private JSONObject timeTableAsJson;
 
-    public ICalTimeTable(HashMap<String, ArrayList<Class>> classes) {
+    public ICalTimeTable(HashMap<Integer, ArrayList<Class>> classes) {
         this.classes = classes;
     }
 
@@ -33,17 +37,25 @@ public class ICalTimeTable {
         classes = new HashMap<>();
         try {
             JSONArray jsonArray = jsonObject.getJSONArray(TAB);
+            Log.d(TAG, "ICalTimeTable: " + jsonArray.length());
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonForDate = jsonArray.getJSONObject(i);
-                String day = jsonForDate.getString(DATE);
-                int index = 0;
-                ArrayList<Class> currentDay = new ArrayList<>();
-                while (jsonForDate.has((String.valueOf(index)))) {
-                    JSONObject jsonClass = jsonForDate.getJSONObject(String.valueOf(index));
-                    currentDay.add(new Class(jsonClass));
-                    index++;
+
+                String dayValue = jsonForDate.getString(DATE);
+                Log.d(TAG, "ICalTimeTable: " + dayValue);
+                if (!dayValue.equals("")) {
+                    JSONObject jsonDay = new JSONObject(dayValue);
+                    String day = jsonDay.getString(DAY);
+                    int index = 0;
+                    ArrayList<Class> currentDay = new ArrayList<>();
+                    while (jsonForDate.has((String.valueOf(index)))) {
+                        JSONObject jsonClass = jsonForDate.getJSONObject(String.valueOf(index));
+                        currentDay.add(new Class(jsonClass));
+                        index++;
+                    }
+                    Log.d(TAG, "ICalTimeTable: " + currentDay.size());
+                    classes.put(Integer.valueOf(day), currentDay);
                 }
-                classes.put(day, currentDay);
             }
             iCalInstance = this;
             saveTimeTableToFile(timeTableAsJson);
@@ -69,11 +81,11 @@ public class ICalTimeTable {
 
     }
 
-    public HashMap<String, ArrayList<Class>> getClasses() {
+    public HashMap<Integer, ArrayList<Class>> getClasses() {
         return classes;
     }
 
-    public void setClasses(HashMap<String, ArrayList<Class>> classes) {
+    public void setClasses(HashMap<Integer, ArrayList<Class>> classes) {
         this.classes = classes;
     }
 
@@ -103,8 +115,8 @@ public class ICalTimeTable {
     public Class getNextCourse() {
         Calendar calendar = Calendar.getInstance();
         String dayString = getKeyFromCalendar(calendar);
-        if (classes.containsKey(dayString)) {
-            ArrayList<Class> classesForCurrentDay = classes.get(dayString);
+        if (classes.containsKey(Integer.valueOf(dayString))) {
+            ArrayList<Class> classesForCurrentDay = classes.get(Integer.valueOf(dayString));
             for (int i = 0; i < classesForCurrentDay.size(); i++) {
                 Class currentClass = classesForCurrentDay.get(i);
                 if (calendar.getTime().before(currentClass.getStartDate())) {
