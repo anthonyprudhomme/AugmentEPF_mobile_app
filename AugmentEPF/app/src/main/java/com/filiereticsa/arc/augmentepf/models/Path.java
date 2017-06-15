@@ -40,7 +40,7 @@ public class Path {
     public static final String CLOSEST_DEPARTURE_PLACE = "closestDeparturePlace";
     public static final String PATHS_JSON = "paths.json";
     private static final String TAG = "Ici (Path)";
-    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
+    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
     private Position departure;
     private Place closestDeparturePlace;
     private Place arrival;
@@ -284,7 +284,6 @@ public class Path {
     }
 
     public static void onPathRequestDone(String result) {
-        Log.d(TAG, "onPathRequestDone: " + result);
         if (result.equals(HTTP.ERROR)) {
             loadPathsFromFile();
         } else {
@@ -294,6 +293,7 @@ public class Path {
                 String state = jsonObject.getString(HTTP.SUCCESS);
                 if (state.equals(HTTP.TRUE)) {
                     loadPathsFromJson(new JSONObject(result));
+                    savePaths();
                 } else {
                     loadPathsFromFile();
                 }
@@ -308,7 +308,6 @@ public class Path {
             Place arrival,
             SpecificAttribute specificAttribute) {
         if (departure != null) {
-            Log.d(TAG, "createNewPath() called with: departure = [" + departure.indexPath + "], arrival = [" + arrival.toString() + "], specificAttribute = [" + specificAttribute.toString() + "]");
             ArrayList<Place> sortedPlaces = AppUtils.sortByClosest(Place.getAllPlaces());
             Place closestPlace;
             if (sortedPlaces != null && sortedPlaces.size() > 0) {

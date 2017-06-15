@@ -1,10 +1,11 @@
 package com.filiereticsa.arc.augmentepf.models;
 
-import com.filiereticsa.arc.augmentepf.activities.PathConsultationActivity;
+import com.filiereticsa.arc.augmentepf.activities.ConnectionActivity;
 import com.filiereticsa.arc.augmentepf.activities.PathPlanningActivity;
 import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -16,6 +17,11 @@ import java.util.Date;
 
 public class PlannedPath extends Path {
 
+    public static final String DESTINATION_TYPE = "destinationType";
+    public static final String TYPE_DESTINATION = "typeDestination";
+    public static final String NAME_DESTINATION = "nameDestination";
+    public static final String WARNING_TYPE = "warningType";
+    public static final String WARN_DATE = "warnDate";
     private AlarmType alarmType;
     private Date whenToAlarmUser;
     private static ArrayList<PlannedPath> plannedPaths;
@@ -45,14 +51,25 @@ public class PlannedPath extends Path {
     }
 
     public static void addPlannedPath(PlannedPath plannedPath) {
-        if (plannedPaths== null) {
+        if (plannedPaths == null) {
             plannedPaths = new ArrayList<>();
         }
         plannedPaths.add(plannedPath);
     }
 
-    public static void sendPlannedPathToServer(PlannedPath plannedPath){
+    public static void sendPlannedPathToServer(PlannedPath plannedPath) {
         JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+            jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
+            jsonObject.put(TYPE_DESTINATION, plannedPath.getArrival().getType());
+            jsonObject.put(NAME_DESTINATION, plannedPath.getArrival().getName());
+            jsonObject.put(WARNING_TYPE, plannedPath.alarmType.toString());
+            String formattedDate = Path.simpleDateFormat.format(plannedPath.getWhenToAlarmUser());
+            jsonObject.put(WARN_DATE, formattedDate);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         HTTPRequestManager.doPostRequest(
                 HTTP.SEND_TRIP_PHP,
                 jsonObject.toString(),
@@ -60,8 +77,14 @@ public class PlannedPath extends Path {
                 HTTPRequestManager.PLANNED_PATH);
     }
 
-    public static void getPlannedPathFromServer(){
+    public static void getPlannedPathFromServer() {
         JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
+            jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         HTTPRequestManager.doPostRequest(
                 HTTP.GET_TRIP_PHP,
                 jsonObject.toString(),

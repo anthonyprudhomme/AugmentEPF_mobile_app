@@ -44,7 +44,12 @@ public class PathConsultationActivity extends AppCompatActivity implements HTTPR
                 //TODO Opening pop-up Dialog / Activity with informations for Planned path
             }
         });
-        Path.askForPaths();
+        if (HomePageActivity.isNetworkAvailable()) {
+            Path.askForPaths();
+        }else{
+            Path.loadPathsFromFile();
+            listAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -58,15 +63,15 @@ public class PathConsultationActivity extends AppCompatActivity implements HTTPR
 
                         String state = jsonObject.getString(SUCCESS);
                         if (state.equals(TRUE)) {
-
                             Path.onPathRequestDone(result);
-                            //listAdapter.clear();
-                            //listAdapter.addAll(Path.getPaths());
                             listAdapter.notifyDataSetChanged();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                } else {
+                    Path.loadPathsFromFile();
+                    listAdapter.notifyDataSetChanged();
                 }
                 break;
         }

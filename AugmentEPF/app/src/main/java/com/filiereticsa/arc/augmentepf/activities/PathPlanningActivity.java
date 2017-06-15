@@ -212,6 +212,7 @@ public class PathPlanningActivity
                                             alarmType,
                                             warnDate);
                                     PlannedPath.addPlannedPath(plannedPath);
+                                    PlannedPath.sendPlannedPathToServer(plannedPath);
 
                                 } else {
                                     Toast.makeText(PathPlanningActivity.this,
