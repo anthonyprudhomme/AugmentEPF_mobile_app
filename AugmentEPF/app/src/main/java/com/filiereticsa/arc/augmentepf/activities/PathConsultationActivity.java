@@ -2,6 +2,7 @@ package com.filiereticsa.arc.augmentepf.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,6 +14,7 @@ import com.filiereticsa.arc.augmentepf.interfaces.HTTPRequestInterface;
 import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.models.Path;
+import com.filiereticsa.arc.augmentepf.models.PlannedPath;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +36,14 @@ public class PathConsultationActivity extends AppCompatActivity implements HTTPR
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        if (HomePageActivity.isNetworkAvailable()) {
+            Path.askForPaths();
+            //PlannedPath.askForPlannedPaths();
+        }else{
+            Path.loadPathsFromFile();
+            PlannedPath.loadPlannedPathsFromFile();
+            listAdapter.notifyDataSetChanged();
+        }
         listAdapter = new HistoryListAdapter(getApplicationContext(), Path.getPaths());
 
         listView = (ListView) findViewById(R.id.path_history);
@@ -44,12 +54,7 @@ public class PathConsultationActivity extends AppCompatActivity implements HTTPR
                 //TODO Opening pop-up Dialog / Activity with informations for Planned path
             }
         });
-        if (HomePageActivity.isNetworkAvailable()) {
-            Path.askForPaths();
-        }else{
-            Path.loadPathsFromFile();
-            listAdapter.notifyDataSetChanged();
-        }
+
     }
 
     @Override
@@ -74,6 +79,29 @@ public class PathConsultationActivity extends AppCompatActivity implements HTTPR
                     listAdapter.notifyDataSetChanged();
                 }
                 break;
+            case HTTPRequestManager.PLANNED_PATH_LIST:
+                Log.d(TAG, "onRequestDone: planned "+result);
+                if (!result.equals(HTTP.ERROR)) {
+                    JSONObject jsonObject;
+                    try {
+                        jsonObject = new JSONObject(result);
+
+                        String state = jsonObject.getString(HTTP.STATE);
+                        if (state.equals(HTTP.TRUE)) {
+                            PlannedPath.onPlannedPathListRequestDone(result);
+                            Log.d(TAG, "onRequestDone: notify "+listAdapter.getCount());
+                            listAdapter.notifyDataSetChanged();
+                        }else{
+                            PlannedPath.loadPlannedPathsFromFile();
+                            Log.d(TAG, "onRequestDone: notify");
+                            listAdapter.notifyDataSetChanged();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
         }
     }
 

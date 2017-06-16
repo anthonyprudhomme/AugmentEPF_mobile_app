@@ -28,7 +28,7 @@ import java.util.Locale;
 
 public class Path {
 
-    public static final String THE_DATE = "theDate";
+    public static final String DATE = "date";
     public static final String DESTINATION_NAME = "destinationName";
     public static final String DESTINATION_TYPE = "destinationType";
     public static final String X_BEGIN = "xBegin";
@@ -78,6 +78,8 @@ public class Path {
         }
     }
 
+    private static ArrayList<Path> allPaths;
+
     public Path(Position departure, Place closestDeparturePlace, Place arrival,
                 boolean mustTakeElevator, Date departureDate,
                 Date arrivalDate) {
@@ -101,18 +103,29 @@ public class Path {
     public Path(JSONObject jsonObject) {
         this.pathAsJson = jsonObject;
         try {
-            int xBegin = jsonObject.getInt(X_BEGIN);
-            int yBegin = jsonObject.getInt(Y_BEGIN);
-            int floor = jsonObject.getInt(FLOOR_BEGIN);
-            this.departure = new Position(xBegin, yBegin, floor);
+            int xBegin = -1, yBegin = -1, floor = Integer.MAX_VALUE;
+            if (jsonObject.has(X_BEGIN)) {
+                xBegin = jsonObject.getInt(X_BEGIN);
+            }
+            if (jsonObject.has(Y_BEGIN)) {
+                yBegin = jsonObject.getInt(Y_BEGIN);
+            }
+            if (jsonObject.has(FLOOR_BEGIN)) {
+                floor = jsonObject.getInt(FLOOR_BEGIN);
+            }
+            if (xBegin != -1 && yBegin != -1 && floor != Integer.MAX_VALUE) {
+                this.departure = new Position(xBegin, yBegin, floor);
+            }
 
-            String closestDeparturePlaceName = jsonObject.getString(CLOSEST_DEPARTURE_PLACE);
-            this.closestDeparturePlace = Place.getPlaceFromName(closestDeparturePlaceName);
+            if (jsonObject.has(CLOSEST_DEPARTURE_PLACE)) {
+                String closestDeparturePlaceName = jsonObject.getString(CLOSEST_DEPARTURE_PLACE);
+                this.closestDeparturePlace = Place.getPlaceFromName(closestDeparturePlaceName);
+            }
 
             String arrivalPlaceName = jsonObject.getString(DESTINATION_NAME);
             this.arrival = Place.getPlaceFromName(arrivalPlaceName);
 
-            String departureDate = jsonObject.getString(THE_DATE);
+            String departureDate = jsonObject.getString(DATE);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(simpleDateFormat.parse(departureDate));
             this.departureDate = calendar.getTime();
@@ -177,23 +190,43 @@ public class Path {
         }
         return paths;
     }
+    public static ArrayList<Path> allPaths(){
+        allPaths = new ArrayList<>();
+        if(PlannedPath.getPlannedPaths()!= null){
+            Log.d(TAG, "allPaths: planned "+PlannedPath.getPlannedPaths().size());
+            allPaths.addAll(PlannedPath.getPlannedPaths());
+        }
+        if (getPaths()!= null){
+            Log.d(TAG, "allPaths: path "+Path.getPaths().size());
+            allPaths.addAll(getPaths());
+        }
+        return allPaths;
+    }
 
-    private JSONObject getJsonFromPath() {
+    protected JSONObject getJsonFromPath() {
         JSONObject pathAsJson = new JSONObject();
         Date departureDate = this.getDepartureDate();
-        String departureDateString = simpleDateFormat.format(departureDate);
+        if(departureDate!= null){
+            String departureDateString = simpleDateFormat.format(departureDate);
+            try {
+                pathAsJson.put(DATE, departureDateString);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         try {
-            pathAsJson.put(THE_DATE, departureDateString);
-            if(this.closestDeparturePlace!= null) {
+            if (this.closestDeparturePlace != null) {
                 pathAsJson.put(CLOSEST_DEPARTURE_PLACE, this.closestDeparturePlace.getName());
-            }else{
+            } else {
                 pathAsJson.put(CLOSEST_DEPARTURE_PLACE, "Undefined");
             }
             pathAsJson.put(DESTINATION_NAME, this.getArrival().getName());
             pathAsJson.put(MUST_TAKE_ELEVATOR, this.isMustTakeElevator());
-            pathAsJson.put(X_BEGIN, this.departure.getPositionX());
-            pathAsJson.put(Y_BEGIN, this.departure.getPositionX());
-            pathAsJson.put(FLOOR_BEGIN, this.departure.getFloor());
+            if (this.departure!= null) {
+                pathAsJson.put(X_BEGIN, this.departure.getPositionX());
+                pathAsJson.put(Y_BEGIN, this.departure.getPositionX());
+                pathAsJson.put(FLOOR_BEGIN, this.departure.getFloor());
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -219,7 +252,7 @@ public class Path {
 
     private static void loadPathsFromJson(JSONObject jsonObject) {
         Log.d(TAG, "loadPathsFromJson: "+jsonObject.toString());
-        if (paths!= null){
+        if (paths != null) {
             paths.clear();
         }
         try {
@@ -228,14 +261,13 @@ public class Path {
                 JSONArray jsonArray = jsonObject.getJSONArray(RECORD_LIST);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject currentPathJson = jsonArray.getJSONObject(i);
-                    Log.d(TAG, "loadPathsFromJson: "+currentPathJson.toString());
                     Path path = new Path(currentPathJson);
-                    if (paths==null){
+                    if (paths == null) {
                         paths = new ArrayList<>();
                     }
                     paths.add(path);
                 }
-            }else{
+            } else {
                 loadPathsFromFile();
             }
         } catch (JSONException e) {
@@ -254,7 +286,6 @@ public class Path {
 
     public static void savePaths() {
         FileManager fileManager = new FileManager(null, PATHS_JSON);
-        Log.d(TAG, "savePaths: "+getJsonFromPaths().toString());
         fileManager.saveFile(getJsonFromPaths().toString());
     }
 
@@ -267,20 +298,26 @@ public class Path {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "sendPathToServer: "+jsonObject.toString());
-        HTTPRequestManager.doPostRequest(HTTP.RECORD_TRIP_PHP, jsonObject.toString(), HomePageActivity.httpRequestInterface, HTTPRequestManager.PATH);
+        HTTPRequestManager.doPostRequest(
+                HTTP.RECORD_TRIP_PHP,
+                jsonObject.toString(),
+                HomePageActivity.httpRequestInterface,
+                HTTPRequestManager.PATH);
     }
 
     public static void askForPaths() {
         JSONObject jsonObject = new JSONObject();
-
         try {
             jsonObject.put(HTTP.ID_USER, ConnectionActivity.idUser);
             jsonObject.put(HTTP.TOKEN, ConnectionActivity.token);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HTTPRequestManager.doPostRequest(HTTP.GET_RECORD_PHP, jsonObject.toString(), PathConsultationActivity.httpRequestInterface, HTTPRequestManager.PATH_HISTORY);
+        HTTPRequestManager.doPostRequest(
+                HTTP.GET_RECORD_PHP,
+                jsonObject.toString(),
+                PathConsultationActivity.httpRequestInterface,
+                HTTPRequestManager.PATH_HISTORY);
     }
 
     public static void onPathRequestDone(String result) {

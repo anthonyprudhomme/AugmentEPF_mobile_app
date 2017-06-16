@@ -25,7 +25,6 @@
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
             android:layout_gravity="center|center_horizontal"
-            android:src="@drawable/history_icon"
             />
 
         <LinearLayout

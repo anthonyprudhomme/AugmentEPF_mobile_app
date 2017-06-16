@@ -113,7 +113,7 @@
     <!--.........................................................................................-->
 
     <!-- Attribut spécifique -->
-    <string name="specific_attribute">Attributs spécifiques</string>
+    <string name="specific_attribute">Attributs Spécifiques</string>
     <string name="select_specific_attribute">Sélectionner les attributs spécifiques</string>
 
     <!-- Différents attributs spécifiques -->
@@ -148,7 +148,7 @@
     <string name="oldChangeMailButton">Entrez l\'ancienne adresse email</string>
     <string name="newChangeMailButton">Entrez la nouvelle adresse email</string>
     <string name="confirmChangeMailButton">Confirmation de la nouvelle adresse email</string>
-    <string name="pwForMail">Entrez le mot de passe pour changer</string>
+    <string name="pwForMail">Entrez votre mot de passe</string>
     <string name="emailToastCancelled">Changement d\'email annulé</string>
 
     <!--.........................................................................................-->
@@ -245,9 +245,9 @@
     <string name="no_internet">Vous n\'êtes pas connecté à internet</string>
 
     <!--TODO Manage following input-->
-    <string name="title_change_mail">Change your mail</string>
-    <string name="title_reset_pw">Reset password</string>
-    <string name="userTypeAnonym">Anonymous</string>
+    <string name="title_change_mail">Changer votre adresse e-mail</string>
+    <string name="title_reset_pw">Réinitaliser le mot de passe</string>
+    <string name="userTypeAnonym">Anonyme</string>
 
     <string name="current">Actuel</string>
     <string name="failed_connect_calendar">Échec de chargement du calendrier. Vérifiez que vous êtes connecté au Wi-Fi de l\'EPF.</string>
@@ -295,7 +295,7 @@
     <string name="go_to">"Voulez-vous allez en "</string>
     <string name="go_to_next_class">Prochain cours</string>
     <string name="no_next_class_found">Pas de prochain cours trouvé. Désolé…</string>
-    <string name="permission_not_granted">Désolé !!! Vous ne pouvez pas utiliser cette application sans autoriser l\'accès aux ressources du téléphone.</string>
+    <string name="permission_not_granted">Vous ne pouvez pas utiliser cette application sans autoriser l\'accès aux ressources du téléphone.</string>
     <string name="zoom">Zoom</string>
     <string name="admin_target_missing">Aucune séléctionnée</string>
     <string name="destination">Destination :</string>
@@ -304,4 +304,8 @@
     <string name="log_in_automatically">Se connecter automatiquement</string>
     <string name="save_cred">Enregistrer identifiants</string>
     <string name="watch_tuto">Voulez-vous visionner la vidéo de tutoriel ?</string>
+    <string name="path_planning_choose_date">Vous devez choisir quand vous voulez commencer votre trajet.</string>
+    <string name="path_planning_choose_place">La destination n\'est pas valide.</string>
+    <string name="path_planning_how_warn">Vous devez choisir comment vous serez averti.</string>
+    <string name="path_planning_when_warn">Vous devez choisir quand vous serez averti.</string>
 </resources>

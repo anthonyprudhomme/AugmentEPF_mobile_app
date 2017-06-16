@@ -2,6 +2,7 @@ package com.filiereticsa.arc.augmentepf.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -28,6 +29,7 @@ import com.filiereticsa.arc.augmentepf.managers.HTTP;
 import com.filiereticsa.arc.augmentepf.managers.HTTPRequestManager;
 import com.filiereticsa.arc.augmentepf.models.AlarmType;
 import com.filiereticsa.arc.augmentepf.models.ClassRoom;
+import com.filiereticsa.arc.augmentepf.models.Path;
 import com.filiereticsa.arc.augmentepf.models.Place;
 import com.filiereticsa.arc.augmentepf.models.PlannedPath;
 
@@ -129,6 +131,7 @@ public class PathPlanningActivity
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        httpRequestInterface = this;
 
         // Get preferences in settings.xml
         settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -213,7 +216,9 @@ public class PathPlanningActivity
                                             warnDate);
                                     PlannedPath.addPlannedPath(plannedPath);
                                     PlannedPath.sendPlannedPathToServer(plannedPath);
-
+                                    PlannedPath.savePlannedPathsToFile();
+                                    Intent intent = new Intent(PathPlanningActivity.this,HomePageActivity.class);
+                                    startActivity(intent);
                                 } else {
                                     Toast.makeText(PathPlanningActivity.this,
                                             R.string.path_planning_how_warn,
@@ -291,6 +296,7 @@ public class PathPlanningActivity
         switch (whichDate) {
             case 1: // Departure
                 departureDateButton.setText(date);
+                startCalendar = Calendar.getInstance();
                 startCalendar.setTime(calendar.getTime());
 
                 break;
@@ -309,6 +315,7 @@ public class PathPlanningActivity
                         break;
                     case 1:
                         warningDateButton.setText(date);
+                        warnCalendar = Calendar.getInstance();
                         warnCalendar.setTime(calendar.getTime());
                         break;
                     default:
@@ -482,23 +489,7 @@ public class PathPlanningActivity
     public void onRequestDone(String result, int requestId) {
         switch (requestId) {
             case HTTPRequestManager.PLANNED_PATH:
-                if (!result.equals(HTTP.ERROR)) {
-                    JSONObject jsonObject;
-                    try {
-                        jsonObject = new JSONObject(result);
-
-                        String state = jsonObject.getString(HTTP.STATE);
-                        if (state.equals(HTTP.TRUE)) {
-
-
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
-
-            case HTTPRequestManager.PLANNED_PATH_LIST:
+                Log.d(TAG, "onRequestDone: "+result);
                 if (!result.equals(HTTP.ERROR)) {
                     JSONObject jsonObject;
                     try {

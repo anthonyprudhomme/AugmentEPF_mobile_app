@@ -153,10 +153,13 @@ public class HomePageActivity
     }
 
     private void showAdminButtonOrNot() {
+        ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
         if (sharedPreferences.getString(TYPE_USER, "V").equals("A")) {
-            ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
             adminButton.setVisibility(View.VISIBLE);
             adminButton.setClickable(true);
+        }else{
+            adminButton.setVisibility(View.GONE);
+            adminButton.setClickable(false);
         }
     }
 
@@ -312,6 +315,7 @@ public class HomePageActivity
                 rightSlidingDrawer.close();
                 drawerHandle.setBackgroundResource(R.drawable.nav_left_bar_close);
                 floatingActionButton.setVisibility(View.GONE);
+                showAdminButtonOrNot();
             }
 
             @Override
@@ -671,12 +675,11 @@ public class HomePageActivity
                         }
 
                         prefEditor.putString(TYPE_USER, userTypeValue);
-
                         // Update user iCal link
                         String iCalLink = jsonObject.getString(ICAL);
                         prefEditor.putString(ICAL, iCalLink);
-
                         prefEditor.apply();
+                        showAdminButtonOrNot();
 
                     } else {
                         // If request failed, shows the message from the server

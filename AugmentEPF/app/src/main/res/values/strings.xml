@@ -3,7 +3,7 @@
 
     <!-- Messages to activate the some configurations -->
     <string name="app_need_location">This app needs access to your location</string>
-    <string name="app_need_location_message">Please grant access to your location so this app can
+    <string name="app_need_location_message">Please grant access to your location so that this app can
         detect beacons in the background.</string>
 
     <string name="text_classroom">Pick a classroom</string>
@@ -37,7 +37,7 @@
 
     <!-- Text on buttons corresponding at the date, hour and other -->
     <string name="text_dateButton">Choose the date</string>
-    <string name="text_hourButton">Choose the hour</string>
+    <string name="text_hourButton">Choose the time</string>
 
     <!--____________________________________________________________________________________________
     |                                          Warning                                             |
@@ -75,7 +75,7 @@
     <string name="notif_user_summary">Enable/disable notifications</string>
 
     <!-- Localisation -->
-    <string name="localisation">Localisation</string>
+    <string name="localisation">Localization</string>
     <string name="loc_user_summary">Enable/disable the localization of the device</string>
     <!--____________________________________________________________________________________________
                                          User parameters
@@ -116,8 +116,8 @@
     <!--.........................................................................................-->
 
     <!-- Specific attribute -->
-    <string name="specific_attribute">Specific Attribute</string>
-    <string name="select_specific_attribute">Select specific attribute</string>
+    <string name="specific_attribute">Specific Attributes</string>
+    <string name="select_specific_attribute">Select specific attributes</string>
 
     <!-- Different specific attribute -->
     <string-array name="specific_attribute_array">
@@ -138,7 +138,7 @@
 
     <!-- iCal link -->
     <string name="ical_link">iCal link</string>
-    <string name="ical_summary">Allows to edit the account\'s link</string>
+    <string name="ical_summary">Allows the edit of the account\'s link</string>
     <string name="format_ical">Must look like this: http://edt.epf.fr/pegasus/ical.php?v1=…</string>
 
     <!--.........................................................................................-->
@@ -151,7 +151,7 @@
     <string name="oldChangeMailButton">Enter old email</string>
     <string name="newChangeMailButton">Enter new email</string>
     <string name="confirmChangeMailButton">Confirm new email</string>
-    <string name="pwForMail">Enter the password to change</string>
+    <string name="pwForMail">Enter your password</string>
     <string name="emailToastCancelled">Email change cancelled</string>
 
     <!--.........................................................................................-->
@@ -175,7 +175,7 @@
     <string name="pwChangeProblemNew">New passwords are not identical</string>
     <!-- Email addresses -->
     <string name="emailChangeOk">Email address changed!</string>
-    <string name="emailChangeProblemEmail">Email addresses are not good</string>
+    <string name="emailChangeProblemEmail">Your e-mail confirmation does not match your e-mail</string>
     <string name="emailChangeProblemPw">Wrong password</string>
 
     <!-- OK/Cancel -->
@@ -207,7 +207,7 @@
     <string name="connect">Sign in</string>
     <string name="planned_trajectory">Planned routes</string>
     <string name="plan_trajectory">Plan a route</string>
-    <string name="trajectory_history">Routes history</string>
+    <string name="trajectory_history">Route viewer</string>
     <string name="contact">Contact us</string>
     <string name="go">Go!</string>
     <string name="login">Login</string>
@@ -224,9 +224,9 @@
     <string name="not_localized">You haven\'t been located yet</string>
 
     <!--Points of interest-->
-    <string name="man_restroom">Men restroom</string>
+    <string name="man_restroom">Men\'s restroom</string>
     <string name="info_restroom_man">Restroom for men.</string>
-    <string name="woman_restroom">Women restroom</string>
+    <string name="woman_restroom">Women\'s restroom</string>
     <string name="info_restroom_woman">Restroom for women.</string>
     <!--____________________-->
 
@@ -239,12 +239,12 @@
     <string name="enter_password">Please enter a password</string>
     <string name="enter_password_confirmation">Please enter a password confirmation</string>
     <string name="error_server">Something went wrong with the server</string>
-    <string name="need_internet_account">You need internet connection to create an account</string>
+    <string name="need_internet_account">You need an internet connection to create an account</string>
     <string name="connected">Authentication successful</string>
     <string name="no_internet">You are not connected to internet</string>
     <string name="logout">Log out</string>
     <!--TODO Manage following input-->
-    <string name="title_change_mail">Change your mail</string>
+    <string name="title_change_mail">Change your email</string>
     <string name="title_reset_pw">Reset password</string>
     <string name="userTypeAnonym">Anonymous</string>
     <!--_________________________________________________________________________________________-->
@@ -298,7 +298,7 @@
     <string name="admin_1st_floor">1st Floor</string>
     <string name="admin_ground_floor">Ground Floor</string>
     <string name="admin_lower_floor">Lower Floor</string>
-    <string name="admin_update">Update existing?</string>
+    <string name="admin_update">Update?</string>
     <string name="admin_save_new">Save as new?</string>
     <string name="admin_edit_rooms">Edit rooms</string>
     <string name="admin_detector_failed">None detected</string>
@@ -333,18 +333,18 @@
     <!--=========================================================================================-->
 
 
-    <string name="permission_not_granted">Sorry!!! You can\'t use this app without granting permission</string>
+    <string name="permission_not_granted">You must grant permission to use this app</string>
     <string name="fullscreen">Fullscreen</string>
     <string name="destination">Destination :</string>
     <string name="guidanceIn">in</string>
-    <string name="starting_guidance">Starting guidance</string>
+    <string name="starting_guidance">Start guidance</string>
     <string name="save_cred">Save login and password</string>
     <string name="log_in_automatically">Log in automatically</string>
     <string name="filter_title_augmentepf">AugmentEPF</string>
-    <string name="watch_tuto">Would you like to watch the tutorial video ?</string>
+    <string name="watch_tuto">Would you like to watch the tutorial video?</string>
     <string name="path_planning_choose_date">You must choose when you want to start your path.</string>
     <string name="path_planning_when_warn">You must choose when you want to be warned.</string>
     <string name="path_planning_how_warn">You must choose how you want to be warned.</string>
-    <string name="path_planning_choose_place">You didn\'t enter a valid place name.</string>
+    <string name="path_planning_choose_place">You didn\'t enter a valid destination.</string>
 
 </resources>

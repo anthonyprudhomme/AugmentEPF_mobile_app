@@ -1,6 +1,7 @@
 package com.filiereticsa.arc.augmentepf.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
  */
 
 public class HistoryListAdapter extends ArrayAdapter<Path> {
+
+    private static final String TAG = "Ici";
 
     public HistoryListAdapter(Context context, ArrayList<Path> list) {
         super(context, 0, list);
@@ -53,6 +56,7 @@ public class HistoryListAdapter extends ArrayAdapter<Path> {
             // Set the corresponding item view graphics elements for either planned or history path
             // If path is an instance of PlannedPath
             if (path instanceof PlannedPath) {
+                Log.d(TAG, "inside: ");
                 coloredBar.setBackgroundResource(R.color.colorPrimary);
                 historyIcon.setBackgroundResource(R.drawable.planned_icon);
 
@@ -77,18 +81,20 @@ public class HistoryListAdapter extends ArrayAdapter<Path> {
             // Set the time format
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm a");
             // Get the departure time from the path and the departure date
-            long dateTime = path.getDepartureDate().getTime();
-            String time = timeFormat.format(dateTime);
-
-            // Set the time in the corresponding textView
-            startTime.setText(time);
+            if (path.getDepartureDate() != null) {
+                long dateTime = path.getDepartureDate().getTime();
+                String time = timeFormat.format(dateTime);
+                // Set the time in the corresponding textView
+                startTime.setText(time);
+            }
 
             // Set date format
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy, EEEE dd MMMM ");
-            String date = dateFormat.format(path.getDepartureDate());
-
-            // Set the date in the corresponding textView
-            startDate.setText(date);
+            if (path.getDepartureDate() != null) {
+                String date = dateFormat.format(path.getDepartureDate());
+                // Set the date in the corresponding textView
+                startDate.setText(date);
+            }
         }
 
         return view;
