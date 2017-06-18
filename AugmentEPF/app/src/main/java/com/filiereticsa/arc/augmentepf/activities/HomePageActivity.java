@@ -154,7 +154,7 @@ public class HomePageActivity
 
     private void showAdminButtonOrNot() {
         ImageButton adminButton = (ImageButton) findViewById(R.id.admin_button);
-        if (sharedPreferences.getString(TYPE_USER, "V").equals("A")) {
+        if (sharedPreferences.getString(TYPE_USER, "V").equals("A") && isUserConnected) {
             adminButton.setVisibility(View.VISIBLE);
             adminButton.setClickable(true);
         }else{
